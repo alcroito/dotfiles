@@ -7,6 +7,11 @@
 # https://github.com/spf13/dotfiles/blob/main/run_once_before_install-packages-windows.bat.tmpl
 # https://github.com/twpayne/dotfiles/blob/master/home/.chezmoiscripts/windows/run_onchange_remove-bloat.ps1
 
+# https://github.com/topics/chezmoi?l=powershell
+# https://github.com/TsekNet/dotfiles/blob/main/README.md this is good
+# https://github.com/jwnmulder/dotfiles/blob/main/README.md
+# https://github.com/LeoCalbi/dotfiles/blob/master/home/.chezmoiscripts/before/run_once_before_02_system_setup.ps1
+
 # upgrade choco .exe and add choco to PATH
 powershell.exe Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
