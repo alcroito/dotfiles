@@ -1,0 +1,15 @@
+# replace 'Ctrl+t' and 'Ctrl+r' with your preferred bindings:
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+
+# Zoxide
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
+# Alias for which
+sal which gcm   # short form of `Set-Alias which Get-Command`
+sal vim nvim    # short form of `Set-Alias which Get-Command`
+
+{{ if eq .chezmoi.hostname "alexandru-work-win11" }}
+$env:Path = 'C:\Users\alexandru\PowerShelf;' + $env:Path
+$env:Path = 'E:\dev\envs;' + $env:Path
+$env:Path = 'E:\dev\cmakes\cmake-3.28.1\bin;' + $env:Path
+{{ end }}
