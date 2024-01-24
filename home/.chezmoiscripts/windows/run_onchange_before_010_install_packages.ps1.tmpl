@@ -1,0 +1,23 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# upgrade choco .exe and add choco to PATH
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/upgrade.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+choco feature enable -n allowGlobalConfirmation
+
+# install scoop
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
+
+# dev tools
+choco upgrade ag -y
+choco upgrade git -y
+choco upgrade fzf -y
+choco upgrade zoxide -y
+
+# end of windows
+{{- end -}}
+
+
+# end of install_packages
+{{- end -}}
