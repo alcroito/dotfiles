@@ -2,6 +2,11 @@
 
 {{- if eq .chezmoi.os "windows" }}
 
+# Inspiration
+# https://github.com/nandalopes/dotfiles/blob/friends/root/.chezmoidata/tmux.yaml
+# https://github.com/spf13/dotfiles/blob/main/run_once_before_install-packages-windows.bat.tmpl
+# https://github.com/twpayne/dotfiles/blob/master/home/.chezmoiscripts/windows/run_onchange_remove-bloat.ps1
+
 # upgrade choco .exe and add choco to PATH
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
