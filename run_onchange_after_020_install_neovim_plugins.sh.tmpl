@@ -1,0 +1,11 @@
+{{ if .install_packages -}}
+
+{{ if ne .osid "windows" -}}
+# Install neovim plugins
+nvim --headless '+qa'
+nvim --headless' +PlugInstall!' '+qa'
+nvim '+UpdateRemotePlugins' '+qa'
+{{ end -}}
+
+# end of install_packages
+{{ end -}}
