@@ -3,8 +3,11 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 Documents
 AppData/Local/nvim/init.vim
 AppData
+.chezmoiscripts/windows/**
 {{- else }}
 .config/nvim/init.vim
 .config/nvim
 .zprofile
+.chezmoiscripts/unix/**
 {{- end }}
+
