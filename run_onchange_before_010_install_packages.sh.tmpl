@@ -13,7 +13,7 @@ brew install ripgrep htop the_silver_searcher fd
 {{ if eq .chezmoi.os "linux" -}}
 ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
 sudo chmod u+x /usr/local/bin/nvim.appimage
-sudo mv /usr/local/bin/nvim.appimage /usr/local/bin
+sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
 {{ else if eq .osid "darwin" -}}
 brew neovim
 {{ else if eq .osid "windows" -}}
