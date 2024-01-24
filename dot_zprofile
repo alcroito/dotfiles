@@ -27,7 +27,7 @@ export LANG=en_US.UTF-8
 export BACKUP_PATH=$PATH
 DISABLE_UPDATE_PROMPT=true
 
-if [-e "$HOME/.cargo/bin"]; then
+if [ -e "$HOME/.cargo/bin" ]; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
