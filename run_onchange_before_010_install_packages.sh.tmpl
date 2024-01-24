@@ -15,7 +15,9 @@ brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide
 
 {{ if ne .osid "windows" -}}
 # Install oh my zsh
+ZSH=
 sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+touch ~/.zshrc
 source ~/.zshrc
 {{ end -}}
 
