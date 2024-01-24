@@ -12,8 +12,8 @@ brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf --all
-~/.fzf/install
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install --all
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
