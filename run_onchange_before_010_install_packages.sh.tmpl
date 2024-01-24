@@ -38,7 +38,7 @@ sudo apt install -y libfuse2 fuse
 
 # Install neovim
 vim_path=/usr/local/bin/nvim
-if [[ ! -f "$vim_path" ]]; then
+if [ ! -f "$vim_path" ]; then
   ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
   sudo chmod a+x /usr/local/bin/nvim.appimage
   sudo mv /usr/local/bin/nvim.appimage $vim_path
