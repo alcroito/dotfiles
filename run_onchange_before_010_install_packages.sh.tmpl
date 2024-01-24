@@ -11,7 +11,7 @@ sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-sudo apt install -y ripgrep htop silversearcher-ag fd-find cmake git ninja-build zsh locales
+sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
 {{ else if eq .osid "darwin" -}}
@@ -37,11 +37,13 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 sudo apt install -y libfuse2 fuse
 
 # Install neovim
-if [[ ! -f "/usr/local/bin/nvim" ]]; then
+if [[ ! -e /usr/local/bin/nvim ]]; then
   ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
   sudo chmod a+x /usr/local/bin/nvim.appimage
   sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
   sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim
+else
+  echo "neovim binary already present /usr/local/bin/nvim"
 fi
 
 {{ else if eq .osid "darwin" -}}
