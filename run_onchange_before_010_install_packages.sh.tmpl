@@ -37,11 +37,12 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 sudo apt install -y libfuse2 fuse
 
 # Install neovim
-if [[ ! -e /usr/local/bin/nvim ]]; then
+vim_path=/usr/local/bin/nvim
+if [[ ! -f "$vim_path" ]]; then
   ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
   sudo chmod a+x /usr/local/bin/nvim.appimage
-  sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
-  sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim
+  sudo mv /usr/local/bin/nvim.appimage $vim_path
+  sudo ln -s $vim_path /usr/local/bin/vim
 else
   echo "neovim binary already present /usr/local/bin/nvim"
 fi
