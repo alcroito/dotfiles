@@ -8,7 +8,7 @@
 # https://github.com/twpayne/dotfiles/blob/master/home/.chezmoiscripts/windows/run_onchange_remove-bloat.ps1
 
 # upgrade choco .exe and add choco to PATH
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+powershell.exe Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 $env:Path += ';$env:ALLUSERSPROFILE\chocolatey\bin'
 
