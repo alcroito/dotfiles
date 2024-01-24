@@ -1,0 +1,82 @@
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="bira"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git history)
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+export BACKUP_PATH=$PATH
+DISABLE_UPDATE_PROMPT=true
+
+if [-e "$HOME/.cargo/bin"]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+source $ZSH/oh-my-zsh.sh
+
+export EDITOR=nvim
+
+HISTSIZE=86000
+SAVEHIST=86000
+
+alias please='sudo $(fc -ln -1)'
+alias mi='make -j16; make install'
+alias tiga='tig --all'
+alias t='tig'
+alias ts='tig show'
+alias undo='git reset --hard HEAD~'
+alias ggp='git gpush'
+alias ggcp='git gpick'
+alias use_ccache='export PATH=/usr/local/opt/ccache/libexec:$PATH'
+alias amend='git commit --amend --verbose'
+alias cm='~/Dev/cmake/build/bin/cmake'
+alias dcm='~/Dev/cmake/debug_build/bin/cmake'
+alias cmtr='cm . --trace-redirect=a.txt'
+alias grev='git revise'
+alias lg='lazygit'
+
+mm() {
+if hash makeobj 2>/dev/null; then
+    makeobj -j16 $@;
+elif [ -e "build.ninja" ]; then
+    ninja -j16 $@;
+else
+    make -j16 $@;
+fi
+}
+
+# More fuzzy finding
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf + ag configuration
+  export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_DEFAULT_OPTS='
+  --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
+  --color info:108,prompt:109,spinner:108,pointer:168,marker:168
+  '
+  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind ?:toggle-preview"
+
+# Use neovim in tig blame inside nvim
+export GIT_EDITOR=/usr/local/bin/nvim
+
+eval "$(zoxide init zsh)"
