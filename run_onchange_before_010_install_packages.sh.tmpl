@@ -25,6 +25,13 @@ brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
 ZSH=
 sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
 touch ~/.zshrc
+
+{{ if eq .chezmoi.os "linux" -}}
+sed -i 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
+{{ else if eq .osid "darwin" -}}
+sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
+{{ end -}}
+
 source ~/.zshrc
 {{ end -}}
 

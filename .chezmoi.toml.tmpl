@@ -11,7 +11,7 @@
 {{- end -}}
 
 {{- $location := promptStringOnce . "location" "home or work or vm" "work" -}}
-{{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" -}}
+{{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" false -}}
 
 {{- $name := "alcroito" -}}
 {{- $email := "alcroito.code@pm.me" -}}
