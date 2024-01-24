@@ -7,4 +7,3 @@ AppData
 .config/nvim/init.vim
 .config/nvim
 {{- end }}
-

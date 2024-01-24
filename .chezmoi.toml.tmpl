@@ -3,14 +3,20 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
-{{- $email := promptStringOnce . "email" "Email address" -}}
-
 {{- if eq .chezmoi.os "linux" -}}
 {{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
 {{-     $is_wsl = true -}}
 {{-   end -}}
 {{- end -}}
 
+{{- $name := promptStringOnce . "name" "Name" -}}
+{{- $email := promptStringOnce . "email" "Email address" -}}
+{{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" -}}
+{{- $location := promptStringOnce . "location" "home or work" -}}
+
 [data]
     osid = {{ $osid | quote }}
+    name = {{ $name | quote }}
     email = {{ $email | quote }}
+    install_packages = {{ $install_packages }}
+    location = {{ $location | quote }}

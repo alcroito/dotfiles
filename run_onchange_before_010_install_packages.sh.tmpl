@@ -1,0 +1,24 @@
+{{ if .install_packages -}}
+
+{{ if ne .osid "windows" -}}
+#!/bin/sh
+{{ end -}}
+
+{{ if eq .osid "linux-ubuntu" -}}
+sudo apt install ripgrep htop silversearcher-ag fd-find
+{{ else if eq .osid "darwin" -}}
+brew install ripgrep htop the_silver_searcher fd
+{{ end -}}
+
+{{ if eq .chezmoi.os "linux" -}}
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage /usr/local/bin
+chmod u+x /usr/local/bin/nvim.appimage
+mv /usr/local/bin/nvim.appimage /usr/local/bin
+{{ else if eq .osid "darwin" -}}
+brew neovim
+{{ else if eq .osid "windows" -}}
+winget install Neovim.Neovim
+{{ end -}}
+
+# install_packages
+{{ end -}}
