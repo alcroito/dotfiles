@@ -6,11 +6,12 @@
 
 # Install various packages
 {{ if eq .osid "linux-ubuntu" -}}
-sudo apt install -y ripgrep htop silversearcher-ag fd-find cmake git ninja-build zsh locales
+sudo apt install -y locales
 sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+sudo apt install -y ripgrep htop silversearcher-ag fd-find cmake git ninja-build zsh locales
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
 {{ else if eq .osid "darwin" -}}
@@ -36,10 +37,12 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 sudo apt install -y libfuse2 fuse
 
 # Install neovim
-( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
-sudo chmod a+x /usr/local/bin/nvim.appimage
-sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
-sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim
+if [[ ! -f "/usr/local/bin/nvim" ]]; then
+  ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
+  sudo chmod a+x /usr/local/bin/nvim.appimage
+  sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
+  sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim
+fi
 
 {{ else if eq .osid "darwin" -}}
 # Install neovim
@@ -48,8 +51,10 @@ brew install neovim
 
 {{ if ne .osid "windows" -}}
 # Install vim-plug
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+if [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim ]]; then
+  sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+fi
 {{ end -}}
 
 {{ if ne .osid "windows" -}}

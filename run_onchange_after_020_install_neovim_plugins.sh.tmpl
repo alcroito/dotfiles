@@ -6,9 +6,9 @@
 
 {{ if ne .osid "windows" -}}
 # Install neovim plugins
-nvim --headless -c '!silent qa'
-nvim --headless -c '!silent PlugInstall!' '+qa'
-nvim '+UpdateRemotePlugins' '+qa'
+nvim --headless '+qall'
+nvim --headless '+PlugInstall!' '+qall'
+nvim '+UpdateRemotePlugins' '+qall'
 {{ end -}}
 
 # end of install_packages
