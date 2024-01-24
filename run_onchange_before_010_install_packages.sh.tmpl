@@ -4,34 +4,60 @@
 #!/bin/sh
 {{ end -}}
 
+# Install various packages
 {{ if eq .osid "linux-ubuntu" -}}
 sudo apt install -y ripgrep htop silversearcher-ag fd-find cmake git ninja-build zsh
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
 {{ else if eq .osid "darwin" -}}
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
+# Install oh my zsh
+sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+source ~/.zshrc
+{{ end -}}
+
+{{ if ne .osid "windows" -}}
+# Install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
+# Install neovim dependencies
 sudo apt install -y libfuse2 fuse
+
+# Install neovim
 ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
 sudo chmod a+x /usr/local/bin/nvim.appimage
 sudo mv /usr/local/bin/nvim.appimage /usr/local/bin/nvim
 sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim
+
+# Install vim-plug
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# Install neovim plugins
 nvim --headless '+PlugInstall!' '+qa'
 nvim '+UpdateRemotePlugins' '+qa'
 
 {{ else if eq .osid "darwin" -}}
-brew neovim
+# Install neovim
+brew install neovim
+
+# Install vim-plug
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# Install neovim plugins
+nvim --headless '+PlugInstall!' '+qa'
+nvim '+UpdateRemotePlugins' '+qa'
+
 {{ else if eq .osid "windows" -}}
 winget install Neovim.Neovim
 {{ end -}}
 
-# install_packages
+# end of install_packages
 {{ end -}}
