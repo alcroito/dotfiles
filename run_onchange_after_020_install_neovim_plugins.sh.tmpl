@@ -1,6 +1,10 @@
 {{ if .install_packages -}}
 
 {{ if ne .osid "windows" -}}
+#!/bin/sh
+{{ end -}}
+
+{{ if ne .osid "windows" -}}
 # Install neovim plugins
 nvim --headless '+qa'
 nvim --headless' +PlugInstall!' '+qa'
