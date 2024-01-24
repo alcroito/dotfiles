@@ -26,6 +26,9 @@ Function take {
   cd $args[0]
 }
 
+# Set default editor
+$env:EDITOR = "nvim.exe"
+
 # Machine specific configs
 {{ if eq .chezmoi.hostname "alexandru-work-win11" }}
 $env:Path = 'C:\Users\alexandru\PowerShelf;' + $env:Path
