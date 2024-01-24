@@ -1,6 +1,8 @@
 {{- if ne .chezmoi.os "windows" }}
-~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1
-~/AppData/Local/nvim/init.vim
+Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+Documents
+AppData/Local/nvim/init.vim
+AppData
 {{- else }}
 .config/nvim/init.vim
 .config/nvim
