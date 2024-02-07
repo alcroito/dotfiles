@@ -24,10 +24,20 @@ choco feature enable -n allowGlobalConfirmation
 powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
 
 # dev tools
+choco upgrade neovim -y
 choco upgrade ag -y
 choco upgrade git -y
 choco upgrade fzf -y
 choco upgrade zoxide -y
+
+# Install vim-plug for neovim
+iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
+    ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
+
+# Install neovim plugins
+nvim --headless '+qall'
+nvim --headless '+PlugInstall!' '+qall'
+nvim '+UpdateRemotePlugins' '+qall'
 
 # end of windows
 {{- end -}}

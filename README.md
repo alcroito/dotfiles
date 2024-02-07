@@ -13,7 +13,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/alcroito/dotfiles/main/ins
 Run the following command in PowerShell as administrator:
 
 ```powershell
-iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/alcroito/dotfiles/main/install.ps1')) (not there yet)
+iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/alcroito/dotfiles/main/install.ps1'))
 ```
 
 ## Usage
