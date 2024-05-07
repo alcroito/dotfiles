@@ -19,7 +19,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git history)
+plugins=(git history zsh-autosuggestions)
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -65,7 +65,7 @@ fi
 }
 
 # More fuzzy finding
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+eval "$(fzf --zsh)"
 # fzf + ag configuration
   export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
