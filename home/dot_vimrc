@@ -119,7 +119,7 @@ Plug 'terryma/vim-expand-region'
 
 " Additional text-objects for viw like commands
 "Plug 'tpope/vim-surround'
-Plug 'machakann/vim-sandwich'
+"Plug 'machakann/vim-sandwich'
 
 " Switch between header and source files with :A
 Plug 'LucHermitte/lh-vim-lib'
@@ -240,6 +240,14 @@ if has('nvim')
     Plug 'nanotee/zoxide.vim'
 endif
 
+" Mini set of plugins
+if has('nvim')
+    " Mini files, for navigating files
+    Plug 'echasnovski/mini.files', { 'branch': 'main' }
+    " Mini surround instead of sandwhich
+    Plug 'echasnovski/mini.surround', { 'branch': 'main' }
+endif
+
 if has('nvim')
     " ai auto complete
     "Plug 'hrsh7th/nvim-cmp'
@@ -312,6 +320,12 @@ endif
 " lua/neogit/lib/hl.lua:40: attempt to call field 'nvim_get_hl' (a nil value)
 if has('nvim-0.9')
     lua require("neogit").setup()
+endif
+
+if has('nvim-0.9')
+    lua require("mini.files").setup()
+    lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
+    lua require("mini.surround").setup()
 endif
 
 if has ('nvim')
