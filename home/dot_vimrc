@@ -194,9 +194,7 @@ if has('nvim')
     " Plug 'sindrets/diffview.nvim'
 
     " Magit git like experience
-    "Plug 'TimUntersberger/neogit'
     Plug 'NeogitOrg/neogit'
-    "Plug 'CKolkey/neogit'
 
     " Lazygit
     Plug 'kdheepak/lazygit.nvim', { 'branch': 'main' }
@@ -246,6 +244,14 @@ if has('nvim')
     Plug 'echasnovski/mini.files', { 'branch': 'main' }
     " Mini surround instead of sandwhich
     Plug 'echasnovski/mini.surround', { 'branch': 'main' }
+endif
+
+if has('nvim')
+    " Show virtual text in guttre for simple hints motions
+    "Plug 'tris203/precognition.nvim'
+
+    " Use yazi as terminal file manager
+    Plug 'rolv-apneseth/tfm.nvim'
 endif
 
 if has('nvim')
@@ -323,9 +329,18 @@ if has('nvim-0.9')
 endif
 
 if has('nvim-0.9')
-    lua require("mini.files").setup()
-    lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
+    "lua require("mini.files").setup()
+    "lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
+
     lua require("mini.surround").setup()
+endif
+
+if has('nvim-0.9')
+    "lua require("precognition").setup()
+
+    " Load yazi as the terminal manager
+    lua require("tfm").setup({replace_netrw = true})
+    lua vim.keymap.set("n", "<leader>e", "<cmd>lua require('tfm').open()<cr>", opts)
 endif
 
 if has ('nvim')
