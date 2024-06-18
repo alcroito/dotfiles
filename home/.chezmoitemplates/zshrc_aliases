@@ -1,0 +1,43 @@
+# Common aliases
+alias pyqtc='source ~/pyqtc.sh'
+alias editpyqtc='vim ~/pyqtc.sh'
+alias htop='sudo htop'
+alias vim='nvim'
+alias v='nvim'
+
+alias please='sudo $(fc -ln -1)'
+alias mi='make -j16; make install'
+#alias mm='make -j16'
+alias tiga='tig --all'
+alias tigs='tig show'
+alias t='tig'
+alias ts='tig show'
+alias undo='git reset --hard HEAD~'
+alias ggp='git gpush'
+alias ggcp='git gpick'
+alias use_ccache='export PATH=/usr/local/opt/ccache/libexec:$PATH'
+alias amend='git commit --amend --verbose'
+alias cm='~/Dev/cmake/build/bin/cmake'
+alias dcm='~/Dev/cmake/debug_build/bin/cmake'
+alias cmtr='cm . --trace-redirect=a.txt'
+alias grev='git revise'
+alias lg='lazygit'
+
+# Ubuntu
+alias uarch='sudo chroot ~/roots/xenial-arm64 su alex'
+alias uarchsu='sudo chroot ~/roots/xenial-arm64'
+
+mm() {
+if hash makeobj 2>/dev/null; then
+    makeobj -j16 $@;
+elif [ -e "build.ninja" ]; then
+    ninja -j16 $@;
+else
+    make -j16 $@;
+fi
+}
+
+cmb() {
+    cmake --build . "$@"
+}
+

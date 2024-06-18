@@ -1,0 +1,35 @@
+useicenoccache() {
+  export ICECC_VERSION="x86_64:/Volumes/T3/Dev/docker_icecream_envs/icecc-create-x86_64-env/xcode-11.3.1-x86_64.tar.gz"
+  #export ICECC_VERSION="Darwin17_x86_64:/Users/alex/ice_envs/darwin_xcode13_1.tar.gz"
+  #export ICECC_VERSION=Darwin16_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin17_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin18_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,x86_64:/Users/alex/ice_envs/swift-llvm-5.0.1-x86_64.tar.gz
+  # export ICECC_CLANG_REMOTE_CPP=0 Doesn't work if there are no system headers packaged with the environment
+  # see https://github.com/icecc/icecream/pull/473
+  export ICECC_CLANG_REMOTE_CPP=1
+  export CC=/usr/local/opt/icecream/libexec/icecc/bin/clang
+  export CXX=/usr/local/opt/icecream/libexec/icecc/bin/clang++
+}
+
+#useiceccache() {
+  #export ICECC_VERSION=Darwin16_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin17_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin18_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,x86_64:/Users/alex/ice_envs/swift-llvm-5.0.1-x86_64.tar.gz
+  #export ICECC_CLANG_REMOTE_CPP=0
+  #export CC=/usr/local/opt/ccache/libexec/clang
+  #export CXX=/usr/local/opt/ccache/libexec/clang++
+  #export PATH=/usr/local/opt/ccache/libexec:$PATH
+  #export CCACHE_PREFIX=/usr/local/opt/icecream/bin/icecc
+#}
+
+useiceccache2() {
+  export ICECC_VERSION="x86_64:/Volumes/T3/Dev/docker_icecream_envs/icecc-create-x86_64-env/xcode-11.3.1-x86_64.tar.gz"
+ #export ICECC_VERSION=Darwin16_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin17_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,Darwin18_x86_64:/Users/alex/ice_envs/darwin2.tar.gz,x86_64:/Users/alex/ice_envs/swift-llvm-5.0.1-x86_64.tar.gz
+  # export ICECC_CLANG_REMOTE_CPP=0 Doesn't work if there are no system headers packaged with the environment
+  export ICECC_CLANG_REMOTE_CPP=1
+  export CC=/usr/local/opt/ccache/libexec/clang
+  export CXX=/usr/local/opt/ccache/libexec/clang++
+  export CCACHE_PREFIX=/usr/local/opt/icecream/bin/icecc
+}
+
+useiceccache_qtbase_cmake() {
+  export ICECC_VERSION="x86_64:/Volumes/T3/Dev/docker_icecream_envs/icecc-create-x86_64-env/xcode-11.3.1-x86_64.tar.gz"
+  export ICECC_CLANG_REMOTE_CPP=1
+  export CCACHE_PREFIX=/usr/local/opt/icecream/bin/icecc
+}

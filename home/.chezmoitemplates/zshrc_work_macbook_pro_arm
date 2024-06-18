@@ -1,0 +1,43 @@
+test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+
+export PATH=$PATH:$HOME/Dev/qtrepotools/bin
+
+export BACKUP_PATH=$PATH
+
+# UTF stuff
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Make brew binaries available
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Some perl local thing for qtrepotools git gpush
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+
+# dbus session socket location
+export MY_SESSION_BUS_SOCKET=/tmp/dbus/$USER.session.usock
+export BACKUP_PATH2=$PATH
+
+# iOS CMake development team env var mostly for world summit
+export ENV_CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM=A5GTH44LYL
+
+# Use neovim in tig blame inside nvim
+export GIT_EDITOR=/opt/homebrew/bin/nvim
+
+# ripgrep colors like ag
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
+
+# Load Angular CLI autocompletion.
+#source <(ng completion script)
+
+# Jetbrains vmoptions
+___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
+
+
+eval "$(/opt/homebrew/bin/mise activate zsh)"
+#eval "$(/opt/homebrew/bin/mise activate zsh --shims)"
+
+#source ~/zsh/zsh-llm-suggestions/zsh-llm-suggestions.zsh
+#bindkey '^p' zsh_llm_suggestions_github_copilot # Ctrl + P to have GitHub Copilot suggest a command given a English description
+#bindkey '^[^p' zsh_llm_suggestions_github_copilot_explain # Ctrl + alt + P to have GitHub Copilot explain a command
+

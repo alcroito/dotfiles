@@ -1,0 +1,20 @@
+{{- template "zshrc_unix" . -}}
+{{- template "zshrc_aliases" . -}}
+
+{{- if eq .osid "darwin" -}}
+{{-   template "zshrc_plugins_macos" . -}}
+{{- else if eq .osid "linux-ubuntu" -}}
+{{-   template "zshrc_plugins_ubuntu" . -}}
+{{- end -}}
+
+{{- template "zshrc_oh_my_zsh" . -}}
+
+{{- if eq .osid "darwin" -}}
+{{-   template "zshrc_icecc" . -}}
+{{-   template "zshrc_work_macbook_pro_arm" . -}}
+{{- else if eq .osid "linux-ubuntu" -}}
+{{-   template "zshrc_work_ubuntu" . -}}
+{{- end -}}
+
+{{- template "zshrc_zoxide" . -}}
+{{- template "zshrc_atuin" . -}}

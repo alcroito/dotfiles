@@ -12,6 +12,7 @@
 
 {{- $location := promptStringOnce . "location" "home or work or vm" "work" -}}
 {{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" false -}}
+{{- $machine_id := promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
 
 {{- $name := "alcroito" -}}
 {{- $email := "alcroito.code@pm.me" -}}
@@ -26,3 +27,4 @@
     email = {{ $email | quote }}
     install_packages = {{ $install_packages }}
     location = {{ $location | quote }}
+    machine_id = {{ $machine_id | quote }}
