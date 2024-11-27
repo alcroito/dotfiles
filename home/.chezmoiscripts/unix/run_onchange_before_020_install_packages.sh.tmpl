@@ -17,6 +17,12 @@ echo "Installing neovim dependencies"
 sudo apt install -y libfuse2 fuse
 {{ end -}}
 
+{{ if eq .osid "linux-fedora" -}}
+# Install neovim dependencies
+echo "Installing neovim dependencies"
+sudo dnf install -y fuse-libs fuse
+{{ end -}}
+
 {{ if eq .chezmoi.os "linux" -}}
 # Install neovim
 echo "Installing neovim"
