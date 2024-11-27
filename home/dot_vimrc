@@ -285,7 +285,7 @@ function! PlugLoaded(name)
     return (
         \ has_key(g:plugs, a:name) &&
         \ isdirectory(g:plugs[a:name].dir) &&
-        \ stridx(&rtp, trim(g:plugs[a:name].dir), '/') >= 0)
+        \ stridx(&rtp, trim(g:plugs[a:name].dir, '/')) >= 0)
 endfunction
 
 " Use surround.vim keymap for vim-sandwhich, to not override default motions
