@@ -42,5 +42,20 @@ if [ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim ]; 
 fi
 {{ end -}}
 
+
+{{ if eq .chezmoi.os "linux" -}}
+echo "Installing atuin"
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+
+echo "Installing mise"
+curl https://mise.run | sh
+{{ end -}}
+
+echo "Installing x-cmd"
+eval "$(curl https://get.x-cmd.com)"
+
+echo "Installing yazi using x-cmd"
+x env use yazi
+
 # end of install_packages
 {{ end -}}
