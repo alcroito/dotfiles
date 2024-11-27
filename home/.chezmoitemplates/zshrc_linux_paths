@@ -1,0 +1,6 @@
+# System local binaries
+export PATH=/usr/local/bin:$PATH
+
+# Local binaries
+export PATH=~/.local/bin:$PATH
+

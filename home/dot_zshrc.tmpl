@@ -1,3 +1,7 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{-   template "zshrc_linux_paths" . -}}
+{{- end -}}
+
 {{- template "zshrc_unix" . -}}
 {{- template "zshrc_aliases" . -}}
 
