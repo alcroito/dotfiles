@@ -30,22 +30,22 @@ sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig
+sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig btop
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
 {{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") -}}
 echo "Installing rhel-like dependencies"
-sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
+sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig btop
 
 {{ else if eq .osid "linux-opensuse-leap" -}}
 echo "Installing suse dependencies"
-sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig
+sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop
 
 {{ else if eq .osid "darwin" -}}
 echo "Installing dependencies"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
+brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
