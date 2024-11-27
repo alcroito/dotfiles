@@ -29,4 +29,4 @@ choco install chezmoi --force --confirm
 # (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
 
 # Install dotfiles
-chezmoi init --apply --verbose https://github.com/alcroito/dotfiles.git
+chezmoi init --apply https://github.com/alcroito/dotfiles.git

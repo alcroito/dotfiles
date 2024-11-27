@@ -15,5 +15,5 @@ echo -e "BEEP BOOP. Setting up..."
 curl -sfL https://git.io/chezmoi | bash
 
 export PATH=$HOME/bin:$PATH
-chezmoi init --apply --verbose https://github.com/alcroito/dotfiles.git
+chezmoi init --apply https://github.com/alcroito/dotfiles.git
 
