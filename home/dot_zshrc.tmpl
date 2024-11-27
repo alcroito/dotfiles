@@ -22,6 +22,8 @@
 
 {{- if eq .chezmoi.os "linux" -}}
 {{-   template "zshrc_zoxide" . -}}
+
 {{-   template "zshrc_atuin" . -}}
+
 {{-   template "zshrc_mise" . -}}
 {{- end -}}
