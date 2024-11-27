@@ -1,0 +1,48 @@
+{{ if .install_packages -}}
+
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env zsh
+{{ end -}}
+
+{{ if ne .osid "windows" -}}
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install --all
+{{ end -}}
+
+{{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
+# Install neovim dependencies
+sudo apt install -y libfuse2 fuse
+
+# Install neovim
+vim_path=/usr/local/bin/nvim
+if [ ! -f "$vim_path" ]; then
+  ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage )
+  sudo chmod a+x /usr/local/bin/nvim.appimage
+  sudo mv /usr/local/bin/nvim.appimage $vim_path
+  sudo ln -s $vim_path /usr/local/bin/vim
+else
+  echo "neovim binary already present /usr/local/bin/nvim"
+fi
+
+{{ else if eq .osid "darwin" -}}
+# Install neovim
+brew install neovim
+{{ end -}}
+
+{{ if ne .osid "windows" -}}
+# Install vim-plug
+if [ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim ]; then
+  sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+fi
+{{ end -}}
+
+{{ if ne .osid "windows" -}}
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install --all
+{{ end -}}
+
+# end of install_packages
+{{ end -}}
