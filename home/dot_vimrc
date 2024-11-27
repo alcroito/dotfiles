@@ -184,10 +184,10 @@ endif
 if has('nvim')
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
-    if executable('cmake')
+    if executable('cmake') && executable('ninja')
         Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+        "Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': ':split term://cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
     endif
-    "Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': ':split term://cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
 
     " Show recently open files
     Plug 'smartpde/telescope-recent-files', { 'branch': 'main'}
