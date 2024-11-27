@@ -14,6 +14,6 @@ echo -e "BEEP BOOP. Setting up..."
 ################################################################################
 curl -sfL https://get.chezmoi.io/lb | bash
 
-export PATH=$HOME/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 chezmoi init --apply https://github.com/alcroito/dotfiles.git
 
