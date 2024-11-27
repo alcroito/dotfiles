@@ -38,6 +38,9 @@ sed -i 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ end -}}
 
+# Change the default shell
+chsh -s $(which zsh)
+
 # End of not windows
 {{ end -}}
 
