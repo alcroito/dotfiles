@@ -293,7 +293,7 @@ endfunction
 
 
 " Telescope fzf c faster impl
-if has('nvim') && PlugLoaded('telescope.nvim')
+if has('nvim') && PlugLoaded('telescope.nvim') && executable('cmake') && executable('ninja')
     lua if jit ~= nil then require('telescope').load_extension('fzf') end
 endif
 
