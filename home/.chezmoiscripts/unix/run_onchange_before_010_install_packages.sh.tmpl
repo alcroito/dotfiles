@@ -16,6 +16,7 @@ sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+echo "Installing dependencies"
 sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
@@ -30,6 +31,9 @@ brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
 # Install oh my zsh
 ZSH=
 sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+
+# Install zsh-sugesstions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 touch ~/.zshrc
 
 {{ if eq .chezmoi.os "linux" -}}
