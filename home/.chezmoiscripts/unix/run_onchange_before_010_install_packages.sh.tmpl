@@ -18,7 +18,6 @@ export LANG=en_US.UTF-8
 
 echo "Installing dependencies"
 sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig
-curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
@@ -30,6 +29,11 @@ sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
 echo "Installing dependencies"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
+{{ end -}}
+
+{{ if eq .chezmoi.os "linux" -}}
+echo "Install zoxide"
+curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
