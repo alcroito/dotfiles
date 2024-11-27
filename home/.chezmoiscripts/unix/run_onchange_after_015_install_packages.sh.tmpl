@@ -35,6 +35,12 @@ echo "Installing neovim dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 {{ end -}}
 
+{{ if eq .osid "linux-arch" -}}
+# Install neovim dependencies
+echo "Installing neovim dependencies"
+sudo apk add fuse
+{{ end -}}
+
 {{ if eq .chezmoi.os "linux" -}}
 # Install neovim
 echo "Installing neovim"

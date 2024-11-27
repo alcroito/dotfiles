@@ -52,8 +52,12 @@ sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop
 echo "Installing arch dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop
 
+{{ else if eq .osid "linux-alpine" -}}
+echo "Installing alpine dependencies"
+sudo apk add ripgrep htop the_silver_searcher fd git zsh tig btop
+
 {{ else if eq .osid "darwin" -}}
-echo "Installing dependencies"
+echo "Installing macOS dependencies"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop
 {{ end -}}
