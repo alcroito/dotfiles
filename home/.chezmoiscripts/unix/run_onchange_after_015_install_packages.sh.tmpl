@@ -35,13 +35,7 @@ echo "Installing neovim dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 {{ end -}}
 
-{{ if eq .osid "linux-arch" -}}
-# Install neovim dependencies
-echo "Installing neovim dependencies"
-sudo apk add fuse
-{{ end -}}
-
-{{ if eq .chezmoi.os "linux" -}}
+{{ if and (eq .chezmoi.os "linux") (not (eq .osid "linux-alpine")) -}}
 # Install neovim
 echo "Installing neovim"
 vim_path=/usr/local/bin/nvim
@@ -53,6 +47,12 @@ if [ ! -f "$vim_path" ]; then
 else
   echo "neovim binary already present /usr/local/bin/nvim"
 fi
+
+{{ else if eq .osid "linux-alpine" -}}
+# Install neovim
+echo "Installing neovim"
+sudo apk add neovim
+{{ end -}}
 
 {{ else if eq .osid "darwin" -}}
 # Install neovim
