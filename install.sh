@@ -12,7 +12,7 @@ echo -e "BEEP BOOP. Setting up..."
 ################################################################################
 # Chezmoi                                                                      #
 ################################################################################
-curl -sfL https://git.io/chezmoi | bash
+curl -sfL https://get.chezmoi.io/lb | bash
 
 export PATH=$HOME/bin:$PATH
 chezmoi init --apply https://github.com/alcroito/dotfiles.git
