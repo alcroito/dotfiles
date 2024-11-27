@@ -22,7 +22,12 @@ curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | 
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
+{{ else if eq .osid "linux-fedora" -}}
+echo "Installing dependencies"
+sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
+
 {{ else if eq .osid "darwin" -}}
+echo "Installing dependencies"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
 {{ end -}}
