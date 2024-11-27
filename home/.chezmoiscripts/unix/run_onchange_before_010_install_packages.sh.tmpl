@@ -23,7 +23,8 @@ sudo dnf config-manager --set-enabled crb
 
 {{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing centos / rocky / rhel dependencies"
-sudo dnf install -y epel-release epel-next-release
+sudo dnf install -y epel-release
+sudo dnf install -y epel-next-release
 # util-linux-user provides chsh
 sudo dnf install -y util-linux-user which
 {{ end -}}
