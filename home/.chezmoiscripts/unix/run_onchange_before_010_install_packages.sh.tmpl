@@ -25,6 +25,7 @@ sudo dnf install -y util-linux-user which
 {{ if eq .osid "linux-arch" -}}
 echo "Installing arch dependencies"
 localectl set-locale LANG=en_US.UTF-8
+sudo pacman -Sy --disable-sandbox --noconfirm which
 {{ end -}}
 
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian")  -}}
