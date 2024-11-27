@@ -5,24 +5,34 @@
 {{ end -}}
 
 # Install various packages
+
 {{ if eq .osid "linux-debian" -}}
+echo "Installing debian dependencies"
 sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed for debian
 echo 'LANG=en_US.UTF-8' > /etc/default/locale
 {{ end -}}
 
+{{ if eq .osid "linux-centos" -}}
+echo "Installing centos dependencies"
+sudo dnf install -y epel-release epel-next-release
+# util-linux-user provides chsh
+sudo dnf install -y util-linux-user which
+{{ end -}}
+
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian")  -}}
+echo "Installing ubuntu-like dependencies"
+
 sudo apt install -y locales
 sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-echo "Installing dependencies"
 sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
 {{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") -}}
-echo "Installing dependencies"
+echo "Installing rhel-like dependencies"
 sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
 
 {{ else if eq .osid "darwin" -}}
