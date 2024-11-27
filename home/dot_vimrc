@@ -420,7 +420,7 @@ if executable('rg')
 endif
 
 " Best colorscheme found
-colorscheme jellybeans
+silent! colorscheme jellybeans
 
 " map leader to space
 map <SPACE> <leader>
@@ -526,7 +526,7 @@ if has('nvim')
 endif
 
 " Enable incremental selection expansion
-if has('nvim')
+if has('nvim') && PlugLoaded('nvim-treesitter')
     lua <<EOF
         require'nvim-treesitter.configs'.setup {
           incremental_selection = {
