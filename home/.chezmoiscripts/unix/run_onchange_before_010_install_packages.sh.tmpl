@@ -34,10 +34,12 @@ brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig
 
 {{ if ne .osid "windows" -}}
 # Install oh my zsh
+echo "Installing oh-my-zsh"
 ZSH=
 sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
 
 # Install zsh-sugesstions
+echo "Installing zsh-autosuggestions"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 touch ~/.zshrc
 
@@ -48,6 +50,7 @@ sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ end -}}
 
 # Change the default shell
+echo "Changing default shell to zsh"
 chsh -s $(which zsh)
 
 # End of not windows
