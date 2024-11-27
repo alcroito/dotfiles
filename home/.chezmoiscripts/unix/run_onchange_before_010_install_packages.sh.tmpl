@@ -22,6 +22,11 @@ sudo dnf install -y epel-release epel-next-release
 sudo dnf install -y util-linux-user which
 {{ end -}}
 
+{{ if eq .osid "linux-arch" -}}
+echo "Installing arch dependencies"
+localectl set-locale LANG=en_US.UTF-8
+{{ end -}}
+
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian")  -}}
 echo "Installing ubuntu-like dependencies"
 
@@ -41,6 +46,10 @@ sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig btop
 {{ else if eq .osid "linux-opensuse-leap" -}}
 echo "Installing suse dependencies"
 sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop
+
+{{ else if eq .osid "linux-arch" -}}
+echo "Installing arch dependencies"
+sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop
 
 {{ else if eq .osid "darwin" -}}
 echo "Installing dependencies"
