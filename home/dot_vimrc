@@ -280,7 +280,7 @@ call plug#end()
 
 
 " Telescope fzf c faster impl
-if has('nvim')
+if has_key(plugs, 'telescope') && has('nvim')
     lua if jit ~= nil then require('telescope').load_extension('fzf') end
 endif
 
@@ -300,23 +300,23 @@ endif
 "endif
 
 " Enable indentation highlighting
-if has('nvim')
+if has_key(plugs, 'ibl') && has('nvim')
     lua require("ibl").setup()
 endif
 
 " which key settings
-if has('nvim')
+if has_key(plugs, 'which-key') && has('nvim')
     lua require("which-key").setup {}
 endif
 
 " Bindings for easymotion flash movement
-if has('nvim')
+if has_key(plugs, 'flash') && has('nvim')
     " Enables regular search jump labels and f,t motions
     lua require("flash").setup { modes = {search = {enabled = false}}}
     lua vim.keymap.set({"n", "x", "o"}, "<leader>w", "<cmd>lua require('flash').jump()<cr>", opts)
 endif
 
-if has ('nvim')
+if has_key(plugs, 'telescope') && has('nvim')
     " Load telescope recent files and set binding
     lua require("telescope").load_extension("recent_files")
     lua vim.keymap.set("n", "<leader>r", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", opts)
@@ -324,18 +324,18 @@ endif
 
 " Startup error shown with nvim <= 0.8
 " lua/neogit/lib/hl.lua:40: attempt to call field 'nvim_get_hl' (a nil value)
-if has('nvim-0.9')
+if has_key(plugs, 'neogit') && has('nvim-0.9')
     lua require("neogit").setup()
 endif
 
-if has('nvim-0.9')
+if has_key(plugs, 'mini.surround') && has('nvim-0.9')
     "lua require("mini.files").setup()
     "lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
 
     lua require("mini.surround").setup()
 endif
 
-if has('nvim-0.9')
+if has_key(plugs, 'tfm') && has('nvim-0.9')
     "lua require("precognition").setup()
 
     " Load yazi as the terminal manager
