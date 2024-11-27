@@ -17,22 +17,22 @@ export PATH=$PATH:~/Dev/qtrepotools/bin
 export PATH=~/.local/bin:$PATH
 
 # perl
-PATH="/home/alex/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/alex/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/alex/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/alex/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/alex/perl5"; export PERL_MM_OPT;
+PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
 
 # Bulq
-export PATH=/home/alex/.bulq/bin:$PATH
-export PATH=/home/alex/.bulq/qt_bin:$PATH
-export PATH=/home/alex/.bulq/qt:$PATH
+export PATH=$HOME/.bulq/bin:$PATH
+export PATH=$HOME/.bulq/qt_bin:$PATH
+export PATH=$HOME/.bulq/qt:$PATH
 
 # Distrobox default new home prefix
 export DBX_CONTAINER_HOME_PREFIX=~/dbx
 
 # Mise
-eval "$(/home/alex/.local/bin/mise activate zsh)"
+eval "$($HOME/.local/bin/mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 # atuin
