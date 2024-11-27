@@ -20,5 +20,8 @@
 {{-   template "zshrc_work_ubuntu" . -}}
 {{- end -}}
 
-{{- template "zshrc_zoxide" . -}}
-{{- template "zshrc_atuin" . -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   template "zshrc_zoxide" . -}}
+{{-   template "zshrc_atuin" . -}}
+{{-   template "zshrc_mise" . -}}
+{{- end -}}

@@ -2,5 +2,5 @@
 export PATH=/usr/local/bin:$PATH
 
 # Local binaries
-export PATH=~/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 

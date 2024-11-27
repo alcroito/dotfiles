@@ -13,9 +13,6 @@ useccache(){
 # qtrepotools
 export PATH=$PATH:~/Dev/qtrepotools/bin
 
-# Local binaries
-export PATH=~/.local/bin:$PATH
-
 # perl
 PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
@@ -30,10 +27,3 @@ export PATH=$HOME/.bulq/qt:$PATH
 
 # Distrobox default new home prefix
 export DBX_CONTAINER_HOME_PREFIX=~/dbx
-
-# Mise
-eval "$($HOME/.local/bin/mise activate zsh)"
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-
-# atuin
-. "$HOME/.atuin/bin/env"
