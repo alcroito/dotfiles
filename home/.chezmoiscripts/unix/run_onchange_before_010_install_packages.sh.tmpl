@@ -21,7 +21,7 @@ sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
-{{ else if eq .osid "linux-fedora" -}}
+{{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") -}}
 echo "Installing dependencies"
 sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
 
