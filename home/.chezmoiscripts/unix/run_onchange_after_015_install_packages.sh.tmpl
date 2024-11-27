@@ -64,11 +64,13 @@ curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
 echo "Installing mise"
 curl https://mise.run | sh
-{{ end -}}
 
+# sourcing zshrc again to ensure mise path is set
+. $HOME/.zshrc
 
 echo "Installing yazi using mise ubi backend"
 mise use -g ubi:sxyazi/yazi
+{{ end -}}
 
 # end of install_packages
 {{ end -}}
