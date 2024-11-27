@@ -15,8 +15,14 @@ sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed for 
 echo 'LANG=en_US.UTF-8' > /etc/default/locale
 {{ end -}}
 
-{{ if eq .osid "linux-centos" -}}
-echo "Installing centos dependencies"
+{{ if or (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+echo "Installing rocky / rhel dependencies"
+sudo dnf install -y 'dnf-command(config-manager)'
+sudo dnf config-manager --set-enabled crb
+{{ end -}}
+
+{{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+echo "Installing centos / rocky / rhel dependencies"
 sudo dnf install -y epel-release epel-next-release
 # util-linux-user provides chsh
 sudo dnf install -y util-linux-user which
@@ -40,7 +46,7 @@ sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig btop
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
-{{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") -}}
+{{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing rhel-like dependencies"
 sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig btop
 
