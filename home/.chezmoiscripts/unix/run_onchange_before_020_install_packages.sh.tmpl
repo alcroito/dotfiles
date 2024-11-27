@@ -13,8 +13,11 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
 # Install neovim dependencies
+echo "Installing neovim dependencies"
 sudo apt install -y libfuse2 fuse
+{{ end -}}
 
+{{ if eq .chezmoi.os "linux" -}}
 # Install neovim
 echo "Installing neovim"
 vim_path=/usr/local/bin/nvim
