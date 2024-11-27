@@ -9,7 +9,7 @@ export PATH=/usr/local/bin:$PATH
 # Install neovim plugins
 nvim --headless '+qall'
 nvim --headless '+PlugInstall!' '+qall'
-nvim '+UpdateRemotePlugins' '+qall'
+nvim --headless '+UpdateRemotePlugins' '+qall'
 {{ end -}}
 
 # end of install_packages
