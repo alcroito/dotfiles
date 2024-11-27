@@ -35,6 +35,10 @@ ln -s $(which fdfind) ~/.local/bin/fd
 echo "Installing rhel-like dependencies"
 sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig
 
+{{ else if .osid "linux-opensuse-leap" -}}
+echo "Installing suse dependencies"
+sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig
+
 {{ else if eq .osid "darwin" -}}
 echo "Installing dependencies"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
