@@ -317,7 +317,7 @@ if has('nvim')
 endif
 
 " Telescope remember picker searches per picker type
-if has('nvim')
+if has('nvim') && PlugLoaded('telescope.nvim')
     lua require('telescope').setup{defaults = {history = {include_cwd = false, path = os.getenv('HOME') .. '/.cache/nvim/telescope_history', cache_picker = {num_pickers = 10} }, mappings = {i={["<C-n>"] = require('telescope.actions').cycle_history_next,["<C-p>"] = require('telescope.actions').cycle_history_prev}}} }
     lua require('telescope').load_extension('json_history')
 endif
