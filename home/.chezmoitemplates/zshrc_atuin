@@ -1,7 +1,10 @@
 # My atuin setup
+{{- if eq .chezmoi.os "linux" -}}
 . "$HOME/.atuin/bin/env"
+{{- else }}
+eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
+{{- end }}
 
-#eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
 atuin-setup() {
     if ! which atuin &> /dev/null; then return 1; fi
     bindkey '^E' _atuin_search_widget

@@ -16,6 +16,10 @@
 {{- if eq .osid "darwin" -}}
 {{-   template "zshrc_icecc" . -}}
 {{-   template "zshrc_work_macbook_pro_arm" . -}}
+{{-   template "zshrc_zoxide" . -}}
+
+{{-   template "zshrc_atuin" . -}}
+
 {{- else if eq .osid "linux-ubuntu" -}}
 {{-   template "zshrc_work_ubuntu" . -}}
 {{- end -}}

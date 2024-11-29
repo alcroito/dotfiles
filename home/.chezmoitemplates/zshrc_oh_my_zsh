@@ -32,8 +32,10 @@ export EDITOR=nvim
 HISTSIZE=86000
 SAVEHIST=86000
 
+{{- if not (eq .osid "darwin") -}}
 # More fuzzy finding
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+{{- end }}
 
 # fzf + ag configuration
 export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
