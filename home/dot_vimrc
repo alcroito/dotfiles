@@ -203,6 +203,12 @@ if has('nvim')
 
     " Lazygit
     Plug 'kdheepak/lazygit.nvim', { 'branch': 'main' }
+
+    " big file disable many things to open faster
+    Plug 'LunarVim/bigfile.nvim'
+
+    " A lua profiler for nvim hack
+    "Plug 'stevearc/profile.nvim'
 endif
 
 
@@ -282,6 +288,9 @@ endif
 " Initialize plugin system
 call plug#end()
 
+" work macOS specific lua file to try and profile slow neovim
+" lua require('my_profile')
+
 
 " Check that a plugin has been loaded by checking that the plugin dir trimmed
 " with a /, is present in the runtime path.
@@ -326,6 +335,11 @@ endif
 " which key settings
 if has('nvim') && PlugLoaded('which-key.nvim')
     lua require("which-key").setup {}
+endif
+
+" bigfile setup
+if has('nvim')
+    "lua require("bigfile").setup {}
 endif
 
 " Bindings for easymotion flash movement
