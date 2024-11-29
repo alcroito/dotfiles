@@ -1,5 +1,5 @@
-{{- if eq .chezmoi.os "linux" -}}
+{{- if eq .chezmoi.os "linux" }}
 export PATH=${HOME}/.local/bin:$PATH # Needed for systems like debian lxc
-{{- end -}}
+{{- end }}
 eval "$(zoxide init zsh)"
 
