@@ -231,6 +231,8 @@ endif
 " Copilot
 if has('nvim')
     Plug 'github/copilot.vim', { 'branch': 'release' }
+    " Allow copilot for git commit messages
+    let g:copilot_filetypes = { 'gitcommit': v:true }
 endif
 
 if has('nvim')
