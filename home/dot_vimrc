@@ -444,6 +444,9 @@ endif
 " Best colorscheme found
 silent! colorscheme jellybeans
 
+" Enable proper colors for yazi inside tmux inside neovim
+set termguicolors
+
 " map leader to space
 map <SPACE> <leader>
 
