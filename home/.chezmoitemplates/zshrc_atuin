@@ -1,5 +1,5 @@
 # My atuin setup
-{{- if eq .chezmoi.os "linux" -}}
+{{- if eq .chezmoi.os "linux" }}
 . "$HOME/.atuin/bin/env"
 {{- else }}
 eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
