@@ -460,7 +460,15 @@ nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 nnoremap <Leader>s :update<cr>
 
 " map ,gb to Tig blame current file
-nnoremap <leader>gb :exe ':Tig blame '. @%<cr>
+" to make it work with yazi which opens the files with a full dir path, but
+" doesn't change the current directory, we first switch to the file directory
+" then we blame just the file name, and then switch back to the previous
+" directory. <bar> is | which is used to separate commands in a single line.
+" https://stackoverflow.com/questions/4525261/getting-relative-paths-in-vim
+" https://stackoverflow.com/questions/2288756/how-to-set-working-current-directory-in-vim
+" https://stackoverflow.com/questions/23204110/mapping-one-key-to-multiple-commands-in-vim
+"nnoremap <leader>gb :exe ':Tig blame '. @%<cr>
+nnoremap <leader>gb :cd %:h <bar> :exe ':Tig blame '. expand("%:.") <bar> :cd - <cr>
 
 " map ,gt to Tig
 nnoremap <leader>gt :exe ':Tig '<cr>
