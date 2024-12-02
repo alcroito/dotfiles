@@ -29,8 +29,9 @@ export EDITOR=nvim
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-HISTSIZE=86000
-SAVEHIST=86000
+# Needs to be after sourcing oh-my-zsh
+HISTSIZE=10000000
+SAVEHIST=10000000
 
 {{ if not (eq .osid "darwin") -}}
 # More fuzzy finding
