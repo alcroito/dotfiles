@@ -20,12 +20,12 @@
 {{- if not (eq .machine_id "macbook_home") -}}
 {{-   template "zshrc_icecc" . -}}
 {{- end -}}
-{{-   template "zshrc_macos" . -}}
 {{- if eq .machine_id "macbook_home" }}
 {{   template "zshrc_macos_home" . }}
 {{- else -}}
 {{-   template "zshrc_work_macbook_pro_arm" . -}}
 {{- end -}}
+{{-   template "zshrc_macos" . -}}
 {{-   template "zshrc_zoxide" . -}}
 
 {{-   template "zshrc_atuin" . -}}
