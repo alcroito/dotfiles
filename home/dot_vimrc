@@ -269,6 +269,13 @@ if has('nvim')
 endif
 
 if has('nvim')
+    " LSP manager
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'neovim/nvim-lspconfig'
+endif
+
+if has('nvim')
     " ai auto complete
     "Plug 'hrsh7th/nvim-cmp'
     "Plug 'jcdickinson/codeium.nvim'
@@ -375,6 +382,44 @@ if has('nvim-0.9') && PlugLoaded('tfm.nvim')
     " Load yazi as the terminal manager
     lua require("tfm").setup({replace_netrw = true})
     lua vim.keymap.set("n", "<leader>e", "<cmd>lua require('tfm').open()<cr>", opts)
+endif
+
+if has('nvim-0.9') && PlugLoaded('mason.nvim')
+    lua require("mason").setup()
+
+    lua <<EOF
+    require'mason-lspconfig'.setup{
+        ensure_installed = {"harper_ls"}
+    }
+EOF
+
+    lua <<EOF
+        require'lspconfig'.harper_ls.setup {
+            filetypes = {"gitcommit", "markdown"},
+            settings = {
+                ["harper-ls"] = {
+                    linters = {
+                        spell_check = true,
+                        spelled_numbers = false,
+                        an_a = true,
+                        sentence_capitalization = true,
+                        unclosed_quotes = true,
+                        wrong_quotes = false,
+                        long_sentences = true,
+                        repeated_words = true,
+                        spaces = true,
+                        matcher = true,
+                        correct_number_suffix = true,
+                        number_suffix_capitalization = true,
+                        multiple_sequential_pronouns = true,
+                        linking_verbs = false,
+                        avoid_curses = true,
+                        terminating_conjunctions = true
+                    }
+                }
+            }
+        }
+EOF
 endif
 
 if has ('nvim')
