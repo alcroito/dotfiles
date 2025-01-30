@@ -185,6 +185,7 @@ endif
 if has('nvim')
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
+    Plug 'nvim-telescope/telescope-live-grep-args.nvim'
     if executable('cmake') && executable('ninja')
         Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
         "Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': ':split term://cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
@@ -361,6 +362,9 @@ if has('nvim') && PlugLoaded('telescope.nvim')
     " Load telescope recent files and set binding
     lua require("telescope").load_extension("recent_files")
     lua vim.keymap.set("n", "<leader>r", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", opts)
+
+    " Load support specifying live grep args
+    lua require("telescope").load_extension("live_grep_args")
 endif
 
 " Startup error shown with nvim <= 0.8
@@ -504,7 +508,9 @@ nmap <C-P> :Files<CR>
 
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+" Old way without live grep args
+"nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep_args<cr>
 "nnoremap <C-[> <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <C-]> <cmd>Telescope buffers<cr>
