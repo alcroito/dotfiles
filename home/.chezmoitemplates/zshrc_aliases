@@ -6,7 +6,7 @@ alias vim='nvim'
 alias v='nvim'
 
 alias please='sudo $(fc -ln -1)'
-alias mi='make -j16; make install'
+alias mi='cmake install .'
 #alias mm='make -j16'
 alias tiga='tig --all'
 alias tigs='tig show'
