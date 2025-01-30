@@ -57,6 +57,7 @@ function DisableSyntaxTreesitter()
     set noundofile
     set noswapfile
     set noloadplugins
+    set nohlsearch
 endfunction
 
 augroup BigFileDisable
