@@ -393,7 +393,7 @@ if has('nvim-0.9') && PlugLoaded('mason.nvim')
 
     lua <<EOF
     require'mason-lspconfig'.setup{
-        ensure_installed = {"harper_ls"}
+        ensure_installed = {"harper_ls", "tinymist"}
     }
 EOF
 
@@ -421,6 +421,13 @@ EOF
                         terminating_conjunctions = true
                     }
                 }
+            }
+        }
+        require'lspconfig'.tinymist.setup {
+            settings = {
+                formatterMode = "typstyle",
+                exportPdf = "onType",
+                semanticTokens = "disable"
             }
         }
 EOF
