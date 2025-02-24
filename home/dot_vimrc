@@ -518,11 +518,12 @@ nnoremap <leader>ff <cmd>Telescope find_files<cr>
 " Old way without live grep args
 "nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep_args<cr>
+nnoremap <leader>fs :execute 'Telescope live_grep_args default_text=' . expand('<cword>')<cr>
 "nnoremap <C-[> <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <C-]> <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fs <cmd>Telescope treesitter<cr>
+nnoremap <leader>fe <cmd>Telescope treesitter<cr>
 nnoremap <leader>fc <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>ft <cmd>Telescope <cr>
 
