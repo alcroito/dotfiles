@@ -1,6 +1,10 @@
 HISTFILE=$HOME/.zsh_history_mine
 DISABLE_UPDATE_PROMPT=true
 
+if type brew &>/dev/null; then
+    FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
