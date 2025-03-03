@@ -181,22 +181,7 @@ if has('nvim')
     let g:tig_default_command = ''
 endif
 
-" Telescope fzf like replacement
 if has('nvim')
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
-    Plug 'nvim-telescope/telescope-live-grep-args.nvim'
-    if executable('cmake') && executable('ninja')
-        Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-        "Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': ':split term://cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-    endif
-
-    " Show recently open files
-    Plug 'smartpde/telescope-recent-files', { 'branch': 'main'}
-
-    " Per picker-type search / prompt (but not picker) history
-    Plug 'cosminadrianpopescu/telescope-json-history.nvim'
-
     " for git mergetool
     " Plug 'sindrets/diffview.nvim'
 
@@ -208,12 +193,6 @@ if has('nvim')
 
     " A lua profiler for nvim hack
     "Plug 'stevearc/profile.nvim'
-endif
-
-
-" Install treesitter for telescope
-if has('nvim')
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 endif
 
 " Do gradgual undos with u, where first cursor goes to where the change will
@@ -303,23 +282,6 @@ endfunction
 " Use surround.vim keymap for vim-sandwhich, to not override default motions
 "runtime macros/sandwich/keymap/surround.vim
 
-
-" Telescope fzf c faster impl
-if has('nvim') && PlugLoaded('telescope.nvim') && executable('cmake') && executable('ninja')
-    lua if jit ~= nil then require('telescope').load_extension('fzf') end
-endif
-
-" Bind <leader>; to reopen latest telescope window
-if has('nvim')
-   lua vim.keymap.set("n", "<leader>;", "<cmd>lua require('telescope.builtin').resume(require('telescope.themes').get_ivy({}))<cr>", opts)
-endif
-
-" Telescope remember picker searches per picker type
-if has('nvim') && PlugLoaded('telescope.nvim')
-    lua require('telescope').setup{defaults = {history = {include_cwd = false, path = os.getenv('HOME') .. '/.cache/nvim/telescope_history' }, cache_picker = {num_pickers = 10}, mappings = {i={["<C-n>"] = require('telescope.actions').cycle_history_next,["<C-p>"] = require('telescope.actions').cycle_history_prev}}} }
-    lua require('telescope').load_extension('json_history')
-endif
-
 " Enable gradual undo
 "if has('nvim')
     "lua require('gradual-undo').setup()
@@ -345,15 +307,6 @@ if has('nvim') && PlugLoaded('flash.nvim')
     " Enables regular search jump labels and f,t motions
     lua require("flash").setup { modes = {search = {enabled = false}}}
     lua vim.keymap.set({"n", "x", "o"}, "<leader>w", "<cmd>lua require('flash').jump()<cr>", opts)
-endif
-
-if has('nvim') && PlugLoaded('telescope.nvim')
-    " Load telescope recent files and set binding
-    lua require("telescope").load_extension("recent_files")
-    lua vim.keymap.set("n", "<leader>r", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", opts)
-
-    " Load support specifying live grep args
-    lua require("telescope").load_extension("live_grep_args")
 endif
 
 if has('nvim-0.9') && PlugLoaded('tfm.nvim')
@@ -489,20 +442,6 @@ nmap <leader>zt :Files<CR>
 nmap <leader>zf :Files<CR>
 nmap <leader>zb :Buffers<CR>
 nmap <C-P> :Files<CR>
-
-" Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-" Old way without live grep args
-"nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep_args<cr>
-nnoremap <leader>fs :execute 'Telescope live_grep_args default_text=' . expand('<cword>')<cr>
-"nnoremap <C-[> <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <C-]> <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fe <cmd>Telescope treesitter<cr>
-nnoremap <leader>fc <cmd>Telescope current_buffer_fuzzy_find<cr>
-nnoremap <leader>ft <cmd>Telescope <cr>
 
 " Trigger toggle bool
 nnoremap <Leader>tb :ToggleBool<CR>
