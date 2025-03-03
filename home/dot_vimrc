@@ -250,14 +250,6 @@ if has('nvim')
     Plug 'nanotee/zoxide.vim'
 endif
 
-" Mini set of plugins
-if has('nvim')
-    " Mini files, for navigating files
-    Plug 'echasnovski/mini.files', { 'branch': 'main' }
-    " Mini surround instead of sandwhich
-    Plug 'echasnovski/mini.surround', { 'branch': 'main' }
-endif
-
 if has('nvim')
     " Show virtual text in guttre for simple hints motions
     "Plug 'tris203/precognition.nvim'
@@ -362,13 +354,6 @@ if has('nvim') && PlugLoaded('telescope.nvim')
 
     " Load support specifying live grep args
     lua require("telescope").load_extension("live_grep_args")
-endif
-
-if has('nvim-0.9') && PlugLoaded('mini.surround')
-    "lua require("mini.files").setup()
-    "lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
-
-    lua require("mini.surround").setup()
 endif
 
 if has('nvim-0.9') && PlugLoaded('tfm.nvim')
