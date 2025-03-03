@@ -200,9 +200,6 @@ if has('nvim')
     " for git mergetool
     " Plug 'sindrets/diffview.nvim'
 
-    " Magit git like experience
-    Plug 'NeogitOrg/neogit'
-
     " Lazygit
     Plug 'kdheepak/lazygit.nvim', { 'branch': 'main' }
 
@@ -367,12 +364,6 @@ if has('nvim') && PlugLoaded('telescope.nvim')
     lua require("telescope").load_extension("live_grep_args")
 endif
 
-" Startup error shown with nvim <= 0.8
-" lua/neogit/lib/hl.lua:40: attempt to call field 'nvim_get_hl' (a nil value)
-if has('nvim-0.9') && PlugLoaded('neogit')
-    lua require("neogit").setup()
-endif
-
 if has('nvim-0.9') && PlugLoaded('mini.surround')
     "lua require("mini.files").setup()
     "lua vim.keymap.set("n", "<leader>m", "<cmd>lua MiniFiles.open()<cr>", opts)
@@ -533,9 +524,6 @@ nnoremap <Leader>tb :ToggleBool<CR>
 
 " Trigger lazygit
 nnoremap <silent> <leader>gg :LazyGit<CR>
-
-" Trigger neogit
-nnoremap <silent> <leader>ng :Neogit<CR>
 
 " map "leader cd" to changing directory to current open file
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
