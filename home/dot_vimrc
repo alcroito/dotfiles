@@ -7,9 +7,6 @@ set nocompatible              " be iMproved, required
 " TODO: Why is off required?
 filetype off                  " required
 
-" Enables syntax highlighting
-:syntax on
-
 " Enables ruler, but actually doesn't seem to do much when using neovim full
 " of plugins
 set ruler
@@ -415,6 +412,10 @@ if has('persistent_undo')      "check if your vim version supports it
   set undofile                 "turn on the feature
   set undodir=$HOME/.vim/undo  "directory where the undo files will be stored
 endif
+
+" Enables syntax highlighting. Do it after persistent_undo, due to weird
+" neovim bug https://github.com/neovim/neovim/issues/32722
+:syntax on
 
 " Replace Ack with Ag
 let g:ackprg = 'ag --vimgrep --smart-case'
