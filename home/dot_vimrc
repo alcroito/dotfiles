@@ -204,11 +204,6 @@ if has('nvim')
     Plug 'lukas-reineke/indent-blankline.nvim'
 endif
 
-" vim keybindings popup guide
-if has('nvim')
-    Plug 'folke/which-key.nvim', { 'branch': 'main' }
-endif
-
 " Copilot
 if has('nvim')
     Plug 'github/copilot.vim', { 'branch': 'release' }
@@ -274,11 +269,6 @@ endfunction
 " Enable indentation highlighting
 if has('nvim') && PlugLoaded('indent-blankline.nvim')
     lua require("ibl").setup()
-endif
-
-" which key settings
-if has('nvim') && PlugLoaded('which-key.nvim')
-    lua require("which-key").setup {}
 endif
 
 " bigfile setup
