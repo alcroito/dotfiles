@@ -21,7 +21,9 @@ choco upgrade chocolatey
 choco feature enable -n allowGlobalConfirmation
 
 # install scoop
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
+#powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm get.scoop.sh -outfile 'scoop_install.ps1'"
+.\scoop_install.ps1 -RunAsAdmin
 
 # dev tools
 choco upgrade neovim -y
