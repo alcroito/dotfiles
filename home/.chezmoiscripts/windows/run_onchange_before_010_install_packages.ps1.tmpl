@@ -35,9 +35,10 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
 
 # Install neovim plugins
-nvim --headless '+qall'
-nvim --headless '+PlugInstall!' '+qall'
-nvim '+UpdateRemotePlugins' '+qall'
+$nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
+& "$nvim" --headless '+qall'
+& "$nvim" --headless '+PlugInstall!' '+qall'
+& "$nvim" '+UpdateRemotePlugins' '+qall'
 
 # end of windows
 {{- end -}}
