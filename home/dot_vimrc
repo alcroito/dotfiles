@@ -525,21 +525,6 @@ if has('nvim')
    tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
-" Enable incremental selection expansion
-if has('nvim') && PlugLoaded('nvim-treesitter')
-    lua <<EOF
-        require'nvim-treesitter.configs'.setup {
-          incremental_selection = {
-            enable = true,
-            keymaps = {
-              node_incremental = "v",
-              node_decremental = "V",
-            },
-          },
-        }
-EOF
-endif
-
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 " cmap w!! w !sudo tee > /dev/null %
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
