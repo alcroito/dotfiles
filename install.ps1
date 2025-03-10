@@ -33,6 +33,10 @@ $pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
 # Install chezmoi via choco
 choco install chezmoi --force --confirm
 
+# Try to install git before calling chezmoi, hopefully having it in Path by then, so that the
+# neovim PlugInstall command can work
+choco install git --force --confirm
+
 # Consider installing via oneline
 # (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
 
