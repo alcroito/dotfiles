@@ -217,11 +217,6 @@ if has('nvim')
 endif
 
 if has('nvim')
-    " Like easy motion
-    Plug 'folke/flash.nvim', { 'branch': 'main' }
-endif
-
-if has('nvim')
     " Use zoxide directory recency jumping
     Plug 'nanotee/zoxide.vim'
 endif
@@ -289,13 +284,6 @@ endif
 " bigfile setup
 if has('nvim')
     "lua require("bigfile").setup {}
-endif
-
-" Bindings for easymotion flash movement
-if has('nvim') && PlugLoaded('flash.nvim')
-    " Enables regular search jump labels and f,t motions
-    lua require("flash").setup { modes = {search = {enabled = false}}}
-    lua vim.keymap.set({"n", "x", "o"}, "<leader>w", "<cmd>lua require('flash').jump()<cr>", opts)
 endif
 
 "lua require("precognition").setup()
