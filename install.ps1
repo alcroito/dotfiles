@@ -15,9 +15,10 @@ winget install --id Microsoft.Powershell --source winget
 
 # Install Powershell 7 modules
 Set-ExecutionPolicy Bypass -Scope Process -Force;
-pwsh.exe -c 'Install-Module -Name posh-git -Confirm:$False -Force'
-pwsh.exe -c 'Install-Module -Name PSFzf -Confirm:$False -Force'
-pwsh.exe -c 'Invoke-Expression ((New-Object System.Net.WebClient).DownloadString(''https://ohmyposh.dev/install.ps1''))'
+$pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
+& "$pwsh_path" -c 'Install-Module -Name posh-git -Confirm:$False -Force'
+& "$pwsh_path" -c 'Install-Module -Name PSFzf -Confirm:$False -Force'
+& "$pwsh_path" -c 'Invoke-Expression ((New-Object System.Net.WebClient).DownloadString(''https://ohmyposh.dev/install.ps1''))'
 
 # Install choco
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
