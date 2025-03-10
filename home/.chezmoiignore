@@ -6,7 +6,6 @@ AppData
 .chezmoiscripts/windows/**
 {{- else }}
 .config/nvim/init.vim
-.config/nvim
 .zprofile
 .chezmoiscripts/unix/**
 {{- end }}
