@@ -42,7 +42,7 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
 $nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
 & "$nvim" --headless '+qall'
 & "$nvim" --headless '+PlugInstall!' '+qall'
-& "$nvim" '+UpdateRemotePlugins' '+qall'
+& "$nvim" --headless '+UpdateRemotePlugins' '+qall'
 
 # end of windows
 {{- end -}}
