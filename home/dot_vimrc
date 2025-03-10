@@ -229,9 +229,6 @@ endif
 if has('nvim')
     " Show virtual text in guttre for simple hints motions
     "Plug 'tris203/precognition.nvim'
-
-    " Use yazi as terminal file manager
-    Plug 'rolv-apneseth/tfm.nvim'
 endif
 
 if has('nvim')
@@ -308,13 +305,7 @@ if has('nvim') && PlugLoaded('flash.nvim')
     lua vim.keymap.set({"n", "x", "o"}, "<leader>w", "<cmd>lua require('flash').jump()<cr>", opts)
 endif
 
-if has('nvim-0.9') && PlugLoaded('tfm.nvim')
-    "lua require("precognition").setup()
-
-    " Load yazi as the terminal manager
-    lua require("tfm").setup({replace_netrw = true})
-    lua vim.keymap.set("n", "<leader>e", "<cmd>lua require('tfm').open()<cr>", opts)
-endif
+"lua require("precognition").setup()
 
 if has('nvim-0.9') && PlugLoaded('mason.nvim')
     lua require("mason").setup()
