@@ -29,5 +29,10 @@ choco install chezmoi --force --confirm
 # Consider installing via oneline
 # (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
 
+# Refresh path
+# https://stackoverflow.com/questions/41305457/powershell-refresh-env-path-for-the-active-session?noredirect=1&lq=1
+# https://stackoverflow.com/questions/714877/setting-windows-powershell-environment-variables
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+
 # Install dotfiles
 chezmoi init --apply https://github.com/alcroito/dotfiles.git
