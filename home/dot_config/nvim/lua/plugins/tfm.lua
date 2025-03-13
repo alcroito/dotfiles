@@ -1,7 +1,8 @@
 return {
   -- Use yazi as terminal file manager
   "rolv-apneseth/tfm.nvim",
-  config = true,
+  -- So that we replace netrw
+  lazy = false,
   opts = {
     replace_netrw = true,
   },
