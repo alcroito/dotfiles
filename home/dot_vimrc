@@ -204,13 +204,6 @@ if has('nvim')
     Plug 'lukas-reineke/indent-blankline.nvim'
 endif
 
-" Copilot
-if has('nvim')
-    Plug 'github/copilot.vim', { 'branch': 'release' }
-    " Allow copilot for git commit messages
-    let g:copilot_filetypes = { 'gitcommit': v:true }
-endif
-
 if has('nvim')
     " Use zoxide directory recency jumping
     Plug 'nanotee/zoxide.vim'
