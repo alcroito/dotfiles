@@ -22,6 +22,8 @@
 {{- end -}}
 {{- if eq .machine_id "macbook_home" }}
 {{   template "zshrc_macos_home" . }}
+{{- else if eq .machine_id "macbook_home_arm" -}}
+{{   template "zshrc_macos_home_arm" . }}
 {{- else -}}
 {{-   template "zshrc_work_macbook_pro_arm" . -}}
 {{- end -}}
