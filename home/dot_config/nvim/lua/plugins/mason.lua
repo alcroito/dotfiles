@@ -34,7 +34,8 @@ local plugin = {
               linking_verbs = false,
               avoid_curses = true,
               terminating_conjunctions = true
-          }
+          },
+          diagnosticSeverity = "hint",
         }
       }
     }

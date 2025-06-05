@@ -27,3 +27,9 @@ require("lazy").setup({
     },
   },
 })
+
+-- Enable virtual inline diagnostics
+vim.diagnostic.config({
+  -- Use the default configuration
+  virtual_lines = true
+})
