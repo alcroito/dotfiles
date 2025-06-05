@@ -12,6 +12,25 @@ local plugin = {
       ensure_installed = {"harper_ls", "tinymist"}
     }
 
+    local nvim_lsp = require("lspconfig")
+    nvim_lsp.neocmake.setup{
+    cmd = { "neocmakelsp", "--stdio" },
+      filetypes = { "cmake" },
+      root_dir = function(fname)
+          return nvim_lsp.util.find_git_ancestor(fname)
+      end,
+      single_file_support = true,-- suggested
+      init_options = {
+          format = {
+              enable = false
+          },
+          lint = {
+              enable = false
+          },
+          scan_cmake_in_package = true -- default is true
+      }
+    }
+
     require'lspconfig'.harper_ls.setup {
       filetypes = {"gitcommit", "git-commit", "markdown"},
       settings = {
