@@ -1,7 +1,7 @@
 local plugin = {
   -- LSP manager
   "williamboman/mason.nvim",
-  event = 'VeryLazy',
+  --event = 'VeryLazy',
   dependencies = {
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
@@ -31,8 +31,9 @@ local plugin = {
       }
     }
 
-    require'lspconfig'.harper_ls.setup {
-      filetypes = {"gitcommit", "git-commit", "markdown"},
+    -- neovim 0.11+ syntax
+    vim.lsp.config('harper_ls', {
+      filetypes = {"gitcommit", "git-commit", "markdown", "cmake"},
       settings = {
         ["harper-ls"] = {
           userDictPath = vim.fn.expand('$HOME/.vim/spell/en.utf-8.add'),
@@ -57,7 +58,7 @@ local plugin = {
           diagnosticSeverity = "hint",
         }
       }
-    }
+    })
     require'lspconfig'.tinymist.setup {
       settings = {
         formatterMode = "typstyle",
@@ -67,7 +68,7 @@ local plugin = {
     }
     -- Needed to load the LSPs for some reason.
     -- https://old.reddit.com/r/neovim/comments/14cikep/on_nightly_my_lsp_is_not_starting_automatically/
-    vim.api.nvim_exec_autocmds("FileType", {})
+    --vim.api.nvim_exec_autocmds("FileType", {})
   end,
 }
 
