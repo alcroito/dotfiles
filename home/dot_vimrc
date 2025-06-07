@@ -365,7 +365,7 @@ nnoremap <silent> <leader>gg :LazyGit<CR>
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
 " map \s to update the save the current file if it was updated (simiar to :w)
-nnoremap <Leader>s :update<cr>
+"nnoremap <Leader>s :update<cr>
 
 " map ,gb to Tig blame current file
 " to make it work with yazi which opens the files with a full dir path, but
