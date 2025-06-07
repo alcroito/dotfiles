@@ -1,3 +1,5 @@
+if true then return {} end
+
 return {
   -- Use yazi as terminal file manager
   "rolv-apneseth/tfm.nvim",
