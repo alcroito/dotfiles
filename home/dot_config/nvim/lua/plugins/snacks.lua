@@ -2,7 +2,20 @@ return
 {
   "folke/snacks.nvim",
   opts = {
-    picker = {},
+    picker = {
+      matcher = {
+        cwd_bonus = true,
+        frecency = false,
+      },
+      win = {
+        input = {
+          keys = {
+            ["<a-Up>"] = { "history_forward", mode = { "i", "n" } },
+            ["<a-Down>"] = { "history_back", mode = { "i", "n" } },
+          },
+        },
+      },
+    },
     explorer = {},
   },
   keys = {
