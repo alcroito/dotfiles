@@ -2,6 +2,12 @@ return {
   -- vim keybindings popup guide
   "folke/which-key.nvim",
   event = "VeryLazy",
+  opts = {
+   triggers = {
+     { "<auto>", mode = "nixsotc" },
+     { "a", mode = { "n", "v" } },
+   }
+ },
   keys = {
     {
       "<leader>?",
