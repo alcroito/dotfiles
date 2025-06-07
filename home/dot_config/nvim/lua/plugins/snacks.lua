@@ -8,6 +8,7 @@ return
   keys = {
     -- Mine
     { "<leader>sa", function() Snacks.picker() end, desc = "All pickers" },
+    { "<leader>ss", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
     { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
     { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>fc", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
