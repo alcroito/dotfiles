@@ -1,4 +1,7 @@
+if true then return {} end
+
 return
+
 {
   'saghen/blink.cmp',
   -- optional: provides snippets for the snippet source
