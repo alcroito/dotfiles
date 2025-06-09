@@ -7,6 +7,9 @@ return
         cwd_bonus = true,
         frecency = false,
       },
+      projects = {
+         "~/.config/nvim" ,
+      },
       win = {
         input = {
           keys = {
