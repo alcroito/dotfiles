@@ -5,12 +5,18 @@ local plugin = {
   dependencies = {
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
+    "jay-babu/mason-null-ls.nvim",
+    "nvimtools/none-ls.nvim",
   },
   config = function()
     require("mason").setup()
     require'mason-lspconfig'.setup{
       ensure_installed = {"harper_ls", "tinymist"}
     }
+
+    require("mason-null-ls").setup({
+      ensure_installed = { "stylua" }
+    })
 
     local nvim_lsp = require("lspconfig")
     nvim_lsp.neocmake.setup{
