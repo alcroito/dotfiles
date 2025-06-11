@@ -41,6 +41,44 @@ return
     { "<leader>r", function() Snacks.picker.recent() end, desc = "Recent" },
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>;", function() Snacks.picker.resume() end, desc = "Resume" },
+
+    { "<leader>fast", function()
+      Snacks.picker.pick {
+        format = 'file',
+        show_empty = true,
+        live = true,
+        finder = function(opts, ctx)
+          local cmd = 'ast-grep'
+          local args = {
+            'run',
+            '--context=0',
+            '--heading=never',
+          }
+          vim.list_extend(args, opts.args or {}) ---@diagnostic disable-line
+          local pattern, pargs = Snacks.picker.util.parse(ctx.filter.search)
+          vim.list_extend(args, pargs)
+          table.insert(args, string.format('--pattern=%s', pattern))
+          return require('snacks.picker.source.proc').proc({
+            opts,
+            {
+              notify = false,
+              cmd = cmd,
+              args = args,
+              transform = function(item)
+                local file, line, text = item.text:match '^(.+):(%d+):(.*)$'
+                if not file then
+                  return false
+                else
+                  item.line = text
+                  item.file = file
+                  item.pos = { tonumber(line), 0 }
+                end
+              end,
+            },
+          }, ctx)
+        end,
+      }
+    end, desc = "Find ast-grep" },
     --
     -- Top Pickers & Explorer
     --{ "<leader>sm", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
