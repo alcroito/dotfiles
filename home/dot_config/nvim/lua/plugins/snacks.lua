@@ -47,6 +47,7 @@ return
         format = 'file',
         show_empty = true,
         live = true,
+        supports_live = true,
         finder = function(opts, ctx)
           local cmd = 'ast-grep'
           local args = {
