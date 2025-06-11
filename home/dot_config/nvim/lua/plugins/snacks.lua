@@ -15,7 +15,15 @@ return
           keys = {
             ["<a-Up>"] = { "history_forward", mode = { "i", "n" } },
             ["<a-Down>"] = { "history_back", mode = { "i", "n" } },
+            ["<PageUp>"] = { "list_scroll_up", mode = { "i", "n" } },
+            ["<PageDown>"] = { "list_scroll_down", mode = { "i", "n" } },
+
           },
+        },
+      },
+      previewers = {
+        file = {
+          max_size = 1024 * 1024 * 50, -- 100 MB
         },
       },
     },
@@ -32,6 +40,7 @@ return
     { "<leader>fc", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
     { "<leader>r", function() Snacks.picker.recent() end, desc = "Recent" },
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
+    { "<leader>;", function() Snacks.picker.resume() end, desc = "Resume" },
     --
     -- Top Pickers & Explorer
     --{ "<leader>sm", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
