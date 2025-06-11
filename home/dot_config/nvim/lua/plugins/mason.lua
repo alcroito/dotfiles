@@ -39,7 +39,7 @@ local plugin = {
 
     -- neovim 0.11+ syntax
     vim.lsp.config("harper_ls", {
-      filetypes = { "gitcommit", "git-commit", "markdown", "cmake" },
+      filetypes = { "gitcommit", "git-commit", "markdown" },
       settings = {
         ["harper-ls"] = {
           userDictPath = vim.fn.expand("$HOME/.vim/spell/en.utf-8.add"),
