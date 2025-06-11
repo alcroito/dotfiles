@@ -49,30 +49,28 @@ return
         live = true,
         supports_live = true,
         finder = function(opts, ctx)
-          local cmd = 'ast-grep'
-          local args = {
-            'run',
-            '--context=0',
-            '--heading=never',
-          }
-          vim.list_extend(args, opts.args or {}) ---@diagnostic disable-line
+          local run = { 'ast-grep', 'run', '--context=0', '--json=stream' }
+          if vim.fn.has 'win32' == 1 then
+            run[1] = 'sg'
+          end
           local pattern, pargs = Snacks.picker.util.parse(ctx.filter.search)
-          vim.list_extend(args, pargs)
-          table.insert(args, string.format('--pattern=%s', pattern))
+          vim.list_extend(run, pargs)
+          table.insert(run, string.format('--pattern=%s', pattern))
           return require('snacks.picker.source.proc').proc({
             opts,
             {
               notify = false,
-              cmd = cmd,
-              args = args,
+              cmd = run[1],
+              args = vim.list_slice(run, 2),
               transform = function(item)
-                local file, line, text = item.text:match '^(.+):(%d+):(.*)$'
-                if not file then
+                local entry = vim.json.decode(item.text)
+                if vim.tbl_isempty(entry) then
                   return false
                 else
-                  item.line = text
-                  item.file = file
-                  item.pos = { tonumber(line), 0 }
+                  local start = entry.range.start
+                  item.file = entry.file
+                  item.line = entry.text
+                  item.pos = { tonumber(start.line) + 1, tonumber(start.column) }
                 end
               end,
             },
