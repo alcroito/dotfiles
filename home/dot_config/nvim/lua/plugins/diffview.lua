@@ -7,4 +7,7 @@ return {
       },
     },
   },
+  keys = {
+    { "<leader>mt", mode = { "n", "x", "o" }, "<cmd>DiffviewOpen<CR>", desc = "Git Mergetool DiffView" },
+  },
 }
