@@ -81,8 +81,14 @@ Plug 'scrooloose/nerdcommenter'
 " colorscheme
 Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
 
+" Remember last cursor position, modified to work with suda
+Plug 'sevmonster/vim-lastplace', { 'branch': 'feat/scheme-support' }
+
+" Auto sudo write
+Plug 'lambdalisue/vim-suda'
+
 " Remember last cursor position
-Plug 'dietsche/vim-lastplace'
+"Plug 'dietsche/vim-lastplace'
 
 " Ack / ag integration
 Plug 'mileszs/ack.vim'
@@ -446,6 +452,95 @@ endif
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 " cmap w!! w !sudo tee > /dev/null %
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
+" Enable auto sudo write
+let g:suda_smart_edit = 1
+
+" re-enable backup, swap, undo for suda buffers that we can read
+" https://github.com/lambdalisue/vim-suda/issues/25
+function s:SudaSettingsSave()
+    let b:sev_suda_swapfile = &swapfile
+    let b:sev_suda_undofile = &undofile
+endfunction
+function s:SudaSettingsRestore()
+    if filereadable(expand('<afile>')[7:])
+        if exists('b:sev_suda_swapfile') && b:sev_suda_swapfile
+            try
+                setlocal swapfile
+            catch
+                " ignore swapfile errors, they should have been shown already
+                echohl ErrorMsg
+                for line in split(v:exception, '\n')
+                    echomsg printf('[suda] %s', line)
+                endfor
+                echohl None
+            endtry
+        endif
+        if exists('b:sev_suda_undofile') && b:sev_suda_undofile
+            setlocal undofile
+        endif
+    endif
+endfunction
+function s:SudaProcessUndo(cmd)
+    let p = expand('<afile>')[7:]
+    if has('win32') || !&undofile || !filereadable(p)
+        return
+    endif
+    let p = resolve(p)
+    " XXX: comments are from :help backupdir to mark implementation details
+    let x = &undodir
+    " For backwards compatibility with Vim version 3.0 a '>' at the start
+    " of the option is removed.
+    if stridx(x, '>') == 0
+        let x = x[1:]
+    endif
+    " To include a comma in a directory name precede it with a backslash.
+    for u in split(x, '\v\\@1<!,')
+        " Spaces after the comma are ignored, other spaces are considered part
+        " of the directory name.
+        let u = trim(u, ' ', 1)
+        " To have a space at the start of a directory name, precede it with a
+        " backslash.
+        if stridx(u, '\ ') == 0
+            let u = u[1:]
+        endif
+        " Empty means that no backup file will be created.
+        if empty(u)
+            continue
+        elseif u == '.'
+            " A directory "." means to put the backup file in the same
+            " directory as the edited file.
+            let d = fnamemodify(p, ':p:h')
+        elseif stridx(u, './') == 0
+            " A directory starting with "./" (or ".\" for MS-Windows) means to
+            " put the backup file relative to where the edited file is.
+            let d = printf('%s%s', fnamemodify(p, ':p:h'), expand(u))
+        else
+            let d = u
+        endif
+        " NOTE: env vars are not expanded, and backslashes are not handled...
+        if u[-2:-1] == '//'
+            let f = fnamemodify(p, ':p:gs?/?%?')
+        else
+            let f = printf('.%s.un~', fnamemodify(p, ':t'))
+        endif
+        " A directory name may end in an '/'.
+        let d = trim(d, '/', 2)
+        if !isdirectory(d)
+            continue
+        endif
+        try
+            execute printf('%s %s/%s', a:cmd, fnameescape(d), fnameescape(f))
+            break
+        catch
+            continue
+        endtry
+    endfor
+endfunction
+autocmd BufReadPre suda://* call s:SudaSettingsSave()
+autocmd BufReadPost suda://* call s:SudaSettingsRestore()
+autocmd BufReadPost suda://* call s:SudaProcessUndo('silent! rundo')
+autocmd BufWritePost suda://* call s:SudaProcessUndo('wundo!')
 
 " Set updatetime to 1sec for git gutter plugin
 set updatetime=1000
