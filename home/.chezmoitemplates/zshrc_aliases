@@ -22,6 +22,7 @@ alias dcm='~/Dev/cmake/debug_build/bin/cmake'
 alias cmtr='cm . --trace-redirect=a.txt'
 alias grev='git revise'
 alias lg='lazygit'
+alias ldo='lazydocker'
 
 # Ubuntu
 alias uarch='sudo chroot ~/roots/xenial-arm64 su alex'
