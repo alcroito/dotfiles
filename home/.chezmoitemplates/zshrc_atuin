@@ -2,7 +2,7 @@
 {{- if eq .chezmoi.os "linux" }}
 . "$HOME/.atuin/bin/env"
 {{- else }}
-eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
+#eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
 {{- end }}
 
 atuin-setup() {
