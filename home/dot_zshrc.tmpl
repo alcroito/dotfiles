@@ -12,6 +12,8 @@
 {{-   template "zshrc_plugins_macos" . -}}
 {{- else if eq .osid "linux-ubuntu" -}}
 {{-   template "zshrc_plugins_ubuntu" . -}}
+{{- else if eq .osid "linux-arch" -}}
+{{-   template "zshrc_plugins_arch" . -}}
 {{- end -}}
 
 {{- template "zshrc_oh_my_zsh" . -}}
@@ -35,7 +37,9 @@
 {{-   template "zshrc_spaceship" . -}}
 
 {{- else if eq .osid "linux-ubuntu" -}}
-{{-   template "zshrc_work_ubuntu" . -}}
+{{-   template "zshrc_work_ubuntu_or_arch" . -}}
+{{- else if eq .osid "linux-arch" -}}
+{{-   template "zshrc_work_ubuntu_or_arch" . -}}
 {{- end -}}
 
 {{- if eq .chezmoi.os "linux" -}}
