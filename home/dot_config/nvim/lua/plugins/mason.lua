@@ -11,7 +11,7 @@ local plugin = {
   config = function()
     require("mason").setup()
     require("mason-lspconfig").setup({
-      ensure_installed = { "harper_ls", "tinymist" },
+      ensure_installed = { "harper_ls", "tinymist", "basedpyright" },
     })
 
     require("mason-null-ls").setup({
@@ -34,6 +34,18 @@ local plugin = {
           enable = false,
         },
         scan_cmake_in_package = true, -- default is true
+      },
+    })
+
+    vim.lsp.config("basedpyright", {
+      settings = {
+        basedpyright = {
+          analysis = {
+            typeCheckingMode = "off", -- "off", "basic", "strict"
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+          },
+        },
       },
     })
 
