@@ -7,7 +7,10 @@ return {
       "nvim-neotest/nvim-nio",
       "jbyuki/one-small-step-for-vimkind",
     },
-    lazy = false,
+    keys = {
+      { "<leader>db", mode = { "n" }, function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
+    },
+    lazy = true,
     config = function()
       local dap = require("dap")
       dap.adapters.lldb = {
@@ -64,6 +67,7 @@ return {
   },
   {
     "igorlfs/nvim-dap-view",
+    lazy = true,
     ---@module 'dap-view'
     ---@type dapview.Config
     opts = {
