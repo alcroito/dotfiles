@@ -36,6 +36,7 @@ return
     { "<leader>sa", function() Snacks.picker() end, desc = "All pickers" },
     { "<leader>ss", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
     { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
+    { "<leader>fts", function() Snacks.picker.treesitter() end, desc = "Find tree sitter symbols" },
     { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>fc", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
     { "<leader>r", function() Snacks.picker.recent() end, desc = "Recent" },
