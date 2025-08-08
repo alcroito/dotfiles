@@ -2,6 +2,10 @@
 
 #!/usr/bin/env zsh
 
+# Temporarily add mise shims to PATH so that we can run `ya` command and other mise tools in
+# this session.
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 {{ if eq .chezmoi.os "linux" -}}
 # Install onedark theme for yazi
 ya pkg add BennyOe/onedark || true
