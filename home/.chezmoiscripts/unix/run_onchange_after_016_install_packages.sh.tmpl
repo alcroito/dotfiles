@@ -1,0 +1,11 @@
+{{ if .install_packages -}}
+
+#!/usr/bin/env zsh
+
+{{ if eq .chezmoi.os "linux" -}}
+# Install onedark theme for yazi
+ya pkg add BennyOe/onedark || true
+{{ end -}}
+
+# end of install_packages
+{{ end -}}
