@@ -8,5 +8,6 @@ AppData
 .config/nvim/init.vim
 .zprofile
 .chezmoiscripts/unix/**
+.tigrc
 {{- end }}
 
