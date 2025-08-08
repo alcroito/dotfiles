@@ -10,13 +10,13 @@ local plugin = {
   },
   config = function()
     require("mason").setup()
-    require("mason-lspconfig").setup({
-      ensure_installed = { "harper_ls", "tinymist", "basedpyright" },
-    })
+    --require("mason-lspconfig").setup({
+      --ensure_installed = { "harper_ls", "tinymist", "basedpyright" },
+    --})
 
-    require("mason-null-ls").setup({
-      ensure_installed = { "stylua" },
-    })
+    --require("mason-null-ls").setup({
+      --ensure_installed = { "stylua" },
+    --})
 
     local nvim_lsp = require("lspconfig")
     nvim_lsp.neocmake.setup({
