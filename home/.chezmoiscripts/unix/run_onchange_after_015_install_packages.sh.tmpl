@@ -40,9 +40,9 @@ sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 echo "Installing neovim"
 vim_path=/usr/local/bin/nvim
 if [ ! -f "$vim_path" ]; then
-  ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .chezmoi.arch }}.appimage )
-  sudo chmod a+x /usr/local/bin/nvim-linux-{{ .chezmoi.arch }}.appimage
-  sudo mv /usr/local/bin/nvim-linux-{{ .chezmoi.arch }}.appimage $vim_path
+  ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage )
+  sudo chmod a+x /usr/local/bin/nvim-linux-{{ .arch_alt }}.appimage
+  sudo mv /usr/local/bin/nvim-linux-{{ .arch_alt }}.appimage $vim_path
   sudo ln -s $vim_path /usr/local/bin/vim
 else
   echo "neovim binary already present /usr/local/bin/nvim"
