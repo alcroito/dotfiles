@@ -1,4 +1,5 @@
 # My mise setup
 eval "$($HOME/.local/bin/mise activate zsh)"
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+# Temporarily disable adding mise shims to PATH. It should in theory be enough to activate it.
+# export PATH="$HOME/.local/share/mise/shims:$PATH"
 
