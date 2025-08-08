@@ -10,6 +10,8 @@ export PATH=/usr/local/bin:$PATH
 echo "Installing neovim plugins"
 nvim --headless '+qall'
 nvim --headless '+PlugInstall!' '+qall'
+nvim --headless '+PlugInstall!' '+qall'
+nvim --headless '+UpdateRemotePlugins' '+qall'
 nvim --headless '+UpdateRemotePlugins' '+qall'
 {{ end -}}
 
