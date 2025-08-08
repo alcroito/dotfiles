@@ -23,7 +23,7 @@ local plugin = {
       cmd = { "neocmakelsp", "--stdio" },
       filetypes = { "cmake" },
       root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname)
+        return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
       end,
       single_file_support = true, -- suggested
       init_options = {
