@@ -11,6 +11,8 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 {{ end -}}
 
+{{ if .install_nvim_deps -}}
+
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
 # Install neovim dependencies
 echo "Installing neovim dependencies"
@@ -34,6 +36,11 @@ sudo zypper install -y libfuse2 fuse
 echo "Installing neovim dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 {{ end -}}
+
+# end of install_nvim_deps
+{{ end -}}
+
+{{ if .install_nvim -}}
 
 {{ if and (eq .chezmoi.os "linux") (not (eq .osid "linux-alpine")) -}}
 # Install neovim
@@ -66,6 +73,9 @@ if [ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim ]; 
   sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
          https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 fi
+{{ end -}}
+
+# end install nvim
 {{ end -}}
 
 
