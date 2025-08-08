@@ -1,0 +1,12 @@
+{{ if .install_packages -}}
+
+# Alpine doesn't have bash
+#!/usr/bin/env sh
+
+{{ if eq .osid "linux-alpine" -}}
+echo "Installing bash on alpine"
+sudo apk add bash
+{{ end -}}
+
+# end of install_packages
+{{ end -}}
