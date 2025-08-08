@@ -80,11 +80,19 @@ fi
 
 
 {{ if eq .chezmoi.os "linux" -}}
-echo "Installing atuin"
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+if [ ! -f "/home/alex/.atuin/bin/atuin" ]; then
+  echo "Installing atuin"
+  curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+else
+  echo "atuin binary already present"
+fi
 
-echo "Installing mise"
-curl https://mise.run | sh
+if ! command -v mise >/dev/null 2>&1
+  echo "Installing mise"
+  curl https://mise.run | sh
+then
+  echo "mise binary already present"
+fi
 
 # sourcing zshrc again to ensure mise path is set
 . $HOME/.zshrc
