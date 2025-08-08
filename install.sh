@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e # Exit on Error
 set -x # Log Executions
@@ -12,7 +12,7 @@ echo -e "BEEP BOOP. Setting up..."
 ################################################################################
 # Chezmoi                                                                      #
 ################################################################################
-curl -sfL https://get.chezmoi.io/lb | bash
+curl -sfL https://get.chezmoi.io/lb | sh
 
 $HOME/.local/bin/chezmoi init --apply https://github.com/alcroito/dotfiles.git
 
