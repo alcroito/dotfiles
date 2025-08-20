@@ -6,7 +6,7 @@
 # this session.
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
-{{ if eq .chezmoi.os "linux" -}}
+{{ if ne .osid "windows" -}}
 # Install onedark theme for yazi
 ya pkg add BennyOe/onedark || true
 {{ end -}}
