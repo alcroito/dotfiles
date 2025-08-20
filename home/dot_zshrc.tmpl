@@ -19,22 +19,34 @@
 {{- template "zshrc_oh_my_zsh" . -}}
 
 {{- if eq .osid "darwin" -}}
+
+{{- template "zshrc_macos_common_pre" . -}}
+
 {{- if not (eq .machine_id "macbook_home") -}}
 {{-   template "zshrc_icecc" . -}}
 {{- end -}}
+
 {{- if eq .machine_id "macbook_home" }}
 {{   template "zshrc_macos_home" . }}
 {{- else if eq .machine_id "macbook_home_arm" -}}
-{{   template "zshrc_macos_home_arm" . }}
-{{- else -}}
-{{-   template "zshrc_work_macbook_pro_arm" . -}}
+{{   template "zshrc_macos_home" . }}
+{{- else if eq .machine_id "work_macbook_pro_arm" -}}
+{{-   template "zshrc_macos_work_arm" . -}}
 {{- end -}}
-{{-   template "zshrc_macos" . -}}
-{{-   template "zshrc_zoxide" . -}}
 
-{{-   template "zshrc_atuin" . -}}
+{{- if eq .chezmoi.arch "arm64" -}}
+{{-   template "zshrc_macos_common_arm" . -}}
+{{- else -}}
+{{-   template "zshrc_macos_common_intel" . -}}
+{{- end -}}
 
-{{-   template "zshrc_spaceship" . -}}
+{{- template "zshrc_macos_common_post" . -}}
+
+{{- template "zshrc_zoxide" . -}}
+
+{{- template "zshrc_atuin" . -}}
+
+{{- template "zshrc_spaceship" . -}}
 
 {{- else if eq .osid "linux-ubuntu" -}}
 {{-   template "zshrc_work_ubuntu_or_arch" . -}}

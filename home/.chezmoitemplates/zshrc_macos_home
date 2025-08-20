@@ -9,17 +9,7 @@ alias hekate='python3 ~/Downloads/switch2/fusee-launcher/fusee-launcher.py ~/Dow
 #source $HOME/.oh-my-zsh/custom/plugins/zsh-histdb-fzf/fzf-histdb.zsh
 #bindkey '^R' histdb-fzf-widget
 
-# Created by `pipx` on 2023-04-01 13:22:20
-export PATH="$PATH:$HOME/.local/bin"
-
-# Created by `pipx` on 2023-04-01 13:22:21
-export PATH="$PATH:$HOME/Library/Python/3.11/bin"
 ___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
 
 export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
-
-#export FLYCTL_INSTALL="/Users/placinta/.fly"
-#export PATH="$FLYCTL_INSTALL/bin:$PATH"
-
-eval "$(/usr/local/bin/mise activate zsh)"

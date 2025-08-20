@@ -1,0 +1,5 @@
+# Local bin path
+export PATH="$PATH:$HOME/.local/bin"
+
+# ripgrep colors like ag
+export RIPGREP_CONFIG_PATH=~/.ripgreprc

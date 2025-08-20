@@ -1,0 +1,8 @@
+# Use neovim in tig blame inside nvim
+export GIT_EDITOR=/opt/homebrew/bin/nvim
+
+# Make brew binaries available
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Activate mise
+eval "$(/opt/homebrew/bin/mise activate zsh)"

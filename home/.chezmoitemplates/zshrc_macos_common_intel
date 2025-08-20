@@ -1,0 +1,5 @@
+# Use neovim in tig blame inside nvim
+export GIT_EDITOR=/usr/local/bin/nvim
+
+# Activate mise
+eval "$(/usr/local/bin/mise activate zsh)"

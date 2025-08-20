@@ -1,8 +1,5 @@
 export PATH=$PATH:$HOME/Dev/qtrepotools/bin
 
-# Make brew binaries available
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
 # Some perl local thing for qtrepotools git gpush
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
 
@@ -12,17 +9,8 @@ export MY_SESSION_BUS_SOCKET=/tmp/dbus/$USER.session.usock
 # iOS CMake development team env var mostly for world summit
 export ENV_CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM=A5GTH44LYL
 
-# Use neovim in tig blame inside nvim
-export GIT_EDITOR=/opt/homebrew/bin/nvim
-
-# ripgrep colors like ag
-export RIPGREP_CONFIG_PATH=~/.ripgreprc
-
 # Load Angular CLI autocompletion.
 #source <(ng completion script)
 
 # Jetbrains vmoptions
 ___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
-
-eval "$(/opt/homebrew/bin/mise activate zsh)"
-#eval "$(/opt/homebrew/bin/mise activate zsh --shims)"
