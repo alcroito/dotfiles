@@ -104,7 +104,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 
 " Smart status bar
-Plug 'vim-airline/vim-airline'
+if !has('nvim')
+    Plug 'vim-airline/vim-airline'
+endif
 
 " Git integration
 Plug 'tpope/vim-fugitive'
