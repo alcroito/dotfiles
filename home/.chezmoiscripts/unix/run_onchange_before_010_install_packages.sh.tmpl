@@ -65,7 +65,12 @@ sudo apk add ripgrep htop the_silver_searcher fd git zsh tig btop
 
 {{ else if eq .osid "darwin" -}}
 echo "Installing macOS dependencies"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+if ! command -v brew &> /dev/null; then
+  echo "Homebrew not found, installing..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+  echo "Homebrew already installed"
+fi
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aqua2 atuin bat
 brew install xcodesorg/made/xcodes
 {{ end -}}
@@ -77,9 +82,13 @@ curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | 
 
 {{ if ne .osid "windows" -}}
 # Install oh my zsh
-echo "Installing oh-my-zsh"
-ZSH=
-sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing oh-my-zsh"
+  ZSH=
+  sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+else
+  echo "oh-my-zsh already installed"
+fi
 
 # Install zsh-sugesstions
 echo "Installing zsh-autosuggestions"
