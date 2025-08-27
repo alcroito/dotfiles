@@ -2,6 +2,7 @@
 return
 {
   "mikavilpas/yazi.nvim",
+  tag = "v11.10.2",
   event = "VeryLazy",
   dependencies = {
     -- check the installation instructions at
@@ -38,7 +39,7 @@ return
     integrations = {
       --- What should be done when the user wants to grep in a directory
       grep_in_directory = "snacks.picker",
-    }
+    },
   },
   -- 👇 if you use `open_for_directories=true`, this is recommended
   init = function()
