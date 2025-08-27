@@ -105,9 +105,16 @@ sed -i 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ end -}}
 
-# Change the default shell
-echo "Changing default shell to zsh"
-sudo chsh -s $(which zsh)
+{{ if eq .chezmoi.os "linux" -}}
+# Change the default shell Linux
+zsh_path=$(which zsh)
+if [ "$SHELL" != "$zsh_path" ]; then
+  echo "Changing default shell to zsh"
+  sudo chsh -s $zsh_path
+else
+  echo "Default shell is already zsh"
+fi
+{{ end -}}
 
 # End of not windows
 {{ end -}}
