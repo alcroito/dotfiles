@@ -82,14 +82,14 @@ fi
 
 
 {{ if eq .chezmoi.os "linux" -}}
-if [ ! -f "/home/alex/.atuin/bin/atuin" ]; then
+if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
   echo "Installing atuin"
   curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 else
   echo "atuin binary already present"
 fi
 
-if [ ! -f "/home/alex/.local/bin/mise" ]; then
+if [ ! -f "$HOME/.local/bin/mise" ]; then
   echo "Installing mise"
   curl https://mise.run | sh
 else
