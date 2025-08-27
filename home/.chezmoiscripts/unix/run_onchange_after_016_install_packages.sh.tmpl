@@ -9,6 +9,8 @@ export PATH="$HOME/.local/share/mise/shims:$PATH"
 {{ if ne .osid "windows" -}}
 # Install onedark theme for yazi
 ya pkg add BennyOe/onedark || true
+# Install compress plugin
+ya pkg add KKV9/compress || true
 {{ end -}}
 
 # end of install_packages
