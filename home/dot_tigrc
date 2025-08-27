@@ -2,6 +2,7 @@ bind main <C-b> !git branch -a --contains %(commit)
 set ignore_case = smart-case
 bind main <C-f> :goto
 set show-untracked = false
+#set commit-order = default
 
 set log-options = --show-signature
 set diff-options = --show-signature
