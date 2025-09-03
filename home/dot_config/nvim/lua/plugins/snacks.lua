@@ -30,6 +30,7 @@ return
     explorer = {
       replace_netrw = false,
     },
+    dashboard = {},
   },
   keys = {
     -- Mine
