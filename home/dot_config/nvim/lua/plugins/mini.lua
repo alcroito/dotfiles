@@ -1,10 +1,14 @@
 return {
-  'echasnovski/mini.nvim',
+  "echasnovski/mini.nvim",
   version = false,
-  event = 'VeryLazy',
+  event = "VeryLazy",
   config = function()
     --  Mini surround instead of sandwhich
-    require('mini.surround').setup()
+    require("mini.surround").setup()
+
+    --require("mini.completion").setup({
+      --delay = { completion = 300, info = 100, signature = 50 },
+    --})
 
     -- Mini files, for navigating files
     -- Disabled for now
