@@ -13,6 +13,7 @@ local plugin = {
     --require("mason-lspconfig").setup({
       --ensure_installed = { "harper_ls", "tinymist", "basedpyright" },
     --})
+    require("mason-lspconfig").setup({})
 
     --require("mason-null-ls").setup({
       --ensure_installed = { "stylua" },
