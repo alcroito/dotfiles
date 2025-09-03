@@ -1,10 +1,17 @@
 return {
-  -- Enable incremental selection expansion
-  "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
-  config = function ()
-    local configs = require("nvim-treesitter.configs")
-    configs.setup {
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
+    opts = {},
+  },
+  {
+    "MeanderingProgrammer/treesitter-modules.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    ---@module 'treesitter-modules'
+    ---@type ts.mod.UserConfig
+    opts = {
+      -- Enable incremental selection expansion
       incremental_selection = {
         enable = true,
         keymaps = {
@@ -12,6 +19,6 @@ return {
           node_decremental = "V",
         },
       },
-    }
-  end,
+    },
+  },
 }
