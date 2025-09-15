@@ -18,10 +18,27 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # short form of `Set-Alias which Get-Command`
 sal which gcm
 sal vim nvim
-sal rr yazi
+#sal rr yazi
+sal v nvim
+sal lg lazygit
+
+function rr {
+    $tmp = (New-TemporaryFile).FullName
+    yazi $args --cwd-file="$tmp"
+    $cwd = Get-Content -Path $tmp -Encoding UTF8
+    if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+        Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
+    }
+    Remove-Item -Path $tmp
+}
 
 Function amend { git commit --amend --verbose}
+Function gup { git pull --rebase }
 Function grhh { git reset --hard }
+Function undo { git reset --hard HEAD~1 }
+Function gco {
+  git checkout $args[0]
+}
 Function take {
   mkdir $args[0]
   cd $args[0]
