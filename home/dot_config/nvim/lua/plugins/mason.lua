@@ -19,8 +19,7 @@ local plugin = {
       --ensure_installed = { "stylua" },
     --})
 
-    local nvim_lsp = require("lspconfig")
-    nvim_lsp.neocmake.setup({
+    vim.lsp.config("neocmake", {
       cmd = { "neocmakelsp", "--stdio" },
       filetypes = { "cmake" },
       root_dir = function(fname)
@@ -78,7 +77,7 @@ local plugin = {
         },
       },
     })
-    require("lspconfig").tinymist.setup({
+    vim.lsp.config("tinymist", {
       settings = {
         formatterMode = "typstyle",
         exportPdf = "onType",
