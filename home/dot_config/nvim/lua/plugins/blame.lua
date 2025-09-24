@@ -1,5 +1,5 @@
 return {
-  "alcroito/blame.nvim",
+  "FabijanZulj/blame.nvim",
   opts = {
     mappings = {
         commit_info = "i",
