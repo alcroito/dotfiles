@@ -106,8 +106,9 @@ function Invoke-BatchFile
     Remove-Item $tempFile
 }
 
-$shimPath = "$env:USERPROFILE\AppData\Local\mise\shims"
-$currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-$newPath = $currentPath + ";" + $shimPath
-[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+#$shimPath = "$env:USERPROFILE\AppData\Local\mise\shims"
+#$currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+#$newPath = $currentPath + ";" + $shimPath
+#[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
 
+mise activate pwsh | Out-String | Invoke-Expression
