@@ -1,5 +1,4 @@
-return
-{
+return {
   "folke/snacks.nvim",
   opts = {
     picker = {
@@ -8,18 +7,33 @@ return
         frecency = false,
       },
       projects = {
-         "~/.config/nvim" ,
+        "~/.config/nvim",
       },
       win = {
         input = {
+          -- stylua: ignore
           keys = {
             ["<a-Up>"] = { "history_forward", mode = { "i", "n" } },
             ["<a-Down>"] = { "history_back", mode = { "i", "n" } },
             ["<PageUp>"] = { "list_scroll_up", mode = { "i", "n" } },
             ["<PageDown>"] = { "list_scroll_down", mode = { "i", "n" } },
+            ["<a-c>"] = { "toggle_cwd", mode = { "i", "n" } },
 
           },
         },
+      },
+      actions = {
+        ---@param p snacks.Picker
+        toggle_cwd = function(p)
+          --local root = LazyVim.root({ buf = p.input.filter.current_buf, normalize = true })
+          --local cwd = vim.fs.normalize((vim.uv or vim.loop).cwd() or ".")
+          local buf_name = vim.api.nvim_buf_get_name(p.input.filter.current_buf)
+          local cwd = vim.fn.fnamemodify(buf_name, ":p:h")
+          local current = p:cwd()
+          local root = vim.fn.getcwd()
+          p:set_cwd(current == root and cwd or root)
+          p:find()
+        end,
       },
       previewers = {
         file = {
@@ -54,6 +68,7 @@ return
       },
     },
   },
+  -- stylua: ignore
   keys = {
     -- Mine
     { "<leader>sa", function() Snacks.picker() end, desc = "All pickers" },
@@ -65,6 +80,13 @@ return
     { "<leader>r", function() Snacks.picker.recent() end, desc = "Recent" },
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>;", function() Snacks.picker.resume() end, desc = "Resume" },
+    { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
+    { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep (Root Dir)" },
+    { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
+    { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word (Root Dir)", mode = { "n", "x" } },
+    { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
+    { "<leader><space>", function() Snacks.picker.files() end, desc = "Find Files (Root Dir)" },
+
 
     { "<leader>fast", function()
       Snacks.picker.pick {
