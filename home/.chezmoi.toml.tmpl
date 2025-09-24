@@ -35,6 +35,11 @@
     {{- $email = "alexandru.croitor@qt.io" -}}
 {{- end -}}
 
+{{ if eq .chezmoi.os "windows" }}
+[cd]
+  command = "pwsh.exe"
+{{ end }}
+
 [data]
     osid = {{ $osid | quote }}
     name = {{ $name | quote }}
