@@ -47,23 +47,7 @@ Function take {
 # Set default editor
 $env:EDITOR = "nvim.exe"
 
-# Machine specific configs
-{{ if eq .chezmoi.hostname "alexandru-work-win11" }}
-$env:Path = 'C:\Users\alex\PowerShelf;' + $env:Path
-$env:Path = 'E:\dev\envs;' + $env:Path
-# Managing through mise now
-#$env:Path = 'E:\dev\cmakes\cmake-3.28.3\bin;' + $env:Path
-{{ else if eq .chezmoi.hostname "win10-alex-vm" }}
-Set-Alias vim C:\tools\neovim\nvim-win64\bin\nvim.exe
-$env:Path = 'C:\Users\alex\.bulq\bin;' + $env:Path
-$env:Path = 'C:\Users\alex\.bulq\qt_bin;' + $env:Path
-$env:Path = 'C:\Users\alex\.bulq\qt;' + $env:Path
-{{ else }}
-$env:Path = 'C:\Users\alex\PowerShelf;' + $env:Path
-$env:Path = 'E:\dev\envs;' + $env:Path
-# Managing through mise now
-#$env:Path = 'E:\dev\cmakes\cmake-3.28.3\bin;' + $env:Path
-{{ end }}
+. "$PSScriptRoot\Microsoft.PowerShell_profile_machine_specific.ps1"
 
 # FZF options
 $env:FZF_DEFAULT_OPTS='--color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108 --color info:108,prompt:109,spinner:108,pointer:168,marker:168'
