@@ -24,6 +24,7 @@
 {{- $location := promptStringOnce . "location" "home or work or vm" "work" -}}
 {{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" false -}}
 {{- $install_nvim := promptBoolOnce . "install_nvim" "Should nvim be installed" false -}}
+{{- $install_nvim_bob := promptBoolOnce . "install_nvim_bob" "Should nvim be installed via bob" false -}}
 {{- $install_nvim_deps := promptBoolOnce . "install_nvim_deps" "Should nvim dependencies be installed" false -}}
 {{- $install_nvim_plugs := promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
 {{- $machine_id := promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
@@ -46,6 +47,7 @@
     email = {{ $email | quote }}
     install_packages = {{ $install_packages }}
     install_nvim = {{ $install_nvim }}
+    install_nvim_bob = {{ $install_nvim_bob }}
     install_nvim_deps = {{ $install_nvim_deps }}
     install_nvim_plugs = {{ $install_nvim_plugs }}
     location = {{ $location | quote }}

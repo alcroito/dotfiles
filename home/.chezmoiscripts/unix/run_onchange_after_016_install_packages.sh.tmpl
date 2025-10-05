@@ -13,10 +13,12 @@ ya pkg add BennyOe/onedark || true
 # Install compress plugin
 ya pkg add KKV9/compress || true
 
-{{ if .install_nvim -}}
+{{ if and (.install_nvim) (.install_nvim_bob) -}}
+{{ if not (and (eq .osid "linux-debian") (le (int .chezmoi.osRelease.versionID) 12)) -}}
 # install bob neovim manager
 mise use -g bob
 bob use stable
+{{ end -}}
 {{ end -}}
 
 {{ end -}}
