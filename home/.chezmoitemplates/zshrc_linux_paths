@@ -4,3 +4,5 @@ export PATH=/usr/local/bin:$PATH
 # Local binaries
 export PATH=$HOME/.local/bin:$PATH
 
+# bob neovim paths
+export PATH=$HOME/.local/share/bob/nvim-bin:$PATH
