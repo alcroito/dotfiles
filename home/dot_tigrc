@@ -7,3 +7,5 @@ set show-untracked = false
 set log-options = --show-signature
 set diff-options = --show-signature
 bind diff 7 !git diff %(commit)^ %(commit)
+
+bind generic + !git commit --amend
