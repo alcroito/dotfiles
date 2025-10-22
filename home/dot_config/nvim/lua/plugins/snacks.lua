@@ -44,6 +44,9 @@ return {
     explorer = {
       replace_netrw = false,
     },
+    lazygit = {
+      config = {},
+    },
     dashboard = {
       sections = {
         { section = "header" },
@@ -78,6 +81,7 @@ return {
     { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>fc", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
     { "<leader>r", function() Snacks.picker.recent() end, desc = "Recent" },
+    { "<leader>lg", function() Snacks.lazygit() end, desc = "Lazygit" },
     { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>;", function() Snacks.picker.resume() end, desc = "Resume" },
     { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },

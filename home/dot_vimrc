@@ -187,12 +187,6 @@ if has('nvim')
 endif
 
 if has('nvim')
-    " for git mergetool
-    " Plug 'sindrets/diffview.nvim'
-
-    " Lazygit
-    Plug 'kdheepak/lazygit.nvim', { 'branch': 'main' }
-
     " big file disable many things to open faster
     Plug 'LunarVim/bigfile.nvim'
 
@@ -365,9 +359,6 @@ nmap <C-P> :Files<CR>
 
 " Trigger toggle bool
 nnoremap <Leader>tb :ToggleBool<CR>
-
-" Trigger lazygit
-nnoremap <silent> <leader>gg :LazyGit<CR>
 
 " map "leader cd" to changing directory to current open file
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
