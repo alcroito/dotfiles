@@ -27,7 +27,6 @@ return {
         ---@param picker snacks.Picker
         choose_history = function(picker)
           local history = picker.history.kv.data
-          -- Print the history for debugging
           local items = {}
           for i = 1, #history do
             local hist = history[#history + 1 - i]
@@ -45,7 +44,7 @@ return {
             layout = { preset = "select" },
             supports_live = false,
             transform = function(item)
-              return item.search ~= "" or item.pattern ~= ""
+              return not (item.search == "" and item.pattern == "")
             end,
             format = function(item)
               local ico = { live = picker.opts.icons.ui.live, prompt = picker.opts.prompt }
@@ -63,10 +62,18 @@ return {
               table.insert(text, { part2 })
               return text
             end,
+            on_close = function(history_picker)
+              if not history_picker.confirmed then -- Cancel
+                local opts = picker.opts
+                -- stylua: ignore
+                vim.defer_fn(function() Snacks.picker.pick(opts) end, 10)
+              end
+            end,
             confirm = function(history_picker, item)
               local opts = picker.opts
-              picker:close()
+              history_picker.confirmed = true
               history_picker:close()
+              picker:close()
               vim.schedule(function()
                 Snacks.picker.pick(vim.tbl_deep_extend("force", opts, {
                   search = item.search,
