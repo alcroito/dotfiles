@@ -18,11 +18,65 @@ return {
             ["<PageUp>"] = { "list_scroll_up", mode = { "i", "n" } },
             ["<PageDown>"] = { "list_scroll_down", mode = { "i", "n" } },
             ["<a-c>"] = { "toggle_cwd", mode = { "i", "n" } },
+            ['<F1>'] = { 'choose_history', mode = { 'i', 'n' } },
 
           },
         },
       },
       actions = {
+        ---@param picker snacks.Picker
+        choose_history = function(picker)
+          local history = picker.history.kv.data
+          -- Print the history for debugging
+          local items = {}
+          for i = 1, #history do
+            local hist = history[#history + 1 - i]
+            table.insert(items, {
+              idx = i,
+              pattern = hist.pattern,
+              search = hist.search,
+              live = hist.live,
+              text = hist.search .. " " .. hist.pattern,
+            })
+          end
+          Snacks.picker.pick({
+            title = "Picker history",
+            items = items,
+            layout = { preset = "select" },
+            supports_live = false,
+            transform = function(item)
+              return item.search ~= "" or item.pattern ~= ""
+            end,
+            format = function(item)
+              local ico = { live = picker.opts.icons.ui.live, prompt = picker.opts.prompt }
+              local part1 = item.live and item.pattern or item.search
+              local part2 = item.live and item.search or item.pattern
+              --
+              local text = {}
+              table.insert(text, { item.live and ico.live or "  ", "Special" })
+              table.insert(text, { " " })
+              table.insert(text, { part1, "SnacksPickerInputSearch" })
+              if part1 ~= "" and part2 ~= "" then
+                table.insert(text, { " " })
+                table.insert(text, { ico.prompt, "SnacksPickerPrompt" })
+              end
+              table.insert(text, { part2 })
+              return text
+            end,
+            confirm = function(history_picker, item)
+              local opts = picker.opts
+              picker:close()
+              history_picker:close()
+              vim.schedule(function()
+                Snacks.picker.pick(vim.tbl_deep_extend("force", opts, {
+                  search = item.search,
+                  pattern = item.pattern,
+                  live = item.live,
+                }))
+              end)
+            end,
+          })
+        end,
         ---@param p snacks.Picker
         toggle_cwd = function(p)
           --local root = LazyVim.root({ buf = p.input.filter.current_buf, normalize = true })
