@@ -18,7 +18,7 @@ return {
             ["<PageUp>"] = { "list_scroll_up", mode = { "i", "n" } },
             ["<PageDown>"] = { "list_scroll_down", mode = { "i", "n" } },
             ["<a-c>"] = { "toggle_cwd", mode = { "i", "n" } },
-            ['<F1>'] = { 'choose_history', mode = { 'i', 'n' } },
+            ['<M-/>'] = { 'choose_history', mode = { 'i', 'n' } },
 
           },
         },
@@ -41,10 +41,11 @@ return {
           Snacks.picker.pick({
             title = "Picker history",
             items = items,
+            main = { current = true }, -- NOTE: Prevent closing the parent picker
             layout = { preset = "select" },
             supports_live = false,
             transform = function(item)
-              return not (item.search == "" and item.pattern == "")
+              return not (item.search == "" and item.search == "")
             end,
             format = function(item)
               local ico = { live = picker.opts.icons.ui.live, prompt = picker.opts.prompt }
@@ -62,25 +63,15 @@ return {
               table.insert(text, { part2 })
               return text
             end,
-            on_close = function(history_picker)
-              if not history_picker.confirmed then -- Cancel
-                local opts = picker.opts
-                -- stylua: ignore
-                vim.defer_fn(function() Snacks.picker.pick(opts) end, 10)
-              end
-            end,
             confirm = function(history_picker, item)
-              local opts = picker.opts
-              history_picker.confirmed = true
+              local mode = vim.fn.mode()
+              picker.opts.live = item.live
+              picker.input:set(item.pattern, item.search)
               history_picker:close()
-              picker:close()
-              vim.schedule(function()
-                Snacks.picker.pick(vim.tbl_deep_extend("force", opts, {
-                  search = item.search,
-                  pattern = item.pattern,
-                  live = item.live,
-                }))
-              end)
+              if mode == "i" then
+                -- stylua: ignore
+                vim.schedule(function() vim.cmd 'startinsert!' end)
+              end
             end,
           })
         end,
