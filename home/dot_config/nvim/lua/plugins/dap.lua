@@ -92,8 +92,13 @@ return {
       vim.keymap.set({ "n", "v" }, "<leader>d", dm.mode.toggle, { nowait = true })
       -- If you want to disable debug mode in addition to leader+d using the Escape key:
        --vim.keymap.set("n", "<Esc>", dm.mode.disable)
+
       -- This might be unwanted if you already use Esc for ":noh"
       vim.keymap.set("t", "<C-\\>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+      vim.keymap.set("n", "<leader>dl", function()
+        require("osv").launch({ port = 8086, log = true, blocking = true, break_on_exception = true, output = true })
+      end, { noremap = true })
 
       dm.plugins.osv_integration.enabled = true -- needed if you want to debug neovim lua code
       local dap = require("dap")
@@ -129,11 +134,6 @@ return {
       dap.adapters.nlua = function(callback, config)
         callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
       end
-
-      vim.keymap.set('n', '<leader>dl', function()
-        require"osv".launch({port = 8086})
-      end, { noremap = true })
-
     end
   },
 }
