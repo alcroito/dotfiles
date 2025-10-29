@@ -34,6 +34,36 @@ return {
         dmode_enabled = args.data.enabled
       end,
     })
+
+    local sidekick = {
+      function()
+        return " "
+      end,
+      color = function()
+        local status = require("sidekick.status").get()
+        if status then
+          return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
+        end
+      end,
+      cond = function()
+        local status = require("sidekick.status")
+        return status.get() ~= nil
+      end,
+    }
+
+    local sidekick_cli_status = {
+      function()
+        local status = require("sidekick.status").cli()
+        return " " .. (#status > 1 and #status or "")
+      end,
+      cond = function()
+        return #require("sidekick.status").cli() > 0
+      end,
+      color = function()
+        return "Special"
+      end,
+    }
+
     require("lualine").setup({
       options = {
         globalstatus = true,
@@ -51,7 +81,6 @@ return {
           },
         },
         lualine_b = { "branch", "diff", "diagnostics" },
-        lualine_c = { "filename" },
         lualine_c = {
           { "filename", path = 1 },
           { "branch" },
@@ -59,7 +88,7 @@ return {
           { "diagnostics" },
           { macro },
         },
-        lualine_x = { "lsp_status", "encoding", "fileformat", "filetype" },
+        lualine_x = { "lsp_status", "encoding", "fileformat", "filetype", sidekick, sidekick_cli_status },
         lualine_y = { "progress" },
         lualine_z = { "selectioncount", "location", line_total },
       },
