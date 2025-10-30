@@ -27,6 +27,15 @@ return {
         sidekick_send = function(...)
           return require("sidekick.cli.picker.snacks").send(...)
         end,
+        -- NOTE: Fix cancel action.
+        -- See https://github.com/folke/snacks.nvim/discussions/1768#discussioncomment-13243591
+        cancel = function(picker) --[[Override]]
+          picker:norm(function()
+            local main = require('snacks.picker.core.main').new { float = false, file = false, current = true }
+            vim.api.nvim_set_current_win(main:get())
+            picker:close()
+          end)
+        end,
         ---@param picker snacks.Picker
         choose_history = function(picker)
           local history = picker.history.kv.data
