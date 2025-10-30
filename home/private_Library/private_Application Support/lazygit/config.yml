@@ -1,3 +1,9 @@
+git:
+ # If true, periodically fetch from remote
+  autoFetch: false
+
+  # If true, periodically refresh files and submodules
+  autoRefresh: false
 gui:
   theme:
     activeBorderColor:
