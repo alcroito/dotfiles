@@ -81,6 +81,9 @@ Plug 'scrooloose/nerdcommenter'
 " colorscheme
 Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
 
+" colorscheme
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+
 " Remember last cursor position, modified to work with suda
 Plug 'sevmonster/vim-lastplace', { 'branch': 'feat/scheme-support' }
 
@@ -343,7 +346,8 @@ if executable('rg')
 endif
 
 " Best colorscheme found
-silent! colorscheme jellybeans
+"silent! colorscheme jellybeans
+silent! colorscheme catppuccin-mocha
 
 " Enable proper colors for yazi inside tmux inside neovim
 set termguicolors
