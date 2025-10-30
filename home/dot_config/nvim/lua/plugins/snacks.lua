@@ -19,11 +19,14 @@ return {
             ["<PageDown>"] = { "list_scroll_down", mode = { "i", "n" } },
             ["<a-c>"] = { "toggle_cwd", mode = { "i", "n" } },
             ['<M-/>'] = { 'choose_history', mode = { 'i', 'n' } },
-
+            ["<a-a>"] = { "sidekick_send", mode = { "n", "i" }, },
           },
         },
       },
       actions = {
+        sidekick_send = function(...)
+          return require("sidekick.cli.picker.snacks").send(...)
+        end,
         ---@param picker snacks.Picker
         choose_history = function(picker)
           local history = picker.history.kv.data
