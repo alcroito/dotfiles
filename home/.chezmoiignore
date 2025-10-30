@@ -9,5 +9,6 @@ AppData
 .zprofile
 .chezmoiscripts/unix/**
 .tigrc
+private_Library/**
 {{- end }}
 
