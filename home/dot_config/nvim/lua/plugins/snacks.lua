@@ -48,7 +48,7 @@ return {
             layout = { preset = "select" },
             supports_live = false,
             transform = function(item)
-              return not (item.search == "" and item.search == "")
+              return not (item.pattern == "" and item.search == "")
             end,
             format = function(item)
               local ico = { live = picker.opts.icons.ui.live, prompt = picker.opts.prompt }
