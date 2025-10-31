@@ -49,7 +49,19 @@ ln -s $(which fdfind) ~/.local/bin/fd
 
 {{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing rhel-like dependencies"
-sudo dnf install -y ripgrep htop the_silver_searcher fd-find git zsh tig btop
+sudo dnf install -y ripgrep htop fd-find git zsh tig btop
+
+# Only install the silver searcher up to fedora 42 or centos / rocky / rhel 9.
+# Fedora 43+ and centos / rocky / rhel 10+ removed them
+{{ if eq .osid "linux-fedora" -}}
+{{ if lt (int .chezmoi.osRelease.versionID) 43 -}}
+sudo dnf install -y the_silver_searcher
+{{ end -}}
+{{ else if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+{{ if lt (int .chezmoi.osRelease.versionID) 10 -}}
+sudo dnf install -y the_silver_searcher
+{{ end -}}
+{{ end -}}
 
 {{ else if eq .osid "linux-opensuse-leap" -}}
 echo "Installing suse dependencies"
