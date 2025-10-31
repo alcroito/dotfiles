@@ -1,0 +1,41 @@
+{{ if .install_qt_deps -}}
+
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env sh
+{{ end -}}
+
+{{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
+# Install Qt dependencies for Ubuntu 24+ / Debian 12+
+echo "Installing Qt build dependencies for Ubuntu/Debian"
+sudo apt install -y build-essential cmake ninja-build python3 git
+sudo apt install -y libfontconfig1-dev libfreetype-dev libgtk-3-dev libx11-dev libx11-xcb-dev libxcb-cursor-dev libxcb-glx0-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev libxcb-util-dev libxcb-xfixes0-dev libxcb-xkb-dev libxcb1-dev libxext-dev libxfixes-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxrender-dev
+{{ end -}}
+
+{{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+# Install Qt dependencies for CentOS 9+
+echo "Installing Qt build dependencies for CentOS/RHEL/Rocky"
+sudo dnf install -y 'dnf-command(config-manager)'
+sudo dnf config-manager --set-enabled crb
+sudo dnf install -y epel-release
+sudo dnf group install -y "Development Tools"
+sudo dnf install -y cmake ninja-build
+sudo dnf install -y fontconfig-devel freetype-devel gtk3-devel libX11-devel libX11-xcb libxcb-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel xcb-util-cursor-devel xcb-util-image-devel xcb-util-renderutil-devel xcb-util-wm-devel libxkbcommon-devel libxkbcommon-x11-devel
+{{ end -}}
+
+{{ if eq .osid "linux-fedora" -}}
+# Install Qt dependencies for Fedora 40+
+echo "Installing Qt build dependencies for Fedora"
+sudo dnf group install -y c-development development-tools
+sudo dnf install -y cmake ninja-build
+sudo dnf install -y fontconfig-devel freetype-devel gtk3-devel libX11-devel libX11-xcb libxcb-devel libXext-devel libXfixes-devel libXi-devel libXrender-devel xcb-util-cursor-devel xcb-util-image-devel xcb-util-renderutil-devel xcb-util-wm-devel libxkbcommon-devel libxkbcommon-x11-devel
+{{ end -}}
+
+{{ if contains "linux-arch" .osid -}}
+# Install Qt dependencies for ArchLinux / Manjaro / EndeavourOS
+echo "Installing Qt build dependencies for Arch-based systems"
+sudo pacman -S --needed --noconfirm cmake ninja python3 base-devel git
+sudo pacman -S --needed --noconfirm fontconfig freetype2 gtk3 libx11 libxcb xcb-util-cursor xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util libxext libxfixes libxi libxkbcommon libxkbcommon-x11 libxrender
+{{ end -}}
+
+# end of install
+{{ end -}}
