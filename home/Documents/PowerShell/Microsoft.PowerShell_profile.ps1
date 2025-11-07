@@ -1,6 +1,6 @@
 # Use fancy theme
 Import-Module posh-git
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/paradox.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config '~/.cat_custom.omp.yaml' | Invoke-Expression
 
 # replace 'Ctrl+t' and 'Ctrl+r' with your preferred bindings:
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
