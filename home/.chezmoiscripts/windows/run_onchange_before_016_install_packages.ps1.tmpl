@@ -1,0 +1,17 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# Install onedark theme for yazi
+ya pkg add BennyOe/onedark || true
+
+# Install compress plugin
+ya pkg add KKV9/compress || true
+
+# end of windows
+{{- end -}}
+
+
+# end of install_packages
+{{- end -}}
+
