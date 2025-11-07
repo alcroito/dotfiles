@@ -36,6 +36,9 @@ Function amend { git commit --amend --verbose}
 Function gup { git pull --rebase }
 Function grhh { git reset --hard }
 Function undo { git reset --hard HEAD~1 }
+Function gcp { git cherry-pick $args[0] }
+Function gst { git status }
+Function gc { git commit }
 Function gco {
   git checkout $args[0]
 }
