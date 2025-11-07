@@ -1,10 +1,12 @@
 {{- if ne .chezmoi.os "windows" }}
+# Paths to ignore on Linux / macOS
 Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 Documents
 AppData/Local/nvim/init.vim
 AppData
 .chezmoiscripts/windows/**
 {{- else }}
+# Paths to ignore on Windows
 .config/nvim/init.vim
 .zprofile
 .chezmoiscripts/unix/**
