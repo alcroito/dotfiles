@@ -10,7 +10,6 @@ AppData
 .config/nvim/init.vim
 .zprofile
 .chezmoiscripts/unix/**
-.tigrc
 private_Library/**
 {{- end }}
 
