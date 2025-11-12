@@ -12,51 +12,39 @@
 # https://github.com/jwnmulder/dotfiles/blob/main/README.md
 # https://github.com/LeoCalbi/dotfiles/blob/master/home/.chezmoiscripts/before/run_once_before_02_system_setup.ps1
 
-# upgrade choco .exe and add choco to PATH
-powershell.exe Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-$env:Path += ';$env:ALLUSERSPROFILE\chocolatey\bin'
-
-choco upgrade chocolatey
-choco feature enable -n allowGlobalConfirmation
-
-# install scoop
-#powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
-#powershell -NoProfile -ExecutionPolicy Bypass -Command "irm get.scoop.sh -outfile 'scoop_install.ps1'"
-#.\scoop_install.ps1 -RunAsAdmin
-
-# dev tools
-{{ if .install_nvim -}}
-choco upgrade neovim -y
-{{- end -}}
-
-choco upgrade ag -y
-choco upgrade fzf -y
-choco upgrade zoxide -y
-# choco install mise -y
-scoop install mise
-mise use yazi
-
-{{ if .install_nvim -}}
-# Install vim-plug for neovim
-iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
-# end install_nvim
-{{- end -}}
+echo "Installing/upgrading developer tools"
 
 # Refresh path
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
 
-{{ if .install_nvim_plugs -}}
-# Install neovim plugins
-$nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
-& "$nvim" --headless '+qall'
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
-& "$nvim" --headless '+PlugInstall!' '+qall'
-& "$nvim" --headless '+UpdateRemotePlugins' '+qall'
+$IsElevated = 'true' -eq (gsudo status IsElevated)
 
-# end of install nvim plugins
-{{- end -}}
+if ($IsElevated -eq $false) {
+  Write-Warning "This script requires local admin privileges. Elevating..."
+  gsudo "& '$($MyInvocation.MyCommand.Source)'" $args
+  if ($LastExitCode -eq 999 ) {
+    Write-error 'Failed to elevate.'
+  }
+  return
+}
+
+# upgrade choco .exe and add choco to PATH
+#powershell.exe Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+$env:Path += ';$env:ALLUSERSPROFILE\chocolatey\bin'
+
+#choco upgrade chocolatey
+choco feature enable -n allowGlobalConfirmation
+
+# dev tools
+
+echo "Installing/upgrading developer tools"
+
+choco upgrade ag -y
+choco upgrade fzf -y
+choco upgrade zoxide -y
+
+echo "Finished installing/upgrading developer tools"
 
 # end of windows
 {{- end -}}

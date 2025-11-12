@@ -10,7 +10,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/alcroito/dotfiles/main/ins
 
 ### Windows
 
-Run the following command in PowerShell as an **administrator**:
+Run the following command in PowerShell **NOT** as an administrator:
 
 ```powershell
 iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/alcroito/dotfiles/main/install.ps1'))

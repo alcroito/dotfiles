@@ -1,0 +1,48 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+echo "Installing choco"
+# Self-elevate the script if required
+#if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+#  if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
+#    $CommandLine = "-File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+#    Start-Process -Wait -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+#    Exit
+#  }
+#}
+
+# Refresh path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+
+$IsElevated = 'true' -eq (gsudo status IsElevated)
+
+if ($IsElevated -eq $false) {
+  Write-Warning "This script requires local admin privileges. Elevating..."
+  gsudo "& '$($MyInvocation.MyCommand.Source)'" $args
+  if ($LastExitCode -eq 999 ) {
+    Write-error 'Failed to elevate.'
+  }
+  return
+}
+
+# Update winget to get rid of blue line and endless spinning in terminal tab
+# https://github.com/microsoft/winget-cli/discussions/3964
+# December 2023
+# https://github.com/microsoft/winget-cli/releases/download/v1.6.3482/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+#$url = "https://github.com/microsoft/winget-cli/releases/download/v1.6.3482/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+#$outpath = "winget.msixbundle"
+#(New-Object System.Net.WebClient).DownloadFile($url, $outpath)
+#Add-AppxPackage $outpath
+
+# Install choco
+echo "Installing choco"
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+echo "Finished installing choco"
+
+# end of windows
+{{- end -}}
+
+# end of install_packages
+{{- end -}}
+

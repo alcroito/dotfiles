@@ -1,0 +1,19 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# install scoop
+echo "Installing scoop"
+if (!(Get-Command scoop -ErrorAction SilentlyContinue)) {
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
+  #powershell -NoProfile -ExecutionPolicy Bypass -Command "irm get.scoop.sh -outfile 'scoop_install.ps1'"
+  #.\scoop_install.ps1 -RunAsAdmin
+  echo "Finished installing scoop"
+}
+
+# end of windows
+{{- end -}}
+
+# end of install_packages
+{{- end -}}
+

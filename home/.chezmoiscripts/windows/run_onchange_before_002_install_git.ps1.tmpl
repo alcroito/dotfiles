@@ -1,0 +1,32 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+echo "Installing or upgrading git"
+
+# Refresh path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+
+$IsElevated = 'true' -eq (gsudo status IsElevated)
+
+if ($IsElevated -eq $false) {
+  Write-Warning "This script requires local admin privileges. Elevating..."
+  gsudo "& '$($MyInvocation.MyCommand.Source)'" $args
+  if ($LastExitCode -eq 999 ) {
+    Write-error 'Failed to elevate.'
+  }
+  return
+}
+
+# Try to install git before calling chezmoi, hopefully having it in Path by then, so that the
+# neovim PlugInstall command can work
+echo "Installing or upgrading git"
+choco upgrade git --confirm
+echo "Finished installing or upgrading git"
+
+# end of windows
+{{- end -}}
+
+# end of install_packages
+{{- end -}}
+
