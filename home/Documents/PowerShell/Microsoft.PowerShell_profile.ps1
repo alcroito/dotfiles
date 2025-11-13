@@ -52,6 +52,10 @@ $env:EDITOR = "nvim.exe"
 
 . "$PSScriptRoot\Microsoft.PowerShell_profile_machine_specific.ps1"
 
+# For chezmoi bin dir
+$env:Path = "$HOME\bin;" + $env:Path
+$env:Path = "$HOME\.local\bin;" + $env:Path
+
 # FZF options
 $env:FZF_DEFAULT_OPTS='--color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108 --color info:108,prompt:109,spinner:108,pointer:168,marker:168'
 $env:FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind ?:toggle-preview"
