@@ -7,8 +7,15 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.
 
 # dev tools
 echo "Installing non-admin dev tools mise and yazi"
+scoop bucket add extras
 scoop install mise
 mise use -g yazi
+
+scoop install sysinternals
+scoop install ripgrep
+scoop install fzf
+scoop install zoxide
+scoop install ag
 # echo "Finished installing non-admin dev tools"
 
 # end of windows
