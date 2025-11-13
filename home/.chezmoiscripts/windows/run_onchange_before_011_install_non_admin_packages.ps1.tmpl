@@ -7,15 +7,26 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.
 
 # dev tools
 echo "Installing non-admin dev tools mise and yazi"
+$pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
+
 scoop bucket add extras
-scoop install mise
+
+# User powershell 7 directly
+# Otherwise chezmoi defaults to running powershell 5, and if chezmoi is
+#   called within a session of powershell 7, that breaks package
+#   installation with:
+#      The term 'Get-FileHash' is not recognized
+# More info at
+# https://github.com/twpayne/chezmoi/issues/2589
+
+& "$pwsh_path" -c 'scoop install mise'
 mise use -g yazi
 
-scoop install sysinternals
-scoop install ripgrep
-scoop install fzf
-scoop install zoxide
-scoop install ag
+& "$pwsh_path" -c 'scoop install sysinternals'
+& "$pwsh_path" -c 'scoop install ripgrep'
+& "$pwsh_path" -c 'scoop install fzf'
+& "$pwsh_path" -c 'scoop install zoxide'
+& "$pwsh_path" -c 'scoop install ag'
 # echo "Finished installing non-admin dev tools"
 
 # end of windows
