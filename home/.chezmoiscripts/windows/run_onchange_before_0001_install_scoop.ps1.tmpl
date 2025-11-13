@@ -2,12 +2,25 @@
 
 {{- if eq .chezmoi.os "windows" }}
 
+function Test-IsElevated {
+  return (New-Object Security.Principal.WindowsPrincipal(
+    [Security.Principal.WindowsIdentity]::GetCurrent()))
+    .IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 # install scoop
 echo "Installing scoop"
 if (!(Get-Command scoop -ErrorAction SilentlyContinue)) {
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
-  #powershell -NoProfile -ExecutionPolicy Bypass -Command "irm get.scoop.sh -outfile 'scoop_install.ps1'"
-  #.\scoop_install.ps1 -RunAsAdmin
+  $IsElevated = Test-IsElevated
+
+  # Check whether the shell is admin or not, and install scoop accordingly
+  if ($IsElevated -eq $false) {
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb get.scoop.sh | iex"
+  } else {
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "irm get.scoop.sh -outfile 'scoop_install.ps1'"
+    .\scoop_install.ps1 -RunAsAdmin
+  }
+
   echo "Finished installing scoop"
 }
 
