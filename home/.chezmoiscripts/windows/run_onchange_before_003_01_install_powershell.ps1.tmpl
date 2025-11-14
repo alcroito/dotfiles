@@ -23,6 +23,11 @@ echo "Installing powershell 7"
 choco upgrade powershell-core --confirm
 echo "Finished installing powershell 7"
 
+{{- if lt (atoi .chezmoi.windowsVersion.currentBuild) 22000 }}
+echo "Installing oh-my-posh via Chocolatey for Windows 10"
+choco upgrade oh-my-posh --confirm
+{{- end }}
+
 # end of windows
 {{- end -}}
 
