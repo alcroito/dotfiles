@@ -8,6 +8,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.
 $pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
 
 echo "Installing yazi packages"
+# yazi is installed by mise, so need to do it via pwsh 7 where the profile sets up mise.
 # Install onedark theme for yazi
 & "$pwsh_path" -c 'ya pkg add BennyOe/onedark'
 
