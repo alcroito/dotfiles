@@ -5,6 +5,13 @@ Documents
 AppData/Local/nvim/init.vim
 AppData
 .chezmoiscripts/windows/**
+
+{{ if eq .chezmoi.os "linux" }}
+# macOS paths to ignore on Linux
+private_Library/**
+Library/**
+{{ end }}
+
 {{- else }}
 # Paths to ignore on Windows
 .config/nvim/init.vim
