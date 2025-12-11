@@ -1,0 +1,19 @@
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env bash
+{{ end -}}
+
+{{ if .install_packages -}}
+{{ if .install_secrets -}}
+
+if [ ! -f "$HOME/.local/bin/pass-cli" ]; then
+  echo "Installing proton pass cli"
+  curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
+else
+  echo "proton pass cli binary already present"
+fi
+
+# end of install_secrets
+{{ end -}}
+
+# end of install_packages
+{{ end -}}

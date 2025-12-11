@@ -11,5 +11,6 @@ AppData
 .zprofile
 .chezmoiscripts/unix/**
 private_Library/**
+private_dot_ssh/**
 {{- end }}
 

@@ -1,0 +1,3 @@
+{{- if .install_secrets -}}
+{{ (secretJSON "item" "view" "--output" "json" "pass://PersonalSecrets/work_ssh_2025_dec").item.content.content.SshKey.public_key }}
+{{- end -}}

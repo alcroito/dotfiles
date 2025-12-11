@@ -1,0 +1,11 @@
+{{- if .install_secrets -}}
+Host codereview.qt-project.org
+Port 29418
+User alexandru.croitor
+{{- if eq .osid "darwin" }}
+AddKeysToAgent yes
+UseKeychain yes
+{{- end }}
+Ciphers +aes256-cbc
+IdentityFile ~/.ssh/work_ssh_2025_dec
+{{- end -}}

@@ -1,0 +1,26 @@
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env bash
+{{ end -}}
+
+{{ if .install_secrets -}}
+
+CONFIG_FILE="$HOME/.ssh/config"
+INCLUDE_LINE="Include ~/.ssh/config_managed"
+
+# Check if file exists and has the include line at the top
+if ! head -n 1 "$CONFIG_FILE" 2>/dev/null | grep -q "^$INCLUDE_LINE$"; then
+    # If file exists, prepend the line while preserving content
+    if [ -f "$CONFIG_FILE" ]; then
+        cp "$CONFIG_FILE" "$CONFIG_FILE.tmp"
+        echo "$INCLUDE_LINE" > "$CONFIG_FILE"
+        cat "$CONFIG_FILE.tmp" >> "$CONFIG_FILE"
+        rm -f "$CONFIG_FILE.tmp"
+    else
+        # If file doesn't exist, create it with the include line
+        echo "$INCLUDE_LINE" > "$CONFIG_FILE"
+    fi
+fi
+
+# end of install_secrets
+{{ end -}}
+

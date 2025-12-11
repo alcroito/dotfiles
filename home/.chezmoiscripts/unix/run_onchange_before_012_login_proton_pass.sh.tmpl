@@ -1,0 +1,11 @@
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env bash
+{{ end -}}
+
+{{ if .install_secrets -}}
+
+pass-cli login
+
+# end of install_secrets
+{{ end -}}
+
