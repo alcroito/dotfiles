@@ -47,9 +47,13 @@ sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 vim_path=/usr/local/bin/nvim
 if [ ! -f "$vim_path" ]; then
   echo "Installing neovim"
+  echo "Downloading https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage"
   ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage )
+  echo "Setting execute permissions for neovim"
   sudo chmod a+x /usr/local/bin/nvim-linux-{{ .arch_alt }}.appimage
+  echo "Moving neovim to $vim_path"
   sudo mv /usr/local/bin/nvim-linux-{{ .arch_alt }}.appimage $vim_path
+  echo "Creating vim symlink to neovim"
   sudo ln -s $vim_path /usr/local/bin/vim
 else
   echo "neovim binary already present /usr/local/bin/nvim"
