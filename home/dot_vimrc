@@ -554,3 +554,4 @@ let NERDTreeHijackNetrw = 0
 
 " Spellchecking git commit messages
 autocmd FileType gitcommit setlocal spell
+autocmd FileType markdown setlocal spell
