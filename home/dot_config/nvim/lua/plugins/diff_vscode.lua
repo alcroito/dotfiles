@@ -7,6 +7,6 @@ return {
     require("vscode-diff").setup({})
   end,
   keys = {
-    {"<leader>vd", "<cmd>:execute CodeDiff<cr>", desc = "VS Code Diff"},
+    {"<leader>vd", "<cmd>:CodeDiff<cr>", desc = "VS Code Diff"},
   },
 }
