@@ -43,13 +43,13 @@ sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig btop jq
+sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig btop jq atool
 
 ln -s $(which fdfind) ~/.local/bin/fd
 
 {{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing rhel-like dependencies"
-sudo dnf install -y ripgrep htop fd-find git zsh tig btop jq
+sudo dnf install -y ripgrep htop fd-find git zsh tig btop jq atool
 
 # Only install the silver searcher up to fedora 42 or centos / rocky / rhel 9.
 # Fedora 43+ and centos / rocky / rhel 10+ removed them
@@ -65,15 +65,18 @@ sudo dnf install -y the_silver_searcher
 
 {{ else if eq .osid "linux-opensuse-leap" -}}
 echo "Installing suse dependencies"
-sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop jq
+sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop jq atool
 
 {{ else if contains "linux-arch" .osid -}}
 echo "Installing arch dependencies"
-sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop jq
+sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop jq atool
 
 {{ else if eq .osid "linux-alpine" -}}
 echo "Installing alpine dependencies"
 sudo apk add ripgrep htop the_silver_searcher fd git zsh tig btop jq
+
+# Only available in edge/testing
+sudo apk add atool --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
 {{ else if eq .osid "darwin" -}}
 echo "Installing macOS dependencies"
@@ -83,7 +86,7 @@ if ! command -v brew &> /dev/null; then
 else
   echo "Homebrew already installed"
 fi
-brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq
+brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool
 brew install xcodesorg/made/xcodes
 {{ end -}}
 
