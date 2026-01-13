@@ -1,10 +1,9 @@
 return {
-  "esmuellert/vscode-diff.nvim",
-  branch = "next",
+  "esmuellert/codediff.nvim",
   dependencies = { "MunifTanjim/nui.nvim" },
   cmd = "CodeDiff",
   config = function()
-    require("vscode-diff").setup({})
+    require("codediff").setup({})
   end,
   keys = {
     {"<leader>vd", "<cmd>:CodeDiff<cr>", desc = "VS Code Diff"},
