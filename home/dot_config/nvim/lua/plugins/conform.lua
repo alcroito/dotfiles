@@ -14,9 +14,16 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      lua = { "stylua" },
       cpp = { "clang_format" },
+      go = { "gofmt" },
+      javascript = { "prettier" },
+      lua = { "stylua" },
+      python = { "ruff" },
+      rust = { "rustfmt" },
       terraform = { "hcl" },
+      toml = { "tombi" },
+      typescript = { "prettier" },
+      yaml = { "yamlfmt" },
     },
   },
 }
