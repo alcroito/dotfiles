@@ -3,6 +3,7 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
+  preset = "helix",
    triggers = {
      { "<auto>", mode = "nixsotc" },
      { "a", mode = { "n", "v" } },

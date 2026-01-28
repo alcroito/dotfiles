@@ -1,6 +1,7 @@
 return {
   "folke/snacks.nvim",
   opts = {
+    toggle = {},
     picker = {
       matcher = {
         cwd_bonus = true,
@@ -31,7 +32,7 @@ return {
         -- See https://github.com/folke/snacks.nvim/discussions/1768#discussioncomment-13243591
         cancel = function(picker) --[[Override]]
           picker:norm(function()
-            local main = require('snacks.picker.core.main').new { float = false, file = false, current = true }
+            local main = require("snacks.picker.core.main").new({ float = false, file = false, current = true })
             vim.api.nvim_set_current_win(main:get())
             picker:close()
           end)
