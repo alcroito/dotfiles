@@ -23,6 +23,8 @@ SPACESHIP_DIR_TRUNC_REPO="false"
 
 SPACESHIP_GIT_BRANCH_COLOR="yellow"
 
+SPACESHIP_EXIT_CODE_SHOW="true"
+
 # Only load what you actually use
 SPACESHIP_PROMPT_ORDER=(
     user
