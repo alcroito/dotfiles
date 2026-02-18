@@ -7,6 +7,11 @@ set show-untracked = false
 set log-options = --show-signature
 set diff-options = --show-signature
 bind diff 7 !git diff %(commit)^ %(commit)
+#bind generic d >sh -c "DELTA_PAGER='less -RKc' git show %(commit)"
+bind diff d >sh -c "git show %(commit) | delta --paging always --side-by-side --line-numbers"
+bind diff D >sh -c "git show %(commit) | delta --paging always --side-by-side --line-numbers"
+#bind main <F4> !git difftool -t difftastic -d %(commit)^!
+#bind diff D :toggle word-diff
 
 bind generic + !git commit --amend
 
