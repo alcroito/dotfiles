@@ -6,3 +6,4 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Activate mise
 eval "$(/opt/homebrew/bin/mise activate zsh)"
+

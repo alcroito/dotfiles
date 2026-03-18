@@ -18,6 +18,12 @@
 {{-   template "zshrc_plugins_arch" . -}}
 {{- end -}}
 
+{{- if eq .chezmoi.arch "arm64" -}}
+{{-   template "zshrc_macos_common_arm" . -}}
+{{- else -}}
+{{-   template "zshrc_macos_common_intel" . -}}
+{{- end -}}
+
 {{- template "zshrc_oh_my_zsh" . -}}
 
 {{- if eq .osid "darwin" -}}
@@ -34,12 +40,6 @@
 {{   template "zshrc_macos_home" . }}
 {{- else if eq .machine_id "work_macbook_pro_arm" -}}
 {{-   template "zshrc_macos_work_arm" . -}}
-{{- end -}}
-
-{{- if eq .chezmoi.arch "arm64" -}}
-{{-   template "zshrc_macos_common_arm" . -}}
-{{- else -}}
-{{-   template "zshrc_macos_common_intel" . -}}
 {{- end -}}
 
 {{- template "zshrc_macos_common_post" . -}}
