@@ -3,7 +3,7 @@ Import-Module posh-git
 oh-my-posh init pwsh --config '~/.cat_custom.omp.yaml' | Invoke-Expression
 
 # replace 'Ctrl+t' and 'Ctrl+r' with your preferred bindings:
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+#Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 # Increase PS command history
 Set-PSReadlineOption -MaximumHistoryCount 50000
@@ -59,7 +59,7 @@ $env:Path = "$HOME\.local\bin;" + $env:Path
 # FZF options
 $env:FZF_DEFAULT_OPTS='--color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108 --color info:108,prompt:109,spinner:108,pointer:168,marker:168'
 $env:FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind ?:toggle-preview"
-Import-Module PSFzf
+#Import-Module PSFzf
 
 # Set yazi preview helper
 $env:YAZI_FILE_ONE = "C:\Program Files\Git\usr\bin\file.exe"
@@ -119,3 +119,4 @@ function Invoke-BatchFile
 #[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
 
 mise activate pwsh | Out-String | Invoke-Expression
+atuin init powershell --disable-up-arrow | Out-String | Invoke-Expression
