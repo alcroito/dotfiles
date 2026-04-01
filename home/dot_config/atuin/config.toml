@@ -33,7 +33,7 @@
 ## which search mode to use
 ## possible values: prefix, fulltext, fuzzy, skim
 # search_mode = "fuzzy"
-search_mode = "fuzzy"
+search_mode = "daemon-fuzzy"
 
 ## which filter mode to use
 ## possible values: global, host, session, directory
@@ -146,3 +146,6 @@ records = true
 [daemon]
 enabled = true
 autostart = true
+
+[ai]
+enabled = true
