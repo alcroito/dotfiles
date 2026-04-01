@@ -1,3 +1,9 @@
 {{- if .install_secrets -}}
+{{- if and (eq .chezmoi.os "windows") (or (env "SSH_CONNECTION") (env "SSH_CLIENT")) -}}
+# Warning: Skipping SSH private key retrieval - Windows Credential Manager is not accessible via SSH.
+# To complete setup from an RDP or local console session, run:
+#   {{ .chezmoi.sourceDir }}\..\scripts\windows\Clear-ChezmoiProtonPassState.ps1
+{{- else -}}
 {{ (secretJSON "item" "view" "--output" "json" "pass://PersonalSecrets/work_ssh_2025_dec").item.content.content.SshKey.private_key }}
+{{- end -}}
 {{- end -}}

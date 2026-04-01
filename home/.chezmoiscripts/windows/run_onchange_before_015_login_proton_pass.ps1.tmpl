@@ -1,0 +1,26 @@
+{{- if .install_secrets -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# Prepend Proton Pass CLI path directly
+$env:Path = "$env:LOCALAPPDATA\Programs\ProtonPass;" + $env:Path
+
+# Refresh path to ensure pass-cli is available
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";" + $env:Path
+
+# Check if running in SSH session
+if ($env:SSH_CONNECTION -or $env:SSH_CLIENT) {
+    Write-Warning "Skipping Proton Pass CLI login - Windows Credential Manager is not accessible via SSH."
+    Write-Host ""
+    Write-Host "To complete setup from an RDP or local console session, run:" -ForegroundColor Yellow
+    Write-Host "  {{ .chezmoi.sourceDir }}\..\scripts\windows\Clear-ChezmoiProtonPassState.ps1" -ForegroundColor White
+    Write-Host ""
+} else {
+    pass-cli login
+}
+
+# end of windows
+{{- end -}}
+
+# end of install_secrets
+{{- end -}}

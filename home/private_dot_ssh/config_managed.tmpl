@@ -8,4 +8,15 @@ UseKeychain yes
 {{- end }}
 Ciphers +aes256-cbc
 IdentityFile ~/.ssh/work_ssh_2025_dec
+
+{{- if eq .machine_id "chie" }}
+
+Host github.com
+User git
+AddKeysToAgent yes
+{{- if eq .osid "darwin" }}
+UseKeychain yes
+{{- end }}
+IdentityFile ~/.ssh/work_ssh_2025_dec
+{{- end }}
 {{- end -}}

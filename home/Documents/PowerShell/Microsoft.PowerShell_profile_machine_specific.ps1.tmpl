@@ -15,3 +15,8 @@ $env:Path = 'E:\dev\envs;' + $env:Path
 # Managing through mise now
 #$env:Path = 'E:\dev\cmakes\cmake-3.28.3\bin;' + $env:Path
 {{ end }}
+
+{{ if .install_secrets }}
+# Proton Pass CLI
+$env:Path = "$env:LOCALAPPDATA\Programs\ProtonPass;" + $env:Path
+{{ end }}

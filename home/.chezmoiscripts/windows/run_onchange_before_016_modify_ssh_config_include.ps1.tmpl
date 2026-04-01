@@ -1,0 +1,38 @@
+{{- if .install_secrets -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+$configFile = Join-Path $env:USERPROFILE ".ssh\config"
+$includeLine = "Include ~/.ssh/config_managed"
+
+# Ensure .ssh directory exists
+$sshDir = Join-Path $env:USERPROFILE ".ssh"
+if (!(Test-Path $sshDir)) {
+    New-Item -ItemType Directory -Force -Path $sshDir | Out-Null
+}
+
+# Check if file exists and has the include line at the top
+$needsInclude = $true
+if (Test-Path $configFile) {
+    $firstLine = Get-Content $configFile -First 1 -ErrorAction SilentlyContinue
+    if ($firstLine -eq $includeLine) {
+        $needsInclude = $false
+    }
+}
+
+if ($needsInclude) {
+    # If file exists, prepend the line while preserving content
+    if (Test-Path $configFile) {
+        $existingContent = Get-Content $configFile -Raw -ErrorAction SilentlyContinue
+        Set-Content -Path $configFile -Value "$includeLine`n$existingContent"
+    } else {
+        # If file doesn't exist, create it with the include line
+        Set-Content -Path $configFile -Value $includeLine
+    }
+}
+
+# end of windows
+{{- end -}}
+
+# end of install_secrets
+{{- end -}}
