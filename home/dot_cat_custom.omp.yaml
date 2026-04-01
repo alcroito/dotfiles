@@ -15,10 +15,6 @@ blocks:
     - type: prompt
       alignment: left
       segments:
-        - template: '{{.Icon}} '
-          foreground: p:os
-          type: os
-          style: plain
         - template: '{{ .UserName }}@{{ .HostName }} '
           foreground: p:blue
           type: session
@@ -46,7 +42,7 @@ blocks:
           foreground: p:lavender
           type: git
           style: plain
-        - template: 
+        - template: $
           foreground: p:closer
           type: text
           style: plain
