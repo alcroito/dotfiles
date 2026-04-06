@@ -18,10 +18,12 @@
 {{-   template "zshrc_plugins_arch" . -}}
 {{- end -}}
 
+{{- if eq .osid "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
 {{-   template "zshrc_macos_common_arm" . -}}
 {{- else -}}
 {{-   template "zshrc_macos_common_intel" . -}}
+{{- end -}}
 {{- end -}}
 
 {{- template "zshrc_oh_my_zsh" . -}}
