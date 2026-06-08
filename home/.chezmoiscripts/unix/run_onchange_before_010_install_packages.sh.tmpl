@@ -29,7 +29,7 @@ sudo dnf install -y epel-next-release
 sudo dnf install -y util-linux-user which
 {{ end -}}
 
-{{ if contains "linux-arch" .osid -}}
+{{ if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 echo "Installing arch dependencies"
 sudo localectl set-locale LANG=en_US.UTF-8
 sudo pacman -Sy --disable-sandbox --noconfirm which
@@ -67,7 +67,7 @@ sudo dnf install -y the_silver_searcher
 echo "Installing suse dependencies"
 sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
 
-{{ else if contains "linux-arch" .osid -}}
+{{ else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 echo "Installing arch dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
 

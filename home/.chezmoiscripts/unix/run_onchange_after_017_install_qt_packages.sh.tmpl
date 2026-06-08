@@ -33,7 +33,7 @@ sudo dnf install -y fontconfig-devel freetype-devel gtk3-devel libX11-devel libX
 sudo dnf install -y ccache
 {{ end -}}
 
-{{ if contains "linux-arch" .osid -}}
+{{ if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 # Install Qt dependencies for ArchLinux / Manjaro / EndeavourOS
 echo "Installing Qt build dependencies for Arch-based systems"
 sudo pacman -S --needed --noconfirm cmake ninja python3 base-devel git

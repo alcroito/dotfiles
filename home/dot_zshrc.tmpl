@@ -14,7 +14,7 @@
 {{-   template "zshrc_plugins_ubuntu" . -}}
 {{- else if eq .osid "linux-debian" -}}
 {{-   template "zshrc_plugins_ubuntu" . -}}
-{{- else if eq .osid "linux-arch" -}}
+{{- else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 {{-   template "zshrc_plugins_arch" . -}}
 {{- end -}}
 
@@ -54,7 +54,7 @@
 
 {{- else if eq .osid "linux-ubuntu" -}}
 {{-   template "zshrc_work_ubuntu_or_arch" . -}}
-{{- else if eq .osid "linux-arch" -}}
+{{- else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 {{-   template "zshrc_work_ubuntu_or_arch" . -}}
 {{- end -}}
 

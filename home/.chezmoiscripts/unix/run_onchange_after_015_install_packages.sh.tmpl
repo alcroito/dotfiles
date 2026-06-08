@@ -31,7 +31,7 @@ echo "Installing neovim dependencies"
 sudo zypper install -y libfuse2 fuse
 {{ end -}}
 
-{{ if contains "linux-arch" .osid -}}
+{{ if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 # Install neovim dependencies
 echo "Installing neovim dependencies"
 sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
