@@ -1,7 +1,8 @@
 return {
-  "FabijanZulj/blame.nvim",
+  "hujianxin/blame.nvim",
+  --"FabijanZulj/blame.nvim",
   opts = {
-    commit_detail_view = "tab",
+    --commit_detail_view = "tab",
     mappings = {
         commit_info = "i",
         stack_push = ",",
