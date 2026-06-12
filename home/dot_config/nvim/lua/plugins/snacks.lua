@@ -172,9 +172,8 @@ return {
           local pattern, pargs = Snacks.picker.util.parse(ctx.filter.search)
           vim.list_extend(run, pargs)
           table.insert(run, string.format('--pattern=%s', pattern))
-          return require('snacks.picker.source.proc').proc({
-            opts,
-            {
+          return require('snacks.picker.source.proc').proc(
+            ctx:opts({
               notify = false,
               cmd = run[1],
               args = vim.list_slice(run, 2),
@@ -189,8 +188,9 @@ return {
                   item.pos = { tonumber(start.line) + 1, tonumber(start.column) }
                 end
               end,
-            },
-          }, ctx)
+            }),
+            ctx
+          )
         end,
       }
     end, desc = "Find ast-grep" },
