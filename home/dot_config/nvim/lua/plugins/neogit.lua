@@ -6,6 +6,9 @@ return {
     "sindrets/diffview.nvim",        -- optional - Diff integration
   },
   config = true,
+  integrations = {
+    snacks = true,
+  },
   keys = {
     { "<leader>ng", "<cmd>Neogit<CR>", desc = "NeoGit" },
   },
