@@ -67,6 +67,54 @@ local plugin = {
       require("copilot.client").teardown()
     else
       require("copilot").setup(opts)
+
+      -- Workaround for quicker.nvim#72 (colocated with the copilot config since it
+      -- only matters when copilot is actually running). copilot races on a
+      -- scheduled BufEnter and attaches its LSP client to a buffer that only
+      -- becomes the quickfix buffer a tick later (e.g. snacks.nvim picker ->
+      -- quickfix), so its should_attach buftype guard is bypassed. Once attached,
+      -- editing/rewriting the quickfix buffer drives Neovim's incremental sync
+      -- into the compute_start_range / compute_end_range assertions in
+      -- vim/lsp/sync.lua.
+      --
+      -- An LSP has no business on a quickfix buffer, so detach any client that
+      -- ends up on one. Two hooks are needed:
+      --   * LspAttach: catches clients attaching while the buffer is already special.
+      --   * FileType qf: catches the race where copilot attached earlier (while the
+      --     buffer still had buftype="") and the buffer only became a quickfix
+      --     buffer afterwards -- LspAttach won't fire again for it.
+      local function detach_lsp_from_special_buf(bufnr)
+        if not vim.api.nvim_buf_is_valid(bufnr) then
+          return
+        end
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+          pcall(vim.lsp.buf_detach_client, bufnr, client.id)
+        end
+      end
+
+      local aug = vim.api.nvim_create_augroup("copilot_qf_detach", { clear = true })
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = aug,
+        desc = "Detach LSP clients from non-file buffers -- quicker.nvim#72",
+        callback = function(args)
+          local bt = vim.bo[args.buf].buftype
+          if bt ~= "" and bt ~= "help" then
+            vim.schedule(function()
+              detach_lsp_from_special_buf(args.buf)
+            end)
+          end
+        end,
+      })
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "qf",
+        group = aug,
+        desc = "Detach LSP clients from quickfix buffers -- quicker.nvim#72",
+        callback = function(args)
+          vim.schedule(function()
+            detach_lsp_from_special_buf(args.buf)
+          end)
+        end,
+      })
     end
   end,
 }
