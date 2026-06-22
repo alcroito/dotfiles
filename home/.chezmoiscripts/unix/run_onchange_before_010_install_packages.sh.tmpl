@@ -128,9 +128,11 @@ sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ if eq .chezmoi.os "linux" -}}
 # Change the default shell Linux
 zsh_path=$(which zsh)
-if [ "$SHELL" != "$zsh_path" ]; then
-  echo "Changing default shell to zsh"
-  sudo chsh -s $zsh_path
+current_user=$(id -un)
+current_shell=$(getent passwd "$current_user" | cut -d: -f7)
+if [ -n "$zsh_path" ] && [ "$current_shell" != "$zsh_path" ]; then
+  echo "Changing default shell to zsh for $current_user"
+  sudo chsh -s "$zsh_path" "$current_user"
 else
   echo "Default shell is already zsh"
 fi
