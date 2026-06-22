@@ -22,14 +22,40 @@
 {{- end -}}
 
 {{- $location := promptStringOnce . "location" "home or work or vm" "work" -}}
-{{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" false -}}
-{{- $install_secrets := promptBoolOnce . "install_secrets" "Should secrets be installed" false -}}
-{{- $install_nvim := promptBoolOnce . "install_nvim" "Should nvim be installed" false -}}
+
+{{/* On vm, force these on without prompting. */}}
+{{- $install_packages := true -}}
+{{- $install_nvim := true -}}
+{{- $install_nvim_deps := true -}}
+{{- $install_nvim_plugs := true -}}
+
+{{- if ne $location "vm" -}}
+{{- $install_packages = promptBoolOnce . "install_packages" "Should packages be installed" false -}}
+{{- $install_nvim = promptBoolOnce . "install_nvim" "Should nvim be installed" false -}}
+{{- $install_nvim_deps = promptBoolOnce . "install_nvim_deps" "Should nvim dependencies be installed" false -}}
+{{- $install_nvim_plugs = promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
+{{- end -}}
+
+{{/* Secrets only prompted for home; disabled (no prompt) for work and vm. No bob anywhere. */}}
+{{- $install_secrets := false -}}
 {{- $install_nvim_bob := false -}}
-{{- $install_nvim_deps := promptBoolOnce . "install_nvim_deps" "Should nvim dependencies be installed" false -}}
-{{- $install_nvim_plugs := promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
-{{- $install_qt_deps := promptBoolOnce . "install_qt_deps" "Should dependencies to build qt be installed" false -}}
-{{- $machine_id := promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
+
+{{- if eq $location "home" -}}
+{{- $install_secrets = promptBoolOnce . "install_secrets" "Should secrets be installed" false -}}
+{{- end -}}
+
+{{/* Qt build deps only relevant for work; disabled (no prompt) for home and vm. */}}
+{{- $install_qt_deps := false -}}
+{{- if eq $location "work" -}}
+{{- $install_qt_deps = promptBoolOnce . "install_qt_deps" "Should dependencies to build qt be installed" false -}}
+{{- end -}}
+
+{{- $machine_id := "" -}}
+{{- if eq $location "vm" -}}
+{{- $machine_id = printf "%s-%s" .chezmoi.os (randAlphaNum 6) -}}
+{{- else -}}
+{{- $machine_id = promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
+{{- end -}}
 
 {{- $name := "alcroito" -}}
 {{- $email := "alcroito.code@pm.me" -}}
