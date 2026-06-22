@@ -88,7 +88,7 @@ fi
 {{ if eq .chezmoi.os "linux" -}}
 if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
   echo "Installing atuin"
-  curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+  curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive
 else
   echo "atuin binary already present"
 fi
