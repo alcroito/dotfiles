@@ -33,5 +33,7 @@ fi
 ################################################################################
 curl -sfL https://get.chezmoi.io/lb | sh
 
-$HOME/.local/bin/chezmoi init --apply https://github.com/alcroito/dotfiles.git
+# Any arguments passed to this script are forwarded to `chezmoi init`
+# (e.g. `-- --promptString "home or work or vm=vm"` to run non-interactively;
+$HOME/.local/bin/chezmoi init --apply "$@" https://github.com/alcroito/dotfiles.git
 
