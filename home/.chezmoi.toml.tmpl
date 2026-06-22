@@ -25,7 +25,7 @@
 {{- $install_packages := promptBoolOnce . "install_packages" "Should packages be installed" false -}}
 {{- $install_secrets := promptBoolOnce . "install_secrets" "Should secrets be installed" false -}}
 {{- $install_nvim := promptBoolOnce . "install_nvim" "Should nvim be installed" false -}}
-{{- $install_nvim_bob := promptBoolOnce . "install_nvim_bob" "Should nvim be installed via bob" false -}}
+{{- $install_nvim_bob := false -}}
 {{- $install_nvim_deps := promptBoolOnce . "install_nvim_deps" "Should nvim dependencies be installed" false -}}
 {{- $install_nvim_plugs := promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
 {{- $install_qt_deps := promptBoolOnce . "install_qt_deps" "Should dependencies to build qt be installed" false -}}
