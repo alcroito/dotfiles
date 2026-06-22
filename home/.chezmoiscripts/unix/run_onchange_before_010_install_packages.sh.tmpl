@@ -88,6 +88,11 @@ else
 fi
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux
 brew install xcodesorg/made/xcodes
+
+{{ else -}}
+echo "ERROR: unsupported osid '{{ .osid }}' (os-release ID='{{ .chezmoi.osRelease.id }}', ID_LIKE='{{ .chezmoi.osRelease.idLike | default "" }}'); no package manager branch matched, so no packages were installed." >&2
+echo "Add a branch for this distro in run_onchange_before_010_install_packages.sh.tmpl, or normalize its id to a known osid in .chezmoi.toml.tmpl." >&2
+exit 1
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
