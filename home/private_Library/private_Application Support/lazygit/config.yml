@@ -5,6 +5,7 @@ git:
   # If true, periodically refresh files and submodules
   autoRefresh: false
 gui:
+  scrollHeight: 20
   theme:
     activeBorderColor:
       - '#f0c6c6'
