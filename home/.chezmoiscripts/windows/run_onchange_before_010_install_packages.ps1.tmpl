@@ -31,7 +31,7 @@
 # upgrade choco .exe and add choco to PATH
 #powershell.exe Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-$env:Path += ';$env:ALLUSERSPROFILE\chocolatey\bin'
+$env:Path += ";$env:ALLUSERSPROFILE\chocolatey\bin"
 
 #choco upgrade chocolatey
 #choco feature enable -n allowGlobalConfirmation
