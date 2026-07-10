@@ -21,3 +21,8 @@ private_Library/**
 private_dot_ssh/**
 {{- end }}
 
+{{ if and (ne .location "work") (ne .location "vm") }}
+# Qt skills only wanted on work / vm machines
+.claude/skills/writing-qt-documentation/**
+.claude/skills/writing-qt-commit-messages/**
+{{ end }}
