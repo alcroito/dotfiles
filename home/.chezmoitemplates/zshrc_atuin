@@ -1,17 +1,14 @@
 # My atuin setup
 {{- if eq .chezmoi.os "linux" }}
 . "$HOME/.atuin/bin/env"
-{{- else }}
-#eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
 {{- end }}
 
 atuin-setup() {
     if ! which atuin &> /dev/null; then return 1; fi
     bindkey '^E' _atuin_search_widget
 
-    export ATUIN_NOBIND="true"
-    eval "$(atuin init "zsh")"
-    fzf-atuin-history-widget() {
+    eval "$(atuin init zsh --disable-up-arrow --disable-ctrl-r)"
+        fzf-atuin-history-widget() {
         local selected num
         setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2>/dev/null
 
