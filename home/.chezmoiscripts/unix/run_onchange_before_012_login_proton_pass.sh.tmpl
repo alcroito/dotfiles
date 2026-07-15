@@ -3,21 +3,20 @@
 {{ end -}}
 
 {{ if .install_secrets -}}
-
 {{ if eq .location "vm" -}}
-# Headless VM has no keyring or interactive session, so keychain access fails with
-# "User interaction is not allowed". Store the encryption key on the filesystem instead.
-export PROTON_PASS_KEY_PROVIDER=fs
-{{ end -}}
-
-# Skip login when a session already exists, otherwise `pass-cli login` exits
-# non-zero with "Already authenticated" and fails the script.
+# Ephemeral VM: bootstrap a filesystem-backed, scoped, 1-day PAT session up front
+# (with a TTY for the interactive login). The wrapper is the single source of truth
+# and is also chezmoi's [secret].command, so it re-bootstraps on its own if this
+# script is skipped (run_onchange) after a reboot or token expiry.
+"{{ .chezmoi.sourceDir }}/../scripts/unix/pass-cli-fs-login.sh"
+{{ else -}}
+# Desktop/laptop: interactive login backed by the OS keyring.
 if pass-cli info > /dev/null 2>&1; then
   echo "proton pass cli already authenticated, skipping login"
 else
   echo "Logging in to proton pass cli"
   pass-cli login
 fi
-
+{{ end -}}
 # end of install_secrets
 {{ end -}}
