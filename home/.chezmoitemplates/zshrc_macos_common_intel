@@ -2,5 +2,5 @@
 export GIT_EDITOR=/usr/local/bin/nvim
 
 # Activate mise
-eval "$(/usr/local/bin/mise activate zsh)"
+[ -x /usr/local/bin/mise ] && eval "$(/usr/local/bin/mise activate zsh)"
 
