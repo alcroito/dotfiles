@@ -1,0 +1,25 @@
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env bash
+{{ end -}}
+
+{{ if and .install_secrets (eq .location "vm") -}}
+
+AUTH_KEYS="$HOME/.ssh/authorized_keys"
+PUB_KEY='{{ (secretJSON "item" "view" "--output" "json" "pass://PersonalSecrets/work_ssh_2025_dec").item.content.content.SshKey.public_key | trim }}'
+
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+
+if [ -n "$PUB_KEY" ]; then
+  touch "$AUTH_KEYS"
+  chmod 600 "$AUTH_KEYS"
+  if ! grep -qxF "$PUB_KEY" "$AUTH_KEYS"; then
+    echo "Adding work ssh public key to authorized_keys"
+    echo "$PUB_KEY" >> "$AUTH_KEYS"
+  else
+    echo "work ssh public key already in authorized_keys"
+  fi
+fi
+
+# end of install_secrets
+{{ end -}}
