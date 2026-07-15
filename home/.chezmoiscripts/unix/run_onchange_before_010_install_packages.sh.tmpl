@@ -87,7 +87,7 @@ else
   echo "Homebrew already installed"
 fi
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux lazydocker
-brew install xcodesorg/made/xcodes
+# brew install xcodesorg/made/xcodes
 
 {{ else -}}
 echo "ERROR: unsupported osid '{{ .osid }}' (os-release ID='{{ .chezmoi.osRelease.id }}', ID_LIKE='{{ .chezmoi.osRelease.idLike | default "" }}'); no package manager branch matched, so no packages were installed." >&2
