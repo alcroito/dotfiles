@@ -94,5 +94,11 @@
     arch_alt = {{ $arch_alt | quote }}
 
 [secret]
+{{- if and (ne .chezmoi.os "windows") (eq $location "vm") }}
+  # Headless VM: pass-cli has no keyring. This wrapper sets the filesystem key
+  # provider and ensures a session before each lookup (see the script for why).
+  command = "{{ .chezmoi.sourceDir }}/../scripts/unix/pass-cli-fs-login.sh"
+{{- else }}
   command = "pass-cli"
+{{- end }}
 
