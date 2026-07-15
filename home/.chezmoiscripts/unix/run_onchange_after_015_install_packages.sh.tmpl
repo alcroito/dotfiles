@@ -67,6 +67,8 @@ sudo apk add neovim
 {{ else if eq .osid "darwin" -}}
 # Install neovim
 echo "Installing neovim"
+# Homebrew 6.0 makes "ask mode" (y/n confirmation) the default; disable it for non-interactive installs.
+export HOMEBREW_NO_ASK=1
 brew install neovim
 {{ end -}}
 

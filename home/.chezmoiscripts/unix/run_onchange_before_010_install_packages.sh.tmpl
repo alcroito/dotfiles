@@ -86,6 +86,8 @@ if ! command -v brew &> /dev/null; then
 else
   echo "Homebrew already installed"
 fi
+# Homebrew 6.0 makes "ask mode" (y/n confirmation) the default; disable it for non-interactive installs.
+export HOMEBREW_NO_ASK=1
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux lazydocker
 # brew install xcodesorg/made/xcodes
 
