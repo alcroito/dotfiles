@@ -21,6 +21,8 @@ alias cm='~/Dev/cmake/build/bin/cmake'
 alias dcm='~/Dev/cmake/debug_build/bin/cmake'
 alias cmtr='cm . --trace-redirect=a.txt'
 alias grev='git revise'
+# Newer oh-my-zsh renamed `gup` to `gpr`; keep `gup` working where the plugin lacks it.
+type gup &>/dev/null || alias gup='git pull --rebase'
 alias lg='lazygit'
 alias ldo='lazydocker'
 
