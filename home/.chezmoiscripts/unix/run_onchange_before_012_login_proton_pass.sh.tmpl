@@ -4,8 +4,20 @@
 
 {{ if .install_secrets -}}
 
-pass-cli login
+{{ if eq .location "vm" -}}
+# Headless VM has no keyring or interactive session, so keychain access fails with
+# "User interaction is not allowed". Store the encryption key on the filesystem instead.
+export PROTON_PASS_KEY_PROVIDER=fs
+{{ end -}}
+
+# Skip login when a session already exists, otherwise `pass-cli login` exits
+# non-zero with "Already authenticated" and fails the script.
+if pass-cli info > /dev/null 2>&1; then
+  echo "proton pass cli already authenticated, skipping login"
+else
+  echo "Logging in to proton pass cli"
+  pass-cli login
+fi
 
 # end of install_secrets
 {{ end -}}
-
