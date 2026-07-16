@@ -4,10 +4,22 @@ return {
   event = "VeryLazy",
   config = function()
     --  Mini surround instead of sandwhich
-    require("mini.surround").setup()
+    require("mini.surround").setup({
+      mappings = {
+        add = "ysa", -- Add surrounding in Normal and Visual modes
+        delete = "ysd", -- Delete surrounding
+        find = "ysf", -- Find surrounding (to the right)
+        find_left = "ysF", -- Find surrounding (to the left)
+        highlight = "ysh", -- Highlight surrounding
+        replace = "ysr", -- Replace surrounding
+
+        suffix_last = "l", -- Suffix to search with "prev" method
+        suffix_next = "n", -- Suffix to search with "next" method
+      },
+    })
 
     --require("mini.completion").setup({
-      --delay = { completion = 300, info = 100, signature = 50 },
+    --delay = { completion = 300, info = 100, signature = 50 },
     --})
 
     -- Mini files, for navigating files
