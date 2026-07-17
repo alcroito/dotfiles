@@ -21,6 +21,7 @@ return {
     local spec_treesitter = require("mini.ai").gen_spec.treesitter
     require('mini.extra').setup()
     require("mini.ai").setup({
+      n_lines = 500,
       custom_textobjects = {
         -- Makes `aB` equivalent to built-in `al`
         B = MiniExtra.gen_ai_spec.buffer(),
