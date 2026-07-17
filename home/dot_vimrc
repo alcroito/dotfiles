@@ -546,6 +546,10 @@ set updatetime=1000
 " class text object mappings.
 let g:gitgutter_map_keys = 0
 
+" Disable defaut 'gs' switch keymap because it conflicts with custom mini.ai 'gs'
+" prefix
+let g:switch_mapping = ""
+
 " Set text width to 71 chars for git commit message editing
 au FileType gitcommit setlocal tw=70
 
