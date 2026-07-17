@@ -156,6 +156,12 @@ return {
     { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word (Root Dir)", mode = { "n", "x" } },
     { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
     { "<leader><space>", function() Snacks.picker.files() end, desc = "Find Files (Root Dir)" },
+    { "<leader>lss", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols" },
+    { "<leader>lsS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols" },
+    { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+    { "gD", function() Snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
+    { "<leader>gr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
+    { "gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
 
 
     { "<leader>fast", function()
