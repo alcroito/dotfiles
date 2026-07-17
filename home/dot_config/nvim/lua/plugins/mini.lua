@@ -19,8 +19,14 @@ return {
     })
 
     local spec_treesitter = require("mini.ai").gen_spec.treesitter
+    require('mini.extra').setup()
     require("mini.ai").setup({
       custom_textobjects = {
+        -- Makes `aB` equivalent to built-in `al`
+        B = MiniExtra.gen_ai_spec.buffer(),
+        -- Makes `iL` equivalent to built-in `il`
+        L = MiniExtra.gen_ai_spec.line(),
+
         F = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
         c = spec_treesitter({ a = "@class.outer", i = "@class.inner" }),
         o = spec_treesitter({
