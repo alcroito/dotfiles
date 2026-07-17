@@ -18,6 +18,18 @@ return {
       },
     })
 
+    local spec_treesitter = require("mini.ai").gen_spec.treesitter
+    require("mini.ai").setup({
+      custom_textobjects = {
+        F = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
+        c = spec_treesitter({ a = "@class.outer", i = "@class.inner" }),
+        o = spec_treesitter({
+          a = { "@conditional.outer", "@loop.outer" },
+          i = { "@conditional.inner", "@loop.inner" },
+        }),
+      },
+    })
+
     --require("mini.completion").setup({
     --delay = { completion = 300, info = 100, signature = 50 },
     --})
