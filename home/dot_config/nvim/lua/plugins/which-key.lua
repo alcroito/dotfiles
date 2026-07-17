@@ -3,12 +3,15 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-  preset = "helix",
-   triggers = {
-     { "<auto>", mode = "nixsotc" },
-     { "a", mode = { "n", "v" } },
-   }
- },
+    win = {
+      width = 70,
+    },
+    preset = "helix",
+    triggers = {
+      { "<auto>", mode = "nixsotc" },
+      { "a", mode = { "n", "v" } },
+    },
+  },
   keys = {
     {
       "<leader>?",
