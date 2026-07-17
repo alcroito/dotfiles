@@ -542,6 +542,10 @@ autocmd BufWritePost suda://* call s:SudaProcessUndo('wundo!')
 " Set updatetime to 1sec for git gutter plugin
 set updatetime=1000
 
+" Disable gitgutter key mappings, since they conflict with mini.ai tresitter
+" class text object mappings.
+let g:gitgutter_map_keys = 0
+
 " Set text width to 71 chars for git commit message editing
 au FileType gitcommit setlocal tw=70
 
