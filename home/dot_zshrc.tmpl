@@ -65,10 +65,11 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{- end -}}
 
 {{- if eq .chezmoi.os "linux" -}}
-{{-   template "zshrc_zoxide" . -}}
 
 {{-   template "zshrc_atuin" . -}}
 
 {{-   template "zshrc_mise" . -}}
+
+{{-   template "zshrc_zoxide" . -}}
 
 {{- end -}}
