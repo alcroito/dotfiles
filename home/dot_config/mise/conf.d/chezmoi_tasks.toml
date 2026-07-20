@@ -1,0 +1,8 @@
+[tasks.chezmoi-clear-script-state]
+description = "Clear chezmoi script state so run_onchange scripts re-run on next apply"
+run = "chezmoi state delete-bucket --bucket=entryState"
+
+[tasks.chezmoi-rerun-scripts]
+description = "Clear chezmoi script state then re-apply so run_onchange scripts re-run"
+depends = ["chezmoi-clear-script-state"]
+run = "chezmoi apply"
