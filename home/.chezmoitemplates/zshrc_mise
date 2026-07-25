@@ -3,3 +3,7 @@ eval "$($HOME/.local/bin/mise activate zsh)"
 # Temporarily disable adding mise shims to PATH. It should in theory be enough to activate it.
 # export PATH="$HOME/.local/share/mise/shims:$PATH"
 
+if command -v fnox &>/dev/null; then
+  eval "$(fnox activate zsh)"
+fi
+
