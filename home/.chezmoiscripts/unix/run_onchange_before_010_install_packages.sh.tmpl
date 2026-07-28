@@ -101,11 +101,6 @@ echo "Add a branch for this distro in run_onchange_before_010_install_packages.s
 exit 1
 {{ end -}}
 
-{{ if eq .chezmoi.os "linux" -}}
-echo "Install zoxide"
-curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
-{{ end -}}
-
 {{ if ne .osid "windows" -}}
 # Install oh my zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
