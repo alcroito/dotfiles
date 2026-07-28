@@ -1,5 +1,5 @@
 return {
-  "sindrets/diffview.nvim",
+  "dlyongemallo/diffview-plus.nvim",
   opts = {
     view = {
       merge_tool = {
