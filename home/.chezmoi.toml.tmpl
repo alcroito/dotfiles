@@ -67,7 +67,16 @@
 
 {{- $machine_id := "" -}}
 {{- if eq $location "vm" -}}
-{{- $machine_id = printf "%s-%s" $osid (randAlphaNum 6) -}}
+{{/* Keep the random suffix from the config, otherwise every re-init renames the
+     vm. The osid prefix is rebuilt so it follows a distro change. */}}
+{{- $suffix := "" -}}
+{{- if hasKey . "machine_id" -}}
+{{- $suffix = .machine_id | splitList "-" | last -}}
+{{- end -}}
+{{- if eq $suffix "" -}}
+{{- $suffix = randAlphaNum 6 -}}
+{{- end -}}
+{{- $machine_id = printf "%s-%s" $osid $suffix -}}
 {{- else -}}
 {{- $machine_id = promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
 {{- end -}}
