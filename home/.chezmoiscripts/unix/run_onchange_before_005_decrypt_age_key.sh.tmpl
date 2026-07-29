@@ -14,7 +14,7 @@
 # The override exists so the missing-key and stale-key branches can be checked
 # without breaking the real key.
 key_path="${CHEZMOI_AGE_KEY_PATH:-$HOME/.config/chezmoi/key.txt}"
-recipient="{{ .chezmoi.config.age.recipient }}"
+recipient="{{ .age_recipient }}"
 source_key="{{ .chezmoi.sourceDir }}/key.txt.age"
 
 warn() {

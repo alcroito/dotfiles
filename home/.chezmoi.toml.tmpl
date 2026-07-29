@@ -79,11 +79,14 @@
     {{- $email = "alexandru.croitor@qt.io" -}}
 {{- end -}}
 
+{{/* Also in data, so scripts can read it. */}}
+{{- $age_recipient := "age1ysm2fsy3jzu5t8sw2wpgaw4jv754gmd0v58kjw0pmzyya5jtsu0qhfpd4w" -}}
+
 encryption = "age"
 
 [age]
   identity = "~/.config/chezmoi/key.txt"
-  recipient = "age1ysm2fsy3jzu5t8sw2wpgaw4jv754gmd0v58kjw0pmzyya5jtsu0qhfpd4w"
+  recipient = {{ $age_recipient | quote }}
 
 {{ if eq .chezmoi.os "windows" }}
 [cd]
@@ -102,6 +105,7 @@ encryption = "age"
     install_nvim_plugs = {{ $install_nvim_plugs }}
     install_qt_deps = {{ $install_qt_deps }}
     install_github_tokens = {{ $install_github_tokens }}
+    age_recipient = {{ $age_recipient | quote }}
     location = {{ $location | quote }}
     machine_id = {{ $machine_id | quote }}
     arch_alt = {{ $arch_alt | quote }}

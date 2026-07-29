@@ -82,11 +82,17 @@ echo "New recipient: $new_recipient"
 echo "Enter the NEW passphrase (you will be asked twice):"
 chezmoi age encrypt --passphrase --output="$source_dir/key.txt.age" "$tmp_dir/key.txt"
 
-matches="$(grep -c '^ *recipient = "age1' "$config_tmpl" || true)"
-[ "$matches" = "1" ] || die "expected 1 recipient line in $config_tmpl, found $matches"
+# The literal lives in the $age_recipient template variable, which feeds both
+# [age] recipient and [data] age_recipient, so there is only one line to rewrite.
+# -F throughout: a leading $ in a basic regex is not matched literally by every
+# grep implementation, and the pattern has to start with one.
+matches="$(grep -cF '$age_recipient := "age1' "$config_tmpl" || true)"
+[ "$matches" = "1" ] || die "expected 1 \$age_recipient line in $config_tmpl, found $matches"
 # BSD and GNU sed disagree on -i, so write out and move back.
-sed "s|^\( *\)recipient = \"age1[a-z0-9]*\"|\1recipient = \"$new_recipient\"|" \
+sed 's|\(\$age_recipient := \)"age1[a-z0-9]*"|\1"'"$new_recipient"'"|' \
   "$config_tmpl" > "$config_tmpl.new"
+grep -qF "\$age_recipient := \"$new_recipient\"" "$config_tmpl.new" ||
+  die "failed to rewrite the recipient in $config_tmpl"
 mv "$config_tmpl.new" "$config_tmpl"
 
 backup="$key_path.rotated-$(date +%Y%m%dT%H%M%S)"

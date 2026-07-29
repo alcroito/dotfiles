@@ -6,7 +6,7 @@
 # get a current age identity into place, or warn and let the apply continue.
 
 $keyPath = Join-Path $env:USERPROFILE ".config\chezmoi\key.txt"
-$recipient = "{{ .chezmoi.config.age.recipient }}"
+$recipient = "{{ .age_recipient }}"
 $sourceKey = "{{ .chezmoi.sourceDir }}\key.txt.age"
 
 function Write-Unauthenticated {
