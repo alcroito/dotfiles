@@ -77,3 +77,7 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_zoxide" . -}}
 
 {{- end -}}
+
+{{- if eq .location "vm" -}}
+{{-   template "zshrc_vm_prompt" . -}}
+{{- end -}}

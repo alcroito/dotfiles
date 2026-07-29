@@ -1,0 +1,10 @@
+
+# A VM's hostname is usually meaningless (localhost), so replace the %m part of
+# the theme's prompt with the machine id plus the address of this session.
+_vm_prompt_parts=(${=SSH_CONNECTION})
+_vm_prompt_ip="${_vm_prompt_parts[3]}"
+if [[ -z "$_vm_prompt_ip" ]] && (( $+commands[ip] )); then
+    _vm_prompt_ip="$(ip route get 1 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "src") { print $(i + 1); exit } }')"
+fi
+PROMPT="${PROMPT//\%m/{{ .machine_id }}${_vm_prompt_ip:+-$_vm_prompt_ip}}"
+unset _vm_prompt_parts _vm_prompt_ip
