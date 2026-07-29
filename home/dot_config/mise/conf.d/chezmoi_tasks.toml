@@ -6,3 +6,10 @@ run = "chezmoi state delete-bucket --bucket=entryState"
 description = "Clear chezmoi script state then re-apply so run_onchange scripts re-run"
 depends = ["chezmoi-clear-script-state"]
 run = "chezmoi apply"
+
+[tasks.chezmoi-rotate-age-key]
+description = "Rotate the chezmoi age identity and passphrase, re-encrypting all encrypted files"
+# raw connects the task to the real stdin/stdout so the passphrase and
+# confirmation prompts work.
+raw = true
+run = '"$(chezmoi source-path)/../scripts/unix/rotate-chezmoi-age-key.sh"'

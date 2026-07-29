@@ -6,7 +6,7 @@
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
 
 # dev tools
-echo "Installing non-admin dev tools mise and yazi"
+echo "Installing non-admin dev tools"
 $pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
 
 scoop bucket add extras
@@ -20,8 +20,6 @@ scoop bucket add extras
 # https://github.com/twpayne/chezmoi/issues/2589
 
 & "$pwsh_path" -c 'scoop install mise'
-mise use -g yazi
-mise use -g node
 
 & "$pwsh_path" -c 'scoop install sysinternals'
 & "$pwsh_path" -c 'scoop install ripgrep'

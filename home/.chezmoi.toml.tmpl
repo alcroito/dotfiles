@@ -59,6 +59,12 @@
 {{- $install_qt_deps = promptBoolOnce . "install_qt_deps" "Should dependencies to build qt be installed" false -}}
 {{- end -}}
 
+{{/* GitHub API tokens for mise and chezmoi, unlocked by the age key. */}}
+{{- $install_github_tokens := true -}}
+{{- if ne $location "vm" -}}
+{{- $install_github_tokens = promptBoolOnce . "install_github_tokens" "Should GitHub API tokens be installed" false -}}
+{{- end -}}
+
 {{- $machine_id := "" -}}
 {{- if eq $location "vm" -}}
 {{- $machine_id = printf "%s-%s" .chezmoi.os (randAlphaNum 6) -}}
@@ -72,6 +78,12 @@
     {{- $name = "Alexandru Croitor" -}}
     {{- $email = "alexandru.croitor@qt.io" -}}
 {{- end -}}
+
+encryption = "age"
+
+[age]
+  identity = "~/.config/chezmoi/key.txt"
+  recipient = "age1ysm2fsy3jzu5t8sw2wpgaw4jv754gmd0v58kjw0pmzyya5jtsu0qhfpd4w"
 
 {{ if eq .chezmoi.os "windows" }}
 [cd]
@@ -89,6 +101,7 @@
     install_nvim_deps = {{ $install_nvim_deps }}
     install_nvim_plugs = {{ $install_nvim_plugs }}
     install_qt_deps = {{ $install_qt_deps }}
+    install_github_tokens = {{ $install_github_tokens }}
     location = {{ $location | quote }}
     machine_id = {{ $machine_id | quote }}
     arch_alt = {{ $arch_alt | quote }}

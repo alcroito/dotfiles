@@ -21,6 +21,13 @@ private_Library/**
 private_dot_ssh/**
 {{- end }}
 
+key.txt.age
+
+{{ if not .install_github_tokens }}
+.config/mise/github_tokens.toml
+.config/dotfiles/github_env.sh
+{{ end }}
+
 {{ if and (ne .location "work") (ne .location "vm") }}
 # Qt skills only wanted on work / vm machines
 .claude/skills/writing-qt-documentation/**

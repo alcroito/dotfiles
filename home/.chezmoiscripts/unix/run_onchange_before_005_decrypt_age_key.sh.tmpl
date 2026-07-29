@@ -1,0 +1,64 @@
+{{ if .install_github_tokens -}}
+#!/usr/bin/env sh
+
+# Puts a current age identity at ~/.config/chezmoi/key.txt so the encrypted
+# GitHub token files can be applied.
+#
+# The local key's recipient is compared against the configured one, so an
+# identity rotated on another machine is detected here instead of silently
+# leaving behind a key that decrypts nothing. Interpolating the recipient below
+# is also what makes run_onchange re-run this script after a rotation.
+#
+# This never fails the apply.
+
+# The override exists so the missing-key and stale-key branches can be checked
+# without breaking the real key.
+key_path="${CHEZMOI_AGE_KEY_PATH:-$HOME/.config/chezmoi/key.txt}"
+recipient="{{ .chezmoi.config.age.recipient }}"
+source_key="{{ .chezmoi.sourceDir }}/key.txt.age"
+
+warn() {
+  echo "decrypt_age_key: $1" 1>&2
+}
+
+warn_unauthenticated() {
+  warn "mise and chezmoi will make unauthenticated GitHub API calls and may be rate limited"
+  warn "run 'chezmoi apply' from an interactive shell to finish setup"
+}
+
+if [ -z "$recipient" ]; then
+  warn "no age recipient configured, nothing to do"
+  exit 0
+fi
+
+if [ ! -f "$source_key" ]; then
+  warn "$source_key is missing"
+  warn_unauthenticated
+  exit 0
+fi
+
+if [ -f "$key_path" ]; then
+  if [ "$(chezmoi age-keygen -y "$key_path" 2>/dev/null)" = "$recipient" ]; then
+    exit 0
+  fi
+  warn "local age key does not match the configured recipient, re-decrypting"
+fi
+
+# chezmoi opens /dev/tty directly for the passphrase, so test that it opens
+# rather than testing whether stdin is a terminal.
+if ! { : < /dev/tty; } 2>/dev/null; then
+  warn "no TTY available, skipping age key decryption"
+  warn_unauthenticated
+  exit 0
+fi
+
+mkdir -p "$(dirname "$key_path")"
+if ! chezmoi age decrypt --passphrase --output "$key_path.new" "$source_key"; then
+  warn "age key decryption failed, keeping any existing key"
+  warn_unauthenticated
+  rm -f "$key_path.new"
+  exit 0
+fi
+chmod 600 "$key_path.new"
+mv "$key_path.new" "$key_path"
+{{ end -}}

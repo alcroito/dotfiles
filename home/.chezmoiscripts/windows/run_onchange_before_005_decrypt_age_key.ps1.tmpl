@@ -1,0 +1,57 @@
+{{ if .install_github_tokens -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# Windows counterpart of the unix run_onchange_before_005 script. Same contract:
+# get a current age identity into place, or warn and let the apply continue.
+
+$keyPath = Join-Path $env:USERPROFILE ".config\chezmoi\key.txt"
+$recipient = "{{ .chezmoi.config.age.recipient }}"
+$sourceKey = "{{ .chezmoi.sourceDir }}\key.txt.age"
+
+function Write-Unauthenticated {
+  Write-Warning "mise and chezmoi will make unauthenticated GitHub API calls and may be rate limited"
+  Write-Warning "run 'chezmoi apply' from an interactive shell to finish setup"
+}
+
+if ([string]::IsNullOrEmpty($recipient)) {
+  Write-Warning "decrypt_age_key: no age recipient configured, nothing to do"
+  exit 0
+}
+
+if (-not (Test-Path $sourceKey)) {
+  Write-Warning "decrypt_age_key: $sourceKey is missing"
+  Write-Unauthenticated
+  exit 0
+}
+
+if (Test-Path $keyPath) {
+  $current = (chezmoi age-keygen -y $keyPath 2>$null)
+  if ($current -eq $recipient) {
+    exit 0
+  }
+  Write-Warning "decrypt_age_key: local age key does not match the configured recipient, re-decrypting"
+}
+
+# No /dev/tty equivalent, so approximate it by asking whether input is redirected.
+if ([Console]::IsInputRedirected) {
+  Write-Warning "decrypt_age_key: no interactive console, skipping age key decryption"
+  Write-Unauthenticated
+  exit 0
+}
+
+New-Item -ItemType Directory -Force -Path (Split-Path $keyPath) | Out-Null
+chezmoi age decrypt --passphrase --output "$keyPath.new" $sourceKey
+if ($LASTEXITCODE -ne 0) {
+  Write-Warning "decrypt_age_key: age key decryption failed, keeping any existing key"
+  Write-Unauthenticated
+  Remove-Item -Force -ErrorAction SilentlyContinue "$keyPath.new"
+  exit 0
+}
+Move-Item -Force "$keyPath.new" $keyPath
+
+# end of windows
+{{- end -}}
+
+# end of install_github_tokens
+{{- end -}}

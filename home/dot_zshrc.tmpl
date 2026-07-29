@@ -11,6 +11,10 @@
 export PROTON_PASS_KEY_PROVIDER=fs
 {{ end -}}
 
+{{ if .install_github_tokens -}}
+[ -r "$HOME/.config/dotfiles/github_env.sh" ] && . "$HOME/.config/dotfiles/github_env.sh"
+{{ end -}}
+
 {{- if eq .osid "darwin" -}}
 {{- if eq .machine_id "macbook_home" -}}
 {{-   template "zshrc_plugins_macos_home" . }}
