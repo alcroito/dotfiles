@@ -5,6 +5,10 @@
 # Refresh path
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
 
+# Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
+# the first conf.d/*.toml instead, which is a chezmoi-managed file.
+$env:MISE_GLOBAL_CONFIG_FILE = "$HOME\.config\mise\config.toml"
+
 echo "Installing qt dependencies via mise"
 mise use -g cmake
 echo "Finished installing qt dependencies via mise"

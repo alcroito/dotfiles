@@ -7,6 +7,10 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.
 
 $pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
 
+# Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
+# the first conf.d/*.toml instead, which is a chezmoi-managed file.
+$env:MISE_GLOBAL_CONFIG_FILE = "$HOME\.config\mise\config.toml"
+
 echo "Installing yazi and node using mise"
 mise use -g yazi
 mise use -g node

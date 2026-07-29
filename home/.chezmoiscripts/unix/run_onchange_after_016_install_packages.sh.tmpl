@@ -17,6 +17,9 @@ ya pkg add KKV9/compress || true
 {{ if and (.install_nvim) (.install_nvim_bob) -}}
 {{ if not (and (eq .osid "linux-debian") (le (int .chezmoi.osRelease.versionID) 12)) -}}
 # install bob neovim manager
+# Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
+# the first conf.d/*.toml instead, which is a chezmoi-managed file.
+export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
 mise use -g bob
 bob use stable
 {{ end -}}
