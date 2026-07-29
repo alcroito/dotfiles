@@ -4,6 +4,8 @@
 
 $configFile = Join-Path $env:USERPROFILE ".ssh\config"
 $includeLine = "Include ~/.ssh/config_managed"
+$beginMarker = "# BEGIN chezmoi ssh config_managed include"
+$endMarker = "# END chezmoi ssh config_managed include"
 
 # Ensure .ssh directory exists
 $sshDir = Join-Path $env:USERPROFILE ".ssh"
@@ -11,25 +13,29 @@ if (!(Test-Path $sshDir)) {
     New-Item -ItemType Directory -Force -Path $sshDir | Out-Null
 }
 
-# Check if file exists and has the include line at the top
-$needsInclude = $true
+# Drop our marked block plus any bare include left by the older version of this
+# script, which prepended it to line 1.
+$lines = @()
 if (Test-Path $configFile) {
-    $firstLine = Get-Content $configFile -First 1 -ErrorAction SilentlyContinue
-    if ($firstLine -eq $includeLine) {
-        $needsInclude = $false
+    $skip = $false
+    foreach ($line in (Get-Content $configFile -ErrorAction SilentlyContinue)) {
+        if ($line -eq $beginMarker) { $skip = $true; continue }
+        if ($line -eq $endMarker) { $skip = $false; continue }
+        if ($skip) { continue }
+        if ($line -eq $includeLine) { continue }
+        $lines += $line
     }
 }
 
-if ($needsInclude) {
-    # If file exists, prepend the line while preserving content
-    if (Test-Path $configFile) {
-        $existingContent = Get-Content $configFile -Raw -ErrorAction SilentlyContinue
-        Set-Content -Path $configFile -Value "$includeLine`n$existingContent"
-    } else {
-        # If file doesn't exist, create it with the include line
-        Set-Content -Path $configFile -Value $includeLine
-    }
-}
+# Appended last so per-host keys are offered before the fallback key. The
+# "Host *" is required: an Include inherits the enclosing Host block, so
+# without it this would only apply to whichever host block ends the file.
+$lines += $beginMarker
+$lines += "Host *"
+$lines += $includeLine
+$lines += $endMarker
+
+Set-Content -Path $configFile -Value $lines
 
 # end of windows
 {{- end -}}

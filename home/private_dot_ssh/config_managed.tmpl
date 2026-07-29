@@ -20,6 +20,9 @@ UseKeychain yes
 IdentityFile ~/.ssh/work_ssh_2025_dec
 {{- end }}
 
+# IdentitiesOnly stops agent keys being offered too, which exhausts the
+# server's MaxAuthTries before ssh ever falls back to password auth.
 Host *
 IdentityFile ~/.ssh/work_ssh_2025_dec
+IdentitiesOnly yes
 {{- end -}}

@@ -6,25 +6,34 @@
 
 CONFIG_FILE="$HOME/.ssh/config"
 INCLUDE_LINE="Include ~/.ssh/config_managed"
+BEGIN_MARKER="# BEGIN chezmoi ssh config_managed include"
+END_MARKER="# END chezmoi ssh config_managed include"
 
 # Ensure ~/.ssh exists with correct permissions
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
+touch "$CONFIG_FILE"
 
-# Check if file exists and has the include line at the top
-if ! head -n 1 "$CONFIG_FILE" 2>/dev/null | grep -q "^$INCLUDE_LINE$"; then
-    # If file exists, prepend the line while preserving content
-    if [ -f "$CONFIG_FILE" ]; then
-        TMP_FILE="$(mktemp)"
-        trap 'rm -f "$TMP_FILE"' EXIT
-        cp "$CONFIG_FILE" "$TMP_FILE"
-        echo "$INCLUDE_LINE" > "$CONFIG_FILE"
-        cat "$TMP_FILE" >> "$CONFIG_FILE"
-    else
-        # If file doesn't exist, create it with the include line
-        echo "$INCLUDE_LINE" > "$CONFIG_FILE"
-    fi
-fi
+TMP_FILE="$(mktemp)"
+trap 'rm -f "$TMP_FILE"' EXIT
+
+# Drop our marked block plus any bare include left by the older version of this
+# script, which prepended it to line 1.
+awk -v b="$BEGIN_MARKER" -v e="$END_MARKER" -v i="$INCLUDE_LINE" '
+    $0 == b { skip = 1; next }
+    $0 == e { skip = 0; next }
+    skip    { next }
+    $0 == i { next }
+              { print }
+' "$CONFIG_FILE" > "$TMP_FILE"
+
+# Appended last so per-host keys are offered before the fallback key. The
+# "Host *" is required: an Include inherits the enclosing Host block, so
+# without it this would only apply to whichever host block ends the file.
+{
+    cat "$TMP_FILE"
+    printf '%s\nHost *\n%s\n%s\n' "$BEGIN_MARKER" "$INCLUDE_LINE" "$END_MARKER"
+} > "$CONFIG_FILE"
 
 # end of install_secrets
 {{ end -}}
