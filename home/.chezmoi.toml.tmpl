@@ -67,7 +67,7 @@
 
 {{- $machine_id := "" -}}
 {{- if eq $location "vm" -}}
-{{- $machine_id = printf "%s-%s" .chezmoi.os (randAlphaNum 6) -}}
+{{- $machine_id = printf "%s-%s" $osid (randAlphaNum 6) -}}
 {{- else -}}
 {{- $machine_id = promptStringOnce . "machine_id" "Enter a unique machine id" "" -}}
 {{- end -}}
