@@ -2,12 +2,11 @@
 
 {{- if eq .chezmoi.os "windows" }}
 
-# Refresh path
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+{{ template "pwsh_refresh_path" . }}
 
 # dev tools
 echo "Installing non-admin dev tools"
-$pwsh_path = "C:\Program Files\PowerShell\7\pwsh.exe"
+{{ template "pwsh_7_path" . }}
 
 scoop bucket add extras
 

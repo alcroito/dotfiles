@@ -2,15 +2,14 @@
 
 {{- if eq .chezmoi.os "windows" }}
 
-# Refresh path
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+{{ template "pwsh_refresh_path" . }}
 
 {{ if .install_nvim_plugs -}}
 # Install neovim plugins
 echo "Installing neovim plugins"
 $nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
 & "$nvim" --headless '+qall'
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","User"),[System.Environment]::GetEnvironmentVariable("Path","Machine") -join ";"
+{{ template "pwsh_refresh_path" . }}
 & "$nvim" --headless '+PlugInstall!' '+qall'
 & "$nvim" --headless '+UpdateRemotePlugins' '+qall'
 echo "Finished installing neovim plugins"
