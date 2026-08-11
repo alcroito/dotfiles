@@ -4,8 +4,13 @@ git:
 
   # If true, periodically refresh files and submodules
   autoRefresh: false
+
+  pagers:
+    - pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+    - externalDiffCommand: difft --color=always
 gui:
   scrollHeight: 20
+  showFileTree: false
   theme:
     activeBorderColor:
       - '#f0c6c6'
@@ -29,3 +34,6 @@ gui:
 
   authorColors:
     '*': '#b7bdf8'
+
+os:
+  editPreset: nvim-remote
