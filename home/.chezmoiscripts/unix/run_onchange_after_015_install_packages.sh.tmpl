@@ -49,6 +49,17 @@ sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 # end of install_nvim_deps
 {{ end -}}
 
+{{ if eq .chezmoi.os "linux" -}}
+glibc_version=$(ldd --version 2>/dev/null | head -n 1 | grep -oE '[0-9]+\.[0-9]+$')
+
+# Succeeds when glibc is older than $1. Never succeeds on non-glibc systems
+# (alpine), where the version stays empty and the musl builds are used anyway.
+glibc_older_than() {
+  [ -n "$glibc_version" ] && \
+    [ "$(printf '%s\n%s\n' "$glibc_version" "$1" | sort -V | head -n 1)" != "$1" ]
+}
+{{ end -}}
+
 {{ if .install_nvim -}}
 
 {{ if and (eq .chezmoi.os "linux") (not (eq .osid "linux-alpine")) -}}
@@ -59,9 +70,7 @@ vim_path=/usr/local/bin/nvim
 # distros (like debian 11) have to use the neovim-releases builds, which are made
 # with glibc 2.17.
 nvim_repo=neovim/neovim
-glibc_version=$(ldd --version 2>/dev/null | head -n 1 | grep -oE '[0-9]+\.[0-9]+$')
-if [ -n "$glibc_version" ] && \
-   [ "$(printf '%s\n%s\n' "$glibc_version" 2.35 | sort -V | head -n 1)" != "2.35" ]; then
+if glibc_older_than 2.35; then
   echo "glibc $glibc_version is older than 2.35, using the neovim-releases builds"
   nvim_repo=neovim/neovim-releases
 fi
@@ -131,7 +140,16 @@ fi
 export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
 
 echo "Installing yazi using mise"
-mise use -g yazi
+# The default (aqua) yazi build is made on ubuntu 24.04 and needs glibc 2.39, so
+# on older distros use the statically linked musl build from the github backend.
+if glibc_older_than 2.39; then
+  echo "glibc $glibc_version is older than 2.39, using the musl yazi build"
+  mise unuse -g yazi
+  mise use -g "github:sxyazi/yazi[matching=musl,exe=yazi]"
+else
+  mise unuse -g "github:sxyazi/yazi"
+  mise use -g yazi
+fi
 
 echo "Installing lazydocker using mise"
 mise use -g lazydocker
