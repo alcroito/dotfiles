@@ -54,10 +54,22 @@ sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
 {{ if and (eq .chezmoi.os "linux") (not (eq .osid "linux-alpine")) -}}
 # Install neovim
 vim_path=/usr/local/bin/nvim
+
+# The supported builds are made on ubuntu 22.04, so they need glibc 2.35+. Older
+# distros (like debian 11) have to use the neovim-releases builds, which are made
+# with glibc 2.17.
+nvim_repo=neovim/neovim
+glibc_version=$(ldd --version 2>/dev/null | head -n 1 | grep -oE '[0-9]+\.[0-9]+$')
+if [ -n "$glibc_version" ] && \
+   [ "$(printf '%s\n%s\n' "$glibc_version" 2.35 | sort -V | head -n 1)" != "2.35" ]; then
+  echo "glibc $glibc_version is older than 2.35, using the neovim-releases builds"
+  nvim_repo=neovim/neovim-releases
+fi
+
 if [ ! -f "$vim_path" ]; then
   echo "Installing neovim"
-  echo "Downloading https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage"
-  ( cd /usr/local/bin && sudo curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage )
+  echo "Downloading https://github.com/$nvim_repo/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage"
+  ( cd /usr/local/bin && sudo curl -LO https://github.com/$nvim_repo/releases/latest/download/nvim-linux-{{ .arch_alt }}.appimage )
   echo "Setting execute permissions for neovim"
   sudo chmod a+x /usr/local/bin/nvim-linux-{{ .arch_alt }}.appimage
   echo "Moving neovim to $vim_path"
