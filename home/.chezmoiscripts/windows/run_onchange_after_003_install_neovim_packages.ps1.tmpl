@@ -1,0 +1,79 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+{{ template "pwsh_refresh_path" . }}
+
+{{ if .install_nvim_plugs -}}
+# Install neovim plugins
+echo "Installing neovim plugins"
+$nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
+
+# lazy.nvim and vim-plug both redraw git clone/fetch progress continuously, which
+# is slow to render in a Windows terminal and buries every other message. Send
+# nvim's output to a log and report progress by counting the plugin directories
+# that exist so far instead.
+function Invoke-NvimQuiet {
+  param(
+    [Parameter(Mandatory = $true)][string]$Label,
+    [Parameter(Mandatory = $true)][string]$LogName,
+    [Parameter(Mandatory = $true)][string[]]$NvimArgs,
+    [string]$WatchDir = ''
+  )
+
+  $log = Join-Path $env:TEMP "chezmoi-$LogName.log"
+  $errLog = Join-Path $env:TEMP "chezmoi-$LogName.err.log"
+  echo "$Label (output in $log)"
+
+  $proc = Start-Process -FilePath $nvim -ArgumentList $NvimArgs -NoNewWindow -PassThru `
+    -RedirectStandardOutput $log -RedirectStandardError $errLog
+  $started = Get-Date
+
+  while (-not $proc.HasExited) {
+    Start-Sleep -Seconds 3
+    $elapsed = [int]((Get-Date) - $started).TotalSeconds
+    $count = -1
+    if ($WatchDir -ne '' -and (Test-Path $WatchDir)) {
+      $count = @(Get-ChildItem -Path $WatchDir -Directory -ErrorAction SilentlyContinue).Count
+    }
+    if ($count -ge 0) {
+      echo "  $Label : ${elapsed}s elapsed, $count plugin directories present"
+    } else {
+      echo "  $Label : ${elapsed}s elapsed"
+    }
+  }
+  $proc.WaitForExit()
+
+  if ($proc.ExitCode -ne 0) {
+    Write-Warning "$Label exited with $($proc.ExitCode), last lines of its output:"
+    Get-Content -Path $log, $errLog -Tail 20 -ErrorAction SilentlyContinue
+  }
+}
+
+# lazy.nvim installs missing plugins on the first start; vim-plug needs its own
+# command. The directories are where each manager puts them.
+$lazyDir = Join-Path $env:LOCALAPPDATA "nvim-data\lazy"
+$plugDir = Join-Path $env:USERPROFILE ".vim\plugged"
+
+Invoke-NvimQuiet -Label "lazy.nvim plugins" -LogName "nvim-lazy" `
+  -NvimArgs @('--headless', '+qall') -WatchDir $lazyDir
+
+{{ template "pwsh_refresh_path" . }}
+
+Invoke-NvimQuiet -Label "vim-plug plugins" -LogName "nvim-plug" `
+  -NvimArgs @('--headless', '+PlugInstall!', '+qall') -WatchDir $plugDir
+
+Invoke-NvimQuiet -Label "remote plugins" -LogName "nvim-remote" `
+  -NvimArgs @('--headless', '+UpdateRemotePlugins', '+qall')
+
+echo "Finished installing neovim plugins"
+
+# end of install nvim plugins
+{{- end -}}
+
+# end of windows
+{{- end -}}
+
+
+# end of install_packages
+{{- end -}}
