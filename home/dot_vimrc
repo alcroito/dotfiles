@@ -546,6 +546,10 @@ set updatetime=1000
 " class text object mappings.
 let g:gitgutter_map_keys = 0
 
+" Git gutter go to next or previous hunk
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+
 " Disable defaut 'gs' switch keymap because it conflicts with custom mini.ai 'gs'
 " prefix
 let g:switch_mapping = ""
