@@ -17,12 +17,26 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 # service (mpssvc) is disabled, which can happen on some VMs.
 Invoke-ScoopInstall oh-my-posh
 
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+# Installed from the release URL rather than by name: resolving a name goes
+# through the GitHub API, which on a shared office IP hits the 60/hour anonymous
+# limit and then exits 70 having printed only a spinner. Windows Terminal's
+# settings.json asks for the MesloLGM family, so a silent failure surfaces later
+# as its "Unable to find the following fonts" dialog.
+$mesloRegular = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts\MesloLGMNerdFont-Regular.ttf"
+$mesloUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
+
+if (Test-Path $mesloRegular) {
+  echo "meslo nerd font is already installed"
+} elseif (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
   echo "Installing oh my posh font meslo"
-  & "$pwsh_path" -c 'oh-my-posh font install meslo'
-  echo "Finished installing oh-my-posh"
+  & "$pwsh_path" -c "oh-my-posh font install $mesloUrl"
+  if ($LASTEXITCODE -ne 0) {
+    Write-Warning "meslo font install exited with $LASTEXITCODE, Windows Terminal will warn about a missing MesloLGM Nerd Font"
+  } else {
+    echo "Finished installing oh-my-posh"
+  }
 } else {
-  Write-Warning "oh-my-posh not on PATH after 'scoop install oh-my-posh'; skipping meslo font install"
+  Write-Warning "oh-my-posh not on PATH after installing it via scoop, skipping meslo font install"
 }
 
 # end of windows
