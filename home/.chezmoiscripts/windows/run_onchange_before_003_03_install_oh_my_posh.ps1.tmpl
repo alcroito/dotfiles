@@ -1,0 +1,31 @@
+{{- if .install_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+{{ template "pwsh_refresh_path" . }}
+
+
+Set-ExecutionPolicy Bypass -Scope Process -Force;
+
+{{ template "pwsh_7_path" . }}
+
+# Installed via scoop instead of the official MSIX installer: the MSIX package
+# declares a windows.firewall extension, so AppX deployment fails with
+# 0x80073CF6 / 0x800706D9 on machines where the Windows Defender Firewall
+# service (mpssvc) is disabled, which can happen on some VMs.
+echo "Installing oh-my-posh via scoop"
+& "$pwsh_path" -c 'scoop install oh-my-posh'
+
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+  echo "Installing oh my posh font meslo"
+  & "$pwsh_path" -c 'oh-my-posh font install meslo'
+  echo "Finished installing oh-my-posh"
+} else {
+  Write-Warning "oh-my-posh not on PATH after 'scoop install oh-my-posh'; skipping meslo font install"
+}
+
+# end of windows
+{{- end -}}
+
+# end of install_packages
+{{- end -}}

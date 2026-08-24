@@ -1,6 +1,15 @@
 # Use fancy theme
-Import-Module posh-git
-oh-my-posh init pwsh --config '~/.cat_custom.omp.yaml' | Invoke-Expression
+try {
+    Import-Module posh-git -ErrorAction Stop
+} catch {
+    Write-Warning "posh-git not installed, git prompt info disabled. Install it with: Install-Module -Name posh-git"
+}
+
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    oh-my-posh init pwsh --config '~/.cat_custom.omp.yaml' | Invoke-Expression
+} else {
+    Write-Warning "oh-my-posh not found on PATH, prompt theme disabled. Install it with: scoop install oh-my-posh"
+}
 
 # replace 'Ctrl+t' and 'Ctrl+r' with your preferred bindings:
 #Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
