@@ -7,7 +7,12 @@
 {{ if .install_nvim_plugs -}}
 # Install neovim plugins
 echo "Installing neovim plugins"
-$nvim ="C:\tools\neovim\nvim-win64\bin\nvim.exe"
+# scoop shims nvim onto PATH; the explicit path is the fallback for a session
+# whose PATH predates the install.
+$nvim = (Get-Command nvim -ErrorAction SilentlyContinue).Source
+if (-not $nvim) {
+  $nvim = Join-Path $env:USERPROFILE "scoop\shims\nvim.exe"
+}
 
 # lazy.nvim and vim-plug both redraw git clone/fetch progress continuously, which
 # is slow to render in a Windows terminal and buries every other message. Send

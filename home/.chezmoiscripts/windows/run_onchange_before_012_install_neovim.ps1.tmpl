@@ -2,25 +2,16 @@
 
 {{- if eq .chezmoi.os "windows" }}
 
-echo "Installing or upgrading neovim"
-
 {{ template "pwsh_refresh_path" . }}
 
-$IsElevated = 'true' -eq (gsudo status IsElevated)
-
-if ($IsElevated -eq $false) {
-  Write-Warning "This script requires local admin privileges. Elevating..."
-  gsudo "& '$($MyInvocation.MyCommand.Source)'" $args
-  if ($LastExitCode -eq 999 ) {
-    Write-error 'Failed to elevate.'
-  }
-  return
-}
+{{ template "pwsh_scoop_install" . }}
 
 {{ if .install_nvim -}}
-echo "Installing or upgrading neovim"
-choco upgrade neovim -y
-echo "Finished installing or upgrading neovim"
+# scoop's neovim is per-user, so this needs no elevation, and it skips the
+# vcredist/KB dependency chain the chocolatey package pulled in.
+echo "Installing neovim via scoop"
+Invoke-ScoopInstall neovim
+echo "Finished installing neovim"
 {{- end -}}
 
 {{ if .install_nvim -}}
@@ -37,4 +28,3 @@ echo "Finished installing vim-plug"
 
 # end of install_packages
 {{- end -}}
-
