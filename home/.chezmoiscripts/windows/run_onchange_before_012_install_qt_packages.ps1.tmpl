@@ -4,9 +4,11 @@
 
 {{ template "pwsh_refresh_path" . }}
 
+{{ template "pwsh_scoop_install" . }}
+
 echo "Installing qt dependencies"
-scoop install ccache
-scoop install ninja
+Invoke-ScoopInstall ccache
+Invoke-ScoopInstall ninja
 echo "Finished installing qt dependencies"
 
 # end of windows
@@ -14,4 +16,3 @@ echo "Finished installing qt dependencies"
 
 # end of install_qt_deps
 {{- end -}}
-

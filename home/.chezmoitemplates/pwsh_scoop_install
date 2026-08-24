@@ -1,0 +1,57 @@
+# Checked by looking for the app directory rather than by asking scoop, because
+# `scoop install` on an installed app prints a WARN and `scoop list` costs a
+# whole scoop invocation per package.
+function Test-ScoopApp {
+  param([Parameter(Mandatory = $true)][string]$Package)
+
+  $roots = @()
+  if ($env:SCOOP) { $roots += $env:SCOOP } else { $roots += (Join-Path $env:USERPROFILE 'scoop') }
+  if ($env:SCOOP_GLOBAL) { $roots += $env:SCOOP_GLOBAL } else { $roots += (Join-Path $env:ProgramData 'scoop') }
+
+  foreach ($root in $roots) {
+    if (Test-Path (Join-Path $root "apps\$Package\current")) { return $true }
+  }
+  return $false
+}
+
+function Test-ScoopBucket {
+  param([Parameter(Mandatory = $true)][string]$Bucket)
+
+  $root = if ($env:SCOOP) { $env:SCOOP } else { Join-Path $env:USERPROFILE 'scoop' }
+  return (Test-Path (Join-Path $root "buckets\$Bucket"))
+}
+
+# chezmoi runs .ps1 scripts under powershell 5 by default. If chezmoi itself was
+# started from a powershell 7 session, that child inherits a powershell 7
+# PSModulePath and scoop breaks with "The term 'Get-FileHash' is not recognized"
+# (twpayne/chezmoi#2589), so hand the install to pwsh 7 when it is already
+# installed. Scripts ordered before 003_01 run before pwsh 7 exists and fall
+# back to whatever shell chezmoi gave us.
+function Invoke-ScoopInstall {
+  param([Parameter(Mandatory = $true)][string]$Package)
+
+  if (Test-ScoopApp $Package) {
+    echo "$Package is already installed"
+    return
+  }
+
+  echo "Installing $Package"
+  $pwsh = "C:\Program Files\PowerShell\7\pwsh.exe"
+  if (Test-Path $pwsh) {
+    & "$pwsh" -c "scoop install $Package"
+  } else {
+    scoop install $Package
+  }
+}
+
+function Add-ScoopBucket {
+  param([Parameter(Mandatory = $true)][string]$Bucket)
+
+  if (Test-ScoopBucket $Bucket) {
+    echo "scoop bucket $Bucket is already added"
+    return
+  }
+
+  echo "Adding scoop bucket $Bucket"
+  scoop bucket add $Bucket
+}

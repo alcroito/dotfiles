@@ -4,9 +4,9 @@
 
 {{ template "pwsh_refresh_path" . }}
 
-echo "Installing gsudo"
-scoop install gsudo
-echo "Finished installing gsudo"
+{{ template "pwsh_scoop_install" . }}
+
+Invoke-ScoopInstall gsudo
 
 echo "Enabling gsudo cache"
 gsudo config CacheMode Auto
@@ -16,4 +16,3 @@ gsudo config CacheMode Auto
 
 # end of install_packages
 {{- end -}}
-
