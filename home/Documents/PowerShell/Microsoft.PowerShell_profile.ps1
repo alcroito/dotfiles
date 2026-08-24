@@ -133,4 +133,37 @@ function Invoke-BatchFile
 #[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
 
 mise activate pwsh | Out-String | Invoke-Expression
-atuin init powershell --disable-up-arrow | Out-String | Invoke-Expression
+# Atuin's PSReadLine hook captures `atuin history start` through the pipeline,
+# which waits for the pipe to reach EOF. On Windows a daemon autostarted by that
+# call inherits the pipe handle and outlives the command, so the first command of
+# a fresh session hangs until Ctrl-C. Patch the generated init to read the single
+# line it needs instead. atuinsh/atuin#3502 fixed the same thing for bash/zsh/fish
+# by closing fd 3; the PowerShell integration still has it. FileName = "atuin"
+# mirrors what the hook's own `history end` step already does. Every local here is
+# atuin-prefixed: the hook keeps the typed command in $line and returns it, so a
+# plain $line assignment would make the shell execute the history id instead.
+if (Get-Command atuin -ErrorAction SilentlyContinue) {
+    $atuinInit = (atuin init powershell --disable-up-arrow | Out-String)
+    $atuinNeedle = '$script:atuinHistoryId = atuin history start --hook --command-from-env'
+    $atuinPatch = @'
+$script:atuinHistoryId = $(
+                $atuinPsi = New-Object System.Diagnostics.ProcessStartInfo
+                $atuinPsi.FileName = "atuin"
+                $atuinPsi.Arguments = "history start --hook --command-from-env"
+                $atuinPsi.UseShellExecute = $false
+                $atuinPsi.RedirectStandardOutput = $true
+                $atuinPsi.RedirectStandardError = $true
+                $atuinPsi.CreateNoWindow = $true
+                $atuinProc = [System.Diagnostics.Process]::Start($atuinPsi)
+                $atuinProc.StandardOutput.ReadLine()
+                $null = $atuinProc.WaitForExit(5000)
+            )
+'@
+    $atuinPatched = $atuinInit.Replace($atuinNeedle, $atuinPatch)
+    if ($atuinPatched -eq $atuinInit) {
+        Write-Warning "atuin init no longer contains the 'history start' capture this profile patches, so the first command of a new session may hang until Ctrl-C"
+    }
+    $atuinPatched | Invoke-Expression
+} else {
+    Write-Warning "atuin not found on PATH, shell history disabled. Install it with: scoop install atuin"
+}
