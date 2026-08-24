@@ -23,7 +23,13 @@ private_dot_ssh/**
 
 key.txt.age
 
-{{ if not .install_github_tokens }}
+{{/* Gated on the age identity too: without it chezmoi cannot decrypt these
+     files and aborts the whole apply, taking every later target with it. The
+     identity is written by run_onchange_before_005_decrypt_age_key, which needs
+     an interactive passphrase prompt, so a headless run has no key and skips
+     these files until the next apply. */}}
+{{ $age_key := joinPath .chezmoi.homeDir ".config" "chezmoi" "key.txt" }}
+{{ if or (not .install_github_tokens) (not (stat $age_key)) }}
 .config/mise/github_tokens.toml
 .config/dotfiles/github_env.sh
 {{ end }}

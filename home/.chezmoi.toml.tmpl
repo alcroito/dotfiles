@@ -91,11 +91,29 @@
 {{/* Also in data, so scripts can read it. */}}
 {{- $age_recipient := "age1ysm2fsy3jzu5t8sw2wpgaw4jv754gmd0v58kjw0pmzyya5jtsu0qhfpd4w" -}}
 
+{{/* Store absolue path. Renaming needs a `chezmoi init`. */}}
+{{- $decrypt_script := printf "%s/../scripts/unix/decrypt-chezmoi-age-key.sh" .chezmoi.sourceDir -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{- $decrypt_script = printf "%s/../scripts/windows/Decrypt-ChezmoiAgeKey.ps1" (.chezmoi.sourceDir | replace "\\" "/") -}}
+{{- end -}}
+
 encryption = "age"
 
 [age]
   identity = "~/.config/chezmoi/key.txt"
   recipient = {{ $age_recipient | quote }}
+
+{{ if $install_github_tokens -}}
+{{/* Decrypts the age identity before the apply reads the source state, which is
+     when .chezmoiignore gates the encrypted GitHub token files on that identity.
+     Fires for `apply` and for the apply phase of `init --apply`, but not for
+     `update`, which is why run_onchange_before_005 still exists. The script form
+     lets chezmoi pick the interpreter, so the Windows helper runs under pwsh
+     when it is installed rather than Windows PowerShell 5.1. */}}
+[hooks.apply.pre]
+  script = {{ $decrypt_script | quote }}
+  args = [{{ $age_recipient | quote }}]
+{{ end -}}
 
 {{ if eq .chezmoi.os "windows" }}
 [cd]
