@@ -70,13 +70,8 @@ $env:FZF_DEFAULT_OPTS='--color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108 --colo
 $env:FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind ?:toggle-preview"
 #Import-Module PSFzf
 
-# Set yazi preview helper. Git ships file(1); prefer scoop's per-user install,
-# fall back to a Git for Windows system install.
-$yaziFile = Join-Path $env:USERPROFILE 'scoop\apps\git\current\usr\bin\file.exe'
-if (-not (Test-Path $yaziFile)) {
-    $yaziFile = 'C:\Program Files\Git\usr\bin\file.exe'
-}
-$env:YAZI_FILE_ONE = $yaziFile
+# Set yazi preview helper
+$env:YAZI_FILE_ONE = "C:\Program Files\Git\usr\bin\file.exe"
 
 # Some setting when ssh-ing in
 if($env:LC_TERMINAL -eq "iTerm2") {
