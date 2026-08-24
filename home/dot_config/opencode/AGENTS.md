@@ -8,7 +8,7 @@
   "load-bearing", "delve", "leverage", "seamless", "crucial",
   "comprehensive", "intricate", "elevate", "underscore", "boasts", "realm",
   "testament", "it's worth noting", "in today's ...", "game-changer",
-  "idempotent", "Now I have the full picture"
+  "idempotent", "Now I have the full picture", "latch"
   Say it plainly instead (e.g. "important", "uses", "thorough").
 
 ## Before Writing Code
