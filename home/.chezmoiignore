@@ -17,8 +17,16 @@ Library/**
 .config/nvim/init.vim
 .zprofile
 .chezmoiscripts/unix/**
-private_Library/**
-private_dot_ssh/**
+Library/**
+
+{{ if or (env "SSH_CONNECTION") (env "SSH_CLIENT") }}
+# pass-cli cannot reach Windows Credential Manager from an SSH session, so the
+# key templates fall back to a warning stub. Ignoring the targets keeps an apply
+# over SSH from overwriting key material that is already in place; run it from an
+# RDP or console session to install or rotate the key.
+.ssh/work_ssh_2025_dec
+.ssh/work_ssh_2025_dec.pub
+{{ end }}
 {{- end }}
 
 key.txt.age

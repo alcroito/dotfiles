@@ -1,0 +1,101 @@
+{{- if and .install_secrets (eq .location "vm") -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+{{ template "pwsh_refresh_path" . }}
+
+{{- if or (env "SSH_CONNECTION") (env "SSH_CLIENT") }}
+
+Write-Warning "Skipping ssh authorized_keys setup - Windows Credential Manager is not accessible via SSH."
+Write-Warning "Re-run 'chezmoi apply' from an RDP or local console session to finish setup."
+
+{{- else }}
+
+# Windows counterpart of the unix run_onchange_before_014 script. The target file
+# differs: the stock sshd_config ends with
+#     Match Group administrators
+#         AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
+# so for an account in the Administrators group a key in ~/.ssh/authorized_keys
+# is read by nothing and fails silently. See PowerShell/Win32-OpenSSH#2301.
+
+$pubKey = '{{ (secretJSON "item" "view" "--output" "json" "pass://PersonalSecrets/work_ssh_2025_dec").item.content.content.SshKey.public_key | trim }}'
+
+if ([string]::IsNullOrWhiteSpace($pubKey)) {
+  Write-Warning "no work ssh public key available, leaving authorized_keys alone"
+  return
+}
+
+$isAdmin = (New-Object Security.Principal.WindowsPrincipal(
+  [Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole(
+  [Security.Principal.WindowsBuiltInRole]::Administrator)
+
+# Only the admin redirect is honoured when that Match block is actually active,
+# so check rather than assume: a host with it commented out wants the per-user file.
+$sshdConfig = Join-Path $env:ProgramData "ssh\sshd_config"
+$adminMatch = (Test-Path $sshdConfig) -and
+  (Select-String -Path $sshdConfig -Pattern '^\s*Match\s+Group\s+administrators' -Quiet)
+
+$useAdminFile = $isAdmin -and $adminMatch
+if ($useAdminFile) {
+  $authKeys = Join-Path $env:ProgramData "ssh\administrators_authorized_keys"
+} else {
+  $authKeys = Join-Path $env:USERPROFILE ".ssh\authorized_keys"
+}
+
+# BOM-less: sshd fails to parse the first key of a file that starts with one.
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+
+if ((Test-Path $authKeys) -and
+    (([System.IO.File]::ReadAllLines($authKeys, $utf8NoBom) | ForEach-Object { $_.Trim() }) -contains $pubKey)) {
+  echo "work ssh public key already in $authKeys"
+  return
+}
+
+# %PROGRAMDATA%\ssh is writable by administrators only, so elevate before the
+# write rather than for the check above.
+if ($useAdminFile) {
+  $IsElevated = 'true' -eq (gsudo status IsElevated)
+  if ($IsElevated -eq $false) {
+    Write-Warning "Writing $authKeys requires local admin privileges. Elevating..."
+    gsudo "& '$($MyInvocation.MyCommand.Source)'" $args
+    if ($LastExitCode -eq 999 ) {
+      Write-error 'Failed to elevate.'
+    }
+    return
+  }
+}
+
+$authKeysDir = Split-Path $authKeys
+if (!(Test-Path $authKeysDir)) {
+  New-Item -ItemType Directory -Force -Path $authKeysDir | Out-Null
+}
+
+echo "Adding work ssh public key to $authKeys"
+if (Test-Path $authKeys) {
+  $existing = [System.IO.File]::ReadAllText($authKeys, $utf8NoBom)
+  if ($existing.Length -gt 0 -and -not $existing.EndsWith("`n")) {
+    [System.IO.File]::AppendAllText($authKeys, "`n", $utf8NoBom)
+  }
+}
+[System.IO.File]::AppendAllText($authKeys, $pubKey + "`n", $utf8NoBom)
+
+# sshd refuses a key file that anyone else can write. SIDs rather than display
+# names so this also works on a non-English Windows:
+#   S-1-5-18 = NT AUTHORITY\SYSTEM, S-1-5-32-544 = BUILTIN\Administrators
+$icaclsArgs = @($authKeys, "/inheritance:r", "/grant:r", "*S-1-5-18:(F)", "/grant:r", "*S-1-5-32-544:(F)")
+if (-not $useAdminFile) {
+  $userSid = ([Security.Principal.WindowsIdentity]::GetCurrent()).User.Value
+  $icaclsArgs += @("/grant:r", "*${userSid}:(F)")
+}
+& icacls.exe @icaclsArgs | Out-Null
+if ($LASTEXITCODE -ne 0) {
+  Write-Warning "icacls failed with $LASTEXITCODE on $authKeys, sshd may refuse the key file"
+}
+
+{{- end }}
+
+# end of windows
+{{- end -}}
+
+# end of install_secrets and vm
+{{- end -}}

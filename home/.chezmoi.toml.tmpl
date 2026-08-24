@@ -142,6 +142,14 @@ encryption = "age"
   # Headless VM: pass-cli has no keyring. This wrapper sets the filesystem key
   # provider and ensures a session before each lookup (see the script for why).
   command = "{{ .chezmoi.sourceDir }}/../scripts/unix/pass-cli-fs-login.sh"
+{{- else if eq .chezmoi.os "windows" }}
+{{- /* chezmoi execs this itself, so PATH at apply time is what counts, and the
+     official installer leaves its target directory off PATH. Prefer whatever is
+     on PATH when this config is rendered, otherwise name the installer's default
+     location outright. Single-quoted so the backslashes need no escaping. */}}
+{{- $pass_cli := lookPath "pass-cli" }}
+{{- if not $pass_cli }}{{ $pass_cli = joinPath .chezmoi.homeDir "AppData" "Local" "Programs" "ProtonPass" "pass-cli.exe" }}{{ end }}
+  command = {{ $pass_cli | squote }}
 {{- else }}
   command = "pass-cli"
 {{- end }}

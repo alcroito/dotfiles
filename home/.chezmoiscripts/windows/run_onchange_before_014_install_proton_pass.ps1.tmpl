@@ -23,6 +23,19 @@ if (!(Get-Command pass-cli.exe -ErrorAction SilentlyContinue)) {
     Write-Host "Proton Pass CLI binary already present"
 }
 
+# The installer prints its directory and declines to add it, so chezmoi - which
+# execs pass-cli itself for secretJSON lookups - cannot find it. User scope, so
+# no elevation despite what the installer's message suggests.
+$passDir = Join-Path $env:LOCALAPPDATA "Programs\ProtonPass"
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ([string]::IsNullOrEmpty($userPath)) { $userPath = "" }
+$onPath = @($userPath -split ';' | Where-Object { $_.TrimEnd('\') -ieq $passDir.TrimEnd('\') }).Count -gt 0
+if (-not $onPath) {
+    Write-Host "Adding $passDir to the user PATH"
+    [Environment]::SetEnvironmentVariable("Path", ($userPath.TrimEnd(';') + ";" + $passDir).TrimStart(';'), "User")
+}
+$env:Path = "$passDir;" + $env:Path
+
 # end of windows
 {{- end -}}
 
