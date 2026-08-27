@@ -1,0 +1,34 @@
+{{- $sf_root := .chezmoi.sourceDir | replace "\\" "/" -}}
+{{- $sf_root = printf "%s/../ai/sf_config" $sf_root -}}
+{{- $manifests := list -}}
+{{- if or (eq .location "work") (eq .location "vm") -}}
+{{-   $manifests = append $manifests "work" -}}
+{{- end -}}
+{{- if eq .machine_id "work_macbook_pro_arm" -}}
+{{-   $manifests = append $manifests "work_mac" -}}
+{{- end -}}
+{{- if and .install_packages $manifests -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+{{ template "pwsh_refresh_path" . }}
+
+# skillfile is a mise-managed tool, so reach it through the shims rather than
+# relying on the profile having activated mise.
+$env:Path = "$env:LOCALAPPDATA\mise\shims;$env:Path"
+
+{{ range $manifests }}
+# Hashing the manifest and its lock makes this script re-run when either changes.
+# {{ . }}/Skillfile: {{ include (printf "%s/%s/Skillfile" $sf_root .) | sha256sum }}
+# {{ . }}/Skillfile.lock: {{ include (printf "%s/%s/Skillfile.lock" $sf_root .) | sha256sum }}
+echo "Installing skills from the {{ . }} skillfile manifest"
+# Run in the source repo so the lock and the fetch cache stay next to the manifest.
+Push-Location "{{ $sf_root }}/{{ . }}"
+skillfile install
+Pop-Location
+{{ end }}
+# end of windows
+{{- end -}}
+
+# end of install_packages
+{{- end -}}

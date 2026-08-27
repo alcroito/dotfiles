@@ -1,0 +1,35 @@
+{{- $sf_root := printf "%s/../ai/sf_config" .chezmoi.sourceDir -}}
+{{- $manifests := list -}}
+{{- if or (eq .location "work") (eq .location "vm") -}}
+{{-   $manifests = append $manifests "work" -}}
+{{- end -}}
+{{- if eq .machine_id "work_macbook_pro_arm" -}}
+{{-   $manifests = append $manifests "work_mac" -}}
+{{- end -}}
+{{ if and .install_packages $manifests -}}
+
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env sh
+{{ end -}}
+
+export PATH="$HOME/.local/share/mise/shims:$PATH:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin"
+
+# skillfile fetches every entry through the GitHub contents API, which allows
+# only 60 anonymous requests per hour. Reuse the chezmoi token when it is there.
+if [ -r "$HOME/.config/dotfiles/github_env.sh" ]; then
+  . "$HOME/.config/dotfiles/github_env.sh"
+fi
+if [ -n "${CHEZMOI_GITHUB_ACCESS_TOKEN:-}" ] && [ -z "${GITHUB_TOKEN:-}" ]; then
+  export GITHUB_TOKEN="$CHEZMOI_GITHUB_ACCESS_TOKEN"
+fi
+
+{{ range $manifests }}
+# Hashing the manifest and its lock makes this script re-run when either changes.
+# {{ . }}/Skillfile: {{ include (printf "%s/%s/Skillfile" $sf_root .) | sha256sum }}
+# {{ . }}/Skillfile.lock: {{ include (printf "%s/%s/Skillfile.lock" $sf_root .) | sha256sum }}
+echo "Installing skills from the {{ . }} skillfile manifest"
+# Run in the source repo so the lock and the fetch cache stay next to the manifest.
+(cd "{{ $sf_root }}/{{ . }}" && skillfile install)
+{{ end }}
+# end of install_packages
+{{ end -}}
