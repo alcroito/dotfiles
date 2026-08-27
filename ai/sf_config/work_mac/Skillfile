@@ -1,0 +1,7 @@
+# install  <platform>  <scope>
+install  claude-code  global
+
+# --- Skills ---
+# github  skill  [name]  <owner/repo[@ref]>  <path-or-dir>  [ref]
+
+github  skill opentui anomalyco/opentui  packages/web/src/content

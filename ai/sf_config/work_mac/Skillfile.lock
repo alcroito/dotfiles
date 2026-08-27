@@ -1,0 +1,10 @@
+{
+  "github/skill/content": {
+    "sha": "fbd584b28e1ccd7a49fa75d05ad9c5e52fc1714b",
+    "raw_url": "https://api.github.com/repos/anomalyco/opentui/contents/packages/web/src/content?ref=fbd584b28e1ccd7a49fa75d05ad9c5e52fc1714b"
+  },
+  "github/skill/opentui": {
+    "sha": "fbd584b28e1ccd7a49fa75d05ad9c5e52fc1714b",
+    "raw_url": "https://api.github.com/repos/anomalyco/opentui/contents/packages/web/src/content?ref=fbd584b28e1ccd7a49fa75d05ad9c5e52fc1714b"
+  }
+}

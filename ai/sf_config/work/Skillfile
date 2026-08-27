@@ -1,0 +1,28 @@
+# install  <platform>  <scope>
+install  claude-code  global
+
+# --- Skills ---
+# github  skill  [name]  <owner/repo[@ref]>  <path-or-dir>  [ref]
+
+github  skill  alcroito/clanker_config  skills/building-qt-from-source
+github  skill  alcroito/clanker_config  skills/cmake-expert-skill
+github  skill  alcroito/clanker_config  skills/creating-qt-ci-bug-reports
+github  skill  alcroito/clanker_config  skills/custom-linear-skill
+github  skill  alcroito/clanker_config  skills/porting-qt-controls-1-to-2
+github  skill  alcroito/clanker_config  skills/qt-cmake-skill
+github  skill  alcroito/clanker_config  skills/qt-local-worktrees-and-builds
+github  skill  alcroito/clanker_config  skills/testing-qt-cmake-changes-against-an-install
+github  skill  alcroito/clanker_config  skills/tracking-qt-work-in-linear
+github  skill  alcroito/clanker_config  skills/writing-qt-commit-messages
+github  skill  alcroito/clanker_config  skills/writing-qt-documentation
+
+github  skill  qt/qtqa  documentation_review/skills/skill-all-docs  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-doc-audit  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-doc-diff  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-language-style  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-line-wrap  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-linking-check  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-module-export  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-vale  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-vale-qdoc  dev
+github  skill  qt/qtqa  documentation_review/skills/skill-vale-qdoc-lint  dev

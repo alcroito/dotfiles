@@ -1,0 +1,86 @@
+{
+  "github/skill/building-qt-from-source": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/building-qt-from-source?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/cmake-expert-skill": {
+    "sha": "75c37ae2cf87f98f332a4e5a001a4bfe616b1f58",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/cmake-expert-skill?ref=75c37ae2cf87f98f332a4e5a001a4bfe616b1f58"
+  },
+  "github/skill/creating-qt-ci-bug-reports": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/creating-qt-ci-bug-reports?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/custom-linear-skill": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/custom-linear-skill?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/porting-qt-controls-1-to-2": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/porting-qt-controls-1-to-2?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/qt-cmake-skill": {
+    "sha": "75c37ae2cf87f98f332a4e5a001a4bfe616b1f58",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/qt-cmake-skill?ref=75c37ae2cf87f98f332a4e5a001a4bfe616b1f58"
+  },
+  "github/skill/qt-local-worktrees-and-builds": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/qt-local-worktrees-and-builds?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/skill-all-docs": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-all-docs?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-doc-audit": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-doc-audit?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-doc-diff": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-doc-diff?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-language-style": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-language-style?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-line-wrap": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-line-wrap?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-linking-check": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-linking-check?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-module-export": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-module-export?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-vale": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-vale?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-vale-qdoc": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-vale-qdoc?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/skill-vale-qdoc-lint": {
+    "sha": "dd0c41c038691fc471e03e22a9de563cb8e943aa",
+    "raw_url": "https://api.github.com/repos/qt/qtqa/contents/documentation_review/skills/skill-vale-qdoc-lint?ref=dd0c41c038691fc471e03e22a9de563cb8e943aa"
+  },
+  "github/skill/testing-qt-cmake-changes-against-an-install": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/testing-qt-cmake-changes-against-an-install?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/tracking-qt-work-in-linear": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/tracking-qt-work-in-linear?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/writing-qt-commit-messages": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/writing-qt-commit-messages?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  },
+  "github/skill/writing-qt-documentation": {
+    "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/writing-qt-documentation?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
+  }
+}
