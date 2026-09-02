@@ -4,6 +4,7 @@ install  claude-code  global
 # --- Skills ---
 # github  skill  [name]  <owner/repo[@ref]>  <path-or-dir>  [ref]
 
+github  skill  alcroito/clanker_config  skills/bootstrapping-a-vm-for-an-agent
 github  skill  alcroito/clanker_config  skills/building-qt-from-source
 github  skill  alcroito/clanker_config  skills/cmake-expert-skill
 github  skill  alcroito/clanker_config  skills/creating-qt-ci-bug-reports
