@@ -15,8 +15,11 @@ echo "Installing yazi using mise"
 
 echo "Installing yazi packages"
 # yazi is installed by mise, so need to do it via pwsh 7 where the profile sets up mise.
-{{- range $line := (includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "ya") | trim | splitList "\n") }}
+{{- $ya_out := includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "ya") | trim }}
+{{- if $ya_out }}
+{{- range $line := $ya_out | splitList "\n" }}
 & "$pwsh_path" -c '{{ $line | trim }}'
+{{- end }}
 {{- end }}
 echo "Finished installing yazi packages"
 

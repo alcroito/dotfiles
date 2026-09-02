@@ -8,8 +8,11 @@
 echo "Installing powershell modules posh-git"
 Set-ExecutionPolicy Bypass -Scope Process -Force;
 {{ template "pwsh_7_path" . }}
-{{- range $line := (includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "psmodule") | trim | splitList "\n") }}
+{{- $psmodule_out := includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "psmodule") | trim }}
+{{- if $psmodule_out }}
+{{- range $line := $psmodule_out | splitList "\n" }}
 & "$pwsh_path" -c '{{ $line | trim }}'
+{{- end }}
 {{- end }}
 # & "$pwsh_path" -c 'Install-Module -Name PSFzf -Confirm:$False -Force'
 
