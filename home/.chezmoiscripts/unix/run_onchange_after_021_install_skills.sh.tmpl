@@ -15,11 +15,21 @@
 export PATH="$HOME/.local/share/mise/shims:$PATH:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin"
 
 # skillfile fetches every entry through the GitHub contents API, which allows
-# only 60 anonymous requests per hour. Reuse the chezmoi token when it is there.
-if [ -r "$HOME/.config/dotfiles/github_env.sh" ]; then
-  . "$HOME/.config/dotfiles/github_env.sh"
-fi
-if [ -n "${CHEZMOI_GITHUB_ACCESS_TOKEN:-}" ] && [ -z "${GITHUB_TOKEN:-}" ]; then
+# only 60 anonymous requests per hour, so it wants a token. Its own comes first:
+# the chezmoi one is scoped to this account's repos and answers 403 for qt/qtqa,
+# which is worse than sending nothing at all, since those repos are public.
+# GITHUB_TOKEN is exported here rather than anywhere sourced by a shell, so it
+# reaches skillfile and nothing else.
+for token_file in skillfile_env.sh github_env.sh; do
+  [ -r "$HOME/.config/dotfiles/$token_file" ] || continue
+  . "$HOME/.config/dotfiles/$token_file"
+done
+# The dedicated token overrides a GITHUB_TOKEN the environment carried in: an
+# interactive shell exports the chezmoi one through ~/.zshrc, and that is exactly
+# the token this is meant to stop using.
+if [ -n "${SKILLFILE_GITHUB_TOKEN:-}" ]; then
+  export GITHUB_TOKEN="$SKILLFILE_GITHUB_TOKEN"
+elif [ -z "${GITHUB_TOKEN:-}" ] && [ -n "${CHEZMOI_GITHUB_ACCESS_TOKEN:-}" ]; then
   export GITHUB_TOKEN="$CHEZMOI_GITHUB_ACCESS_TOKEN"
 fi
 

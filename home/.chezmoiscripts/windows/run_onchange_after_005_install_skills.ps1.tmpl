@@ -18,14 +18,31 @@
 $env:Path = "$env:LOCALAPPDATA\mise\shims;$env:Path"
 
 # skillfile fetches every entry through the GitHub contents API, which allows
-# only 60 anonymous requests per hour. Reuse the chezmoi token when it is there.
-# The file is POSIX shell, so parse it instead of sourcing it.
-$github_env = Join-Path $HOME ".config/dotfiles/github_env.sh"
-if (-not $env:GITHUB_TOKEN -and (Test-Path $github_env)) {
-  $token_line = Select-String -Path $github_env -Pattern '^\s*export\s+CHEZMOI_GITHUB_ACCESS_TOKEN=(.+)$' | Select-Object -First 1
+# only 60 anonymous requests per hour, so it wants a token. Its own comes first:
+# the chezmoi one is scoped to this account's repos and answers 403 for qt/qtqa,
+# which is worse than sending nothing at all, since those repos are public.
+# Both files are POSIX shell, so parse them instead of sourcing them, and set
+# GITHUB_TOKEN only in this script's environment so it reaches skillfile alone.
+$token_sources = @(
+  @{ File = "skillfile_env.sh"; Name = "SKILLFILE_GITHUB_TOKEN" }
+  @{ File = "github_env.sh"; Name = "CHEZMOI_GITHUB_ACCESS_TOKEN" }
+)
+$tokens = @{}
+foreach ($source in $token_sources) {
+  $path = Join-Path $HOME ".config/dotfiles/$($source.File)"
+  if (-not (Test-Path $path)) { continue }
+  $token_line = Select-String -Path $path -Pattern "^\s*export\s+$($source.Name)=(.+)$" | Select-Object -First 1
   if ($token_line) {
-    $env:GITHUB_TOKEN = $token_line.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'")
+    $tokens[$source.Name] = $token_line.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'")
   }
+}
+
+# The dedicated token overrides a GITHUB_TOKEN the environment carried in, for
+# the reason the unix script explains.
+if ($tokens.SKILLFILE_GITHUB_TOKEN) {
+  $env:GITHUB_TOKEN = $tokens.SKILLFILE_GITHUB_TOKEN
+} elseif (-not $env:GITHUB_TOKEN -and $tokens.CHEZMOI_GITHUB_ACCESS_TOKEN) {
+  $env:GITHUB_TOKEN = $tokens.CHEZMOI_GITHUB_ACCESS_TOKEN
 }
 
 {{ range $manifests }}

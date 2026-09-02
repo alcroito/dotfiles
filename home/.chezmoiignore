@@ -44,6 +44,13 @@ key.txt.age
 .config/dotfiles/github_env.sh
 {{ end }}
 
+{{/* Read by the skills script alone, which only runs where there is a manifest
+     to install, so it has no business existing anywhere else. Gated on the age
+     identity for the same reason as the files above. */}}
+{{ if or (not .install_github_tokens) (not (stat $age_key)) (not (or (eq .location "work") (eq .location "vm"))) }}
+.config/dotfiles/skillfile_env.sh
+{{ end }}
+
 {{/* Not gated on install_ssh_authorized_keys: rotate-chezmoi-age-key.sh
      re-encrypts every encrypted_ file from its applied target, so this one has
      to exist on the machine the rotation runs from, which is not a headless
