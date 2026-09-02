@@ -174,8 +174,11 @@ os="$(printf '%s' "$os_out" | tr -d '\r' | sed -n 's/.*__OS__\([A-Za-z]*\)__.*/\
 [ -n "$os" ] || die "could not determine the remote OS; got: $os_out"
 echo "==> remote reports $os"
 case "$os" in
-  Linux) ;;
-  Darwin) die "macOS targets are not supported yet (brew and the command line tools need work)" ;;
+  # A macOS CI VM already has homebrew, a selected Xcode and passwordless sudo,
+  # which is what made this platform look like work: install.sh skips its command
+  # line tools branch when xcode-select resolves, and the brew bootstrap is a
+  # no-op. A bare macOS install would still need both.
+  Linux | Darwin) ;;
   *) die "Windows targets are not supported yet (gsudo elevation cannot be answered over ssh)" ;;
 esac
 
@@ -208,7 +211,7 @@ elif [ "$auth_mode" = "password" ]; then
     cleanup() { rm -f ~/.chezmoi-bootstrap-sudoers ~/.chezmoi-bootstrap-pass; }
     trap cleanup EXIT
     sudo -S -p "" visudo -cf ~/.chezmoi-bootstrap-sudoers < ~/.chezmoi-bootstrap-pass > /dev/null
-    sudo -S -p "" install -m 440 -o root -g root \
+    sudo -S -p "" install -m 440 -o 0 -g 0 \
       ~/.chezmoi-bootstrap-sudoers /etc/sudoers.d/99-chezmoi-bootstrap < ~/.chezmoi-bootstrap-pass
   ' || die "could not grant passwordless sudo"
 
@@ -275,7 +278,7 @@ check "authorized_keys written" 'test -s ~/.ssh/authorized_keys'
 check "age identity present" 'test -s ~/.config/chezmoi/key.txt'
 check "github token env applied" 'test -s ~/.config/dotfiles/github_env.sh'
 check "mise on a non-interactive ssh PATH" 'mise --version'
-check "yazi installed" 'mise which yazi'
+check "yazi on that PATH too" 'command -v yazi'
 
 if [ "$fail" -ne 0 ] || [ "$installer_rc" -ne 0 ]; then
   echo
