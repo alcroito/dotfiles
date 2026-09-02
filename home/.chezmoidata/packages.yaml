@@ -1,0 +1,26 @@
+# One entry per logical tool. Keys: groups, only_on, skip_on, min_version,
+# max_version, names, args, backend, phase, needs_bucket. Nothing else; a
+# condition that does not fit belongs in the calling script.
+pkgs:
+  # Windows installs git through its own before_002 script, and zsh and tig have
+  # no place there.
+  git: {groups: [core], skip_on: [windows]}
+  zsh: {groups: [core], skip_on: [windows]}
+  tig: {groups: [core], skip_on: [windows]}
+  ripgrep: {groups: [core]}
+  jq: {groups: [core]}
+  fd:
+    groups: [core]
+    names: {apt: fd-find, dnf: fd-find}
+  # Linux gets mise from its own curl bootstrap in after_015.
+  mise: {groups: [core], only_on: [darwin, windows]}
+  # Which yazi build Linux needs is a runtime glibc decision (aqua vs the github
+  # musl build), so Linux stays in after_015.
+  yazi:
+    groups: [core]
+    only_on: [darwin, windows]
+    backend: {darwin: brew, windows: mise}
+  # A tool whose group differs per platform needs one entry per group. On unix
+  # fzf and atuin are core; on windows they are extras-bucket tools.
+  fzf: {groups: [core], only_on: [darwin]}
+  atuin: {groups: [core], only_on: [darwin]}

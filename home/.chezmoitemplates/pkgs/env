@@ -1,0 +1,22 @@
+{{- /* Resolver environment derived from the chezmoi context: the one place that
+reads chezmoi built-ins and the install_* flags. Output is JSON so pkgs/select
+can stay free of built-ins and therefore testable for any osid. */ -}}
+{{- $version := 9999 -}}
+{{- if hasKey .chezmoi "osRelease" -}}
+{{-   if hasKey .chezmoi.osRelease "versionID" -}}
+{{- /* Major version only: ubuntu reports 22.04 and rhel 9.4, and every
+condition in the manifest is a major-release comparison. */ -}}
+{{-     $version = .chezmoi.osRelease.versionID | splitList "." | first | int -}}
+{{-   end -}}
+{{- end -}}
+{{- $groups := list "core" -}}
+{{- if not .install_minimal_packages -}}
+{{-   $groups = append $groups "extra" -}}
+{{-   if .install_nvim_deps -}}{{- $groups = append $groups "nvim_deps" -}}{{- end -}}
+{{-   if .install_nvim -}}{{- $groups = append $groups "nvim" -}}{{- end -}}
+{{- end -}}
+{{- if and .install_nvim .install_nvim_bob -}}{{- $groups = append $groups "bob" -}}{{- end -}}
+{{- if .install_qt_deps -}}{{- $groups = append $groups "qt_deps" -}}{{- end -}}
+{{- $sudo := "sudo " -}}
+{{- if eq .chezmoi.username "root" -}}{{- $sudo = "" -}}{{- end -}}
+{{- dict "osid" .osid "version" $version "groups" $groups "sudo" $sudo | toJson -}}

@@ -1,0 +1,74 @@
+=== bootstrap_root
+{
+  "buckets": [],
+  "commands": []
+}
+=== bootstrap
+{
+  "buckets": [],
+  "commands": []
+}
+=== prereq
+{
+  "buckets": [],
+  "commands": []
+}
+=== system
+{
+  "buckets": [],
+  "commands": [
+    {
+      "args": "",
+      "manager": "scoop",
+      "names": [
+        "fd",
+        "jq",
+        "mise",
+        "ripgrep"
+      ]
+    }
+  ]
+}
+=== nvim_deps
+{
+  "buckets": [],
+  "commands": []
+}
+=== nvim
+{
+  "buckets": [],
+  "commands": []
+}
+=== mise
+{
+  "buckets": [],
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "yazi"
+      ]
+    }
+  ]
+}
+=== bob
+{
+  "buckets": [],
+  "commands": []
+}
+=== qt_mise
+{
+  "buckets": [],
+  "commands": []
+}
+=== ya
+{
+  "buckets": [],
+  "commands": []
+}
+=== psmodule
+{
+  "buckets": [],
+  "commands": []
+}

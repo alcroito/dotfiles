@@ -1,0 +1,91 @@
+{{- /* Pure package selection. Reads no chezmoi built-ins, so any host can render
+any (osid, version, groups) combination.
+
+Input dict: data (root context), osid, version (int), groups (list of enabled
+group names), phase.
+Output: JSON {"buckets": [...], "commands": [{manager, args, names}]}.
+
+Every optional lookup uses `get`, not `.field`: chezmoi renders with
+missingkey=error, so `$e.foo` aborts on an entry that omits foo. */ -}}
+{{- $d := .data -}}
+{{- $osid := .osid -}}
+{{- $version := .version | int -}}
+{{- $groups := .groups -}}
+{{- $phase := .phase -}}
+
+{{- /* Condition keys matching this host: its osid plus every family holding it. */ -}}
+{{- $keys := list $osid -}}
+{{- range $family, $members := $d.pkg_families -}}
+{{-   if has $osid $members -}}{{- $keys = append $keys $family -}}{{- end -}}
+{{- end -}}
+
+{{- $buckets := list -}}
+{{- $acc := dict -}}
+{{- range $pkg, $e := $d.pkgs -}}
+{{-   $take := false -}}
+{{-   range $g := (get $e "groups" | default list) -}}
+{{-     if has $g $groups -}}{{- $take = true -}}{{- end -}}
+{{-   end -}}
+
+{{-   $only := get $e "only_on" | default list -}}
+{{-   if and $take $only -}}
+{{-     $hit := false -}}
+{{-     range $k := $only -}}{{- if has $k $keys -}}{{- $hit = true -}}{{- end -}}{{- end -}}
+{{-     $take = $hit -}}
+{{-   end -}}
+
+{{-   range $k := (get $e "skip_on" | default list) -}}
+{{-     if has $k $keys -}}{{- $take = false -}}{{- end -}}
+{{-   end -}}
+
+{{-   range $k, $v := (get $e "min_version" | default dict) -}}
+{{-     if and (has $k $keys) (lt $version ($v | int)) -}}{{- $take = false -}}{{- end -}}
+{{-   end -}}
+{{-   range $k, $v := (get $e "max_version" | default dict) -}}
+{{-     if and (has $k $keys) (gt $version ($v | int)) -}}{{- $take = false -}}{{- end -}}
+{{-   end -}}
+
+{{- /* Resolve the backend: a string, or a map keyed by osid or family with an
+optional default. A map with no match means the tool is not installed here. */ -}}
+{{-   $backend := get $e "backend" | default "system" -}}
+{{-   if eq (kindOf $backend) "map" -}}
+{{-     $chosen := "" -}}
+{{-     range $k := $keys -}}
+{{-       if and (eq $chosen "") (hasKey $backend $k) -}}{{- $chosen = get $backend $k -}}{{- end -}}
+{{-     end -}}
+{{-     $backend = $chosen | default (get $backend "default" | default "") -}}
+{{-   end -}}
+{{-   if eq $backend "" -}}{{- $take = false -}}{{- end -}}
+
+{{-   if $take -}}
+{{-     $manager := $backend -}}
+{{-     if eq $backend "system" -}}
+{{-       $manager = get $d.pkg_system $osid -}}
+{{-       if not $manager -}}
+{{-         fail (printf "pkgs/select: osid %q has no entry in pkg_system; add its package manager in .chezmoidata/package_managers.yaml" $osid) -}}
+{{-       end -}}
+{{-     end -}}
+{{-     $mdata := get $d.pkg_managers $manager -}}
+{{-     if not $mdata -}}
+{{-       fail (printf "pkgs/select: package %q resolved to unknown manager %q" $pkg $manager) -}}
+{{-     end -}}
+{{-     if eq ($phase) (get $e "phase" | default (get $mdata "phase")) -}}
+{{-       $args := get (get $e "args" | default dict) $manager | default "" -}}
+{{-       $names := splitList " " (get (get $e "names" | default dict) $manager | default $pkg) -}}
+{{-       $slot := printf "%s\x1f%s" $manager $args -}}
+{{-       $acc = set $acc $slot (concat (get $acc $slot | default list) $names) -}}
+{{-       $bucket := get (get $e "needs_bucket" | default dict) $manager | default "" -}}
+{{-       if $bucket -}}{{- $buckets = append $buckets $bucket -}}{{- end -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+{{- $commands := list -}}
+{{- range $slot := (keys $acc | sortAlpha) -}}
+{{-   $parts := splitList "\x1f" $slot -}}
+{{-   $commands = append $commands (dict
+        "manager" (index $parts 0)
+        "args" (index $parts 1)
+        "names" (get $acc $slot | uniq | sortAlpha)) -}}
+{{- end -}}
+{{- dict "buckets" ($buckets | uniq | sortAlpha) "commands" $commands | toJson -}}

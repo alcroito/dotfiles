@@ -1,0 +1,79 @@
+# Which package manager each platform uses, and how each one is driven. Consumed
+# by home/.chezmoitemplates/pkgs/*; see CLAUDE.md for the schema.
+
+# Named osid sets. Valid anywhere an entry takes an osid key: only_on, skip_on,
+# min_version, max_version, and the per-platform form of backend.
+pkg_families:
+  linux: [linux-ubuntu, linux-debian, linux-fedora, linux-centos, linux-rocky,
+          linux-rhel, linux-arch, linux-endeavouros, linux-alpine,
+          linux-opensuse-leap]
+  deb: [linux-ubuntu, linux-debian]
+  el: [linux-centos, linux-rocky, linux-rhel]
+  rpm: [linux-fedora, linux-centos, linux-rocky, linux-rhel]
+  arch: [linux-arch, linux-endeavouros]
+
+pkg_system:
+  linux-ubuntu: apt
+  linux-debian: apt
+  linux-fedora: dnf
+  linux-centos: dnf
+  linux-rocky: dnf
+  linux-rhel: dnf
+  linux-arch: pacman
+  linux-endeavouros: pacman
+  linux-alpine: apk
+  linux-opensuse-leap: zypper
+  darwin: brew
+  windows: scoop
+
+# phase is the script slot an entry lands in unless it sets its own. sudo is
+# whether the command needs elevation on unix. per_package means one invocation
+# per name instead of one command with a joined list.
+pkg_managers:
+  apt:
+    install: "apt install -y"
+    sudo: true
+    phase: system
+  dnf:
+    install: "dnf install -y"
+    sudo: true
+    phase: system
+    enable_repo: "dnf config-manager --set-enabled"
+  # --needed covers what the Qt script used to ask for separately, and
+  # --disable-sandbox is required in this repo's containers and VMs.
+  pacman:
+    install: "pacman -Sy --needed --disable-sandbox --noconfirm"
+    sudo: true
+    phase: system
+  apk:
+    install: "apk add"
+    sudo: true
+    phase: system
+  zypper:
+    install: "zypper install -y"
+    sudo: true
+    phase: system
+  brew:
+    install: "brew install"
+    sudo: false
+    phase: system
+  scoop:
+    install: "Invoke-ScoopInstall"
+    sudo: false
+    phase: system
+    per_package: true
+  mise:
+    install: "mise use -g"
+    sudo: false
+    phase: mise
+    per_package: true
+  ya:
+    install: "ya pkg add"
+    sudo: false
+    phase: ya
+    per_package: true
+  psmodule:
+    install: "Install-Module -Confirm:$False -Force -Name"
+    sudo: false
+    phase: psmodule
+    per_package: true
