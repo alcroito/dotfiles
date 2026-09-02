@@ -10,7 +10,11 @@
 # script is skipped (run_onchange) after a reboot or token expiry.
 "{{ .chezmoi.sourceDir }}/../scripts/unix/pass-cli-fs-login.sh"
 {{ else -}}
-# Desktop/laptop: interactive login backed by the OS keyring.
+# Desktop/laptop: interactive login backed by the OS keyring. chezmoi does not
+# run scripts through a login shell, so the installer's target directory needs
+# adding to PATH.
+export PATH="$HOME/.local/bin:$PATH"
+
 if pass-cli info > /dev/null 2>&1; then
   echo "proton pass cli already authenticated, skipping login"
 else

@@ -14,6 +14,18 @@
 #   - as chezmoi's [secret].command, with pass-cli arguments appended (runs them)
 #   - by the login script with no arguments, just to bootstrap up front
 
+# chezmoi runs neither its scripts nor [secret].command through a login shell, so
+# the directory the pass-cli installer targets is not on PATH yet.
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+if ! command -v pass-cli > /dev/null 2>&1; then
+  echo "proton pass: pass-cli not found on PATH or in ~/.local/bin" 1>&2
+  exit 1
+fi
+
 export PROTON_PASS_KEY_PROVIDER=fs
 
 # Vault-level access: item-scoped PATs can't resolve a pass://VaultName/ItemName
