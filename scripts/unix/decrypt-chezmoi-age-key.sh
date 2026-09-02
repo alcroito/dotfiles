@@ -4,12 +4,13 @@
 # GitHub token files can be applied.
 #
 # Called from two places:
-#   - install.sh, after `chezmoi init` and before the first `chezmoi apply`.
-#     .chezmoiignore gates the encrypted token files on this identity existing
-#     and is evaluated before any script in the apply runs, so the identity has
-#     to be in place beforehand for the tokens to land in that first pass.
-#   - run_onchange_before_005_decrypt_age_key, which is what picks up an
-#     identity rotated on another machine on a later apply.
+#   - the [hooks.apply.pre] hook in .chezmoi.toml.tmpl, which runs before the
+#     apply computes its target state. That is when .chezmoiignore, which gates
+#     the encrypted files on this identity existing, is evaluated: a before_
+#     script is itself part of that state, so an identity written by one lands a
+#     whole apply too late.
+#   - run_onchange_before_005_decrypt_age_key, which covers `chezmoi update`
+#     (no apply hooks) and picks up an identity rotated on another machine.
 #
 # The local key's recipient is compared against the configured one, so an
 # identity rotated elsewhere is detected here instead of silently leaving behind
@@ -89,12 +90,27 @@ mkdir -p "$(dirname "$key_path")"
 # for before it appears.
 echo "decrypt_age_key: unlocking the chezmoi age identity, which decrypts the GitHub API token files"
 echo "decrypt_age_key: a wrong or refused passphrase is not fatal, the apply continues unauthenticated"
-if ! "$chezmoi" age decrypt --passphrase --output "$key_path.new" "$source_key"; then
-  warn "age key decryption failed, keeping any existing key"
-  warn_unauthenticated
+# Retried because the hook above is the only attempt that lands in time: one
+# mistyped or accidentally empty passphrase would otherwise cost this apply every
+# encrypted file, and on a headless host that includes the authorized_keys it
+# needs to be reachable at all.
+attempts=3
+attempt=1
+while :; do
+  if "$chezmoi" age decrypt --passphrase --output "$key_path.new" "$source_key"; then
+    chmod 600 "$key_path.new"
+    mv "$key_path.new" "$key_path"
+    echo "decrypt_age_key: age identity installed"
+    exit 0
+  fi
   rm -f "$key_path.new"
-  exit 0
-fi
-chmod 600 "$key_path.new"
-mv "$key_path.new" "$key_path"
-echo "decrypt_age_key: age identity installed"
+  attempt=$((attempt + 1))
+  if [ "$attempt" -gt "$attempts" ]; then
+    break
+  fi
+  warn "passphrase attempt $((attempt - 1)) of $attempts failed, trying again"
+done
+
+warn "age key decryption failed, keeping any existing key"
+warn_unauthenticated
+exit 0

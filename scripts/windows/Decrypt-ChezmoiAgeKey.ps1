@@ -4,10 +4,9 @@
     contract: get a current age identity into place, or warn and let the caller
     continue.
 .DESCRIPTION
-    Called from install.ps1 after `chezmoi init` and before the first
-    `chezmoi apply`, and from run_onchange_before_005_decrypt_age_key. See the
-    unix script's header for why the identity has to exist before the apply
-    starts.
+    Called from the [hooks.apply.pre] hook in .chezmoi.toml.tmpl and from
+    run_onchange_before_005_decrypt_age_key. See the unix script's header for
+    why only the hook lands in time.
 .PARAMETER Recipient
     The configured age recipient. Resolved from chezmoi's template data when not
     passed.
@@ -90,12 +89,23 @@ New-Item -ItemType Directory -Force -Path (Split-Path $keyPath) | Out-Null
 # for before it appears.
 Write-Output "decrypt_age_key: unlocking the chezmoi age identity, which decrypts the GitHub API token files"
 Write-Output "decrypt_age_key: a wrong or refused passphrase is not fatal, the apply continues unauthenticated"
-& $chezmoi age decrypt --passphrase --output "$keyPath.new" $sourceKey
-if ($LASTEXITCODE -ne 0) {
-  Write-Warning "decrypt_age_key: age key decryption failed, keeping any existing key"
-  Write-Unauthenticated
+# Retried for the reason the unix script's loop explains: the hook is the only
+# attempt that lands before .chezmoiignore is evaluated, so one mistyped
+# passphrase would cost this apply every encrypted file.
+$attempts = 3
+for ($attempt = 1; $attempt -le $attempts; $attempt++) {
+  & $chezmoi age decrypt --passphrase --output "$keyPath.new" $sourceKey
+  if ($LASTEXITCODE -eq 0) {
+    Move-Item -Force "$keyPath.new" $keyPath
+    Write-Output "decrypt_age_key: age identity installed"
+    exit 0
+  }
   Remove-Item -Force -ErrorAction SilentlyContinue "$keyPath.new"
-  exit 0
+  if ($attempt -lt $attempts) {
+    Write-Warning "decrypt_age_key: passphrase attempt $attempt of $attempts failed, trying again"
+  }
 }
-Move-Item -Force "$keyPath.new" $keyPath
-Write-Output "decrypt_age_key: age identity installed"
+
+Write-Warning "decrypt_age_key: age key decryption failed, keeping any existing key"
+Write-Unauthenticated
+exit 0
