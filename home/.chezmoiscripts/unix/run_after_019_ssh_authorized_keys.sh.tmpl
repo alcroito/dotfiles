@@ -3,11 +3,10 @@
 {{ if ne .osid "windows" -}}
 #!/usr/bin/env bash
 {{ end -}}
-{{/* Hashing the ciphertext re-runs this when the key list changes, and needs no
-     age identity to render. An `after` script because it reads the applied
+{{/* Runs on every apply rather than on change: appending is a grep away from a
+     no-op, and an agent host whose authorized_keys got clobbered has to be able
+     to heal on the next apply. An `after` script because it reads the applied
      target, which `before` scripts run too early to see. */}}
-# key list: {{ include $keys_src | sha256sum }}
-
 KEYS_FILE="$HOME/.config/dotfiles/authorized_keys"
 AUTH_KEYS="$HOME/.ssh/authorized_keys"
 

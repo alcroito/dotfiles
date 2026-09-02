@@ -5,10 +5,8 @@
 
 {{ template "pwsh_refresh_path" . }}
 
-{{/* Hashing the ciphertext re-runs this when the key list changes, and needs no
-     age identity to render. */}}
-# key list: {{ include $keys_src | sha256sum }}
-
+{{/* Runs on every apply rather than on change, for the reason the unix script
+     explains: a clobbered authorized_keys has to heal on the next apply. */}}
 # Windows counterpart of the unix run_onchange_after_019 script. The target file
 # differs: the stock sshd_config ends with
 #     Match Group administrators
