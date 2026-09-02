@@ -1,7 +1,15 @@
 === bootstrap_root
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "dnf",
+      "names": [
+        "sudo"
+      ]
+    }
+  ]
 }
 === bootstrap
 {
@@ -11,7 +19,16 @@
 === prereq
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "dnf",
+      "names": [
+        "util-linux-user",
+        "which"
+      ]
+    }
+  ]
 }
 === system
 {
@@ -21,11 +38,16 @@
       "args": "",
       "manager": "dnf",
       "names": [
+        "atool",
+        "btop",
         "fd-find",
         "git",
+        "htop",
         "jq",
         "ripgrep",
+        "the_silver_searcher",
         "tig",
+        "tmux",
         "zsh"
       ]
     }
@@ -34,7 +56,16 @@
 === nvim_deps
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "dnf",
+      "names": [
+        "fuse",
+        "fuse-libs"
+      ]
+    }
+  ]
 }
 === nvim
 {
@@ -44,7 +75,16 @@
 === mise
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "lazydocker",
+        "zoxide"
+      ]
+    }
+  ]
 }
 === bob
 {
@@ -59,7 +99,17 @@
 === ya
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "ya",
+      "names": [
+        "BennyOe/onedark",
+        "KKV9/compress",
+        "yazi-rs/flavors:catppuccin-macchiato"
+      ]
+    }
+  ]
 }
 === psmodule
 {

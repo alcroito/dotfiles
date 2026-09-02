@@ -15,16 +15,24 @@
 }
 === system
 {
-  "buckets": [],
+  "buckets": [
+    "extras"
+  ],
   "commands": [
     {
       "args": "",
       "manager": "scoop",
       "names": [
+        "ag",
+        "atuin",
         "fd",
+        "fzf",
         "jq",
         "mise",
-        "ripgrep"
+        "psmux",
+        "ripgrep",
+        "sysinternals",
+        "zoxide"
       ]
     }
   ]
@@ -37,7 +45,15 @@
 === nvim
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "scoop",
+      "names": [
+        "neovim"
+      ]
+    }
+  ]
 }
 === mise
 {
@@ -47,6 +63,7 @@
       "args": "",
       "manager": "mise",
       "names": [
+        "node",
         "yazi"
       ]
     }
@@ -60,15 +77,40 @@
 === qt_mise
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "cmake"
+      ]
+    }
+  ]
 }
 === ya
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "ya",
+      "names": [
+        "KKV9/compress",
+        "yazi-rs/flavors:catppuccin-macchiato"
+      ]
+    }
+  ]
 }
 === psmodule
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "psmodule",
+      "names": [
+        "posh-git"
+      ]
+    }
+  ]
 }

@@ -1,7 +1,15 @@
 === bootstrap_root
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apt",
+      "names": [
+        "sudo"
+      ]
+    }
+  ]
 }
 === bootstrap
 {
@@ -11,7 +19,15 @@
 === prereq
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apt",
+      "names": [
+        "locales"
+      ]
+    }
+  ]
 }
 === system
 {
@@ -59,7 +75,17 @@
 === ya
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "ya",
+      "names": [
+        "BennyOe/onedark",
+        "KKV9/compress",
+        "yazi-rs/flavors:catppuccin-macchiato"
+      ]
+    }
+  ]
 }
 === psmodule
 {

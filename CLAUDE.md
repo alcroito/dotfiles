@@ -35,6 +35,27 @@ Platform-specific behavior is expressed as `{{ if eq .osid "..." }}` branches in
 
 Reusable shell snippets live in `home/.chezmoitemplates/` (e.g. `zshrc_unix`, `zshrc_aliases`, `zshrc_macos_common_arm`, `zshrc_plugins_arch`). `home/dot_zshrc.tmpl` is essentially a dispatcher that `{{ template "..." . }}`-includes these partials conditionally on `.osid`, `.chezmoi.arch`, and `.machine_id`. To change shell config, edit the relevant partial rather than inlining into `dot_zshrc.tmpl`.
 
+## Package manifest (`.chezmoidata/packages*.yaml`)
+
+Packages are declared, not scripted. `home/.chezmoidata/packages.yaml` holds one
+entry per logical tool, `package_managers.yaml` maps each osid to its package
+manager and describes how to drive it, and `packages_qt.yaml` holds the
+manager-keyed Qt dependency lists. The resolver lives in
+`home/.chezmoitemplates/pkgs/`: `env` reads the chezmoi context and the
+`install_*` flags, `select` performs pure selection, and `install_sh`,
+`install_ps1`, `install_list_sh` and `repos_sh` emit commands. Install scripts
+call one emitter per phase and no longer contain per-distro branches.
+
+To add a tool, add one entry to `packages.yaml`. Entry keys, and nothing else:
+`groups`, `only_on`, `skip_on`, `min_version`, `max_version`, `names`, `args`,
+`backend`, `phase`, `needs_bucket`. A condition that does not fit belongs in the
+calling script, not in the data: `.chezmoidata` files can never be templates.
+
+`mise run chezmoi-show-packages` prints what the resolver selects for the
+current host. `scripts/tests/test-package-resolver.sh` renders a fixed matrix of
+platforms against goldens in `scripts/tests/fixtures/`; run it with `--update`
+after an intentional manifest change and review the diff.
+
 ## Install scripts (`.chezmoiscripts/`)
 
 Split into `unix/` and `windows/` subdirs (the other platform's dir is ignored via `.chezmoiignore`). Naming is `run_onchange_{before,after}_NNN_description.{sh,ps1}.tmpl`; the `NNN` prefix orders execution. They handle package installation (per-distro `apt`/`dnf`/`pacman`/`scoop`/`choco`/`winget` branches), neovim, Qt build deps, and Proton Pass setup. Because they are `run_onchange`, chezmoi re-executes a script only when its rendered output changes — keep that in mind when editing (changing a script causes it to re-run on next apply).

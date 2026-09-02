@@ -24,3 +24,145 @@ pkgs:
   # fzf and atuin are core; on windows they are extras-bucket tools.
   fzf: {groups: [core], only_on: [darwin]}
   atuin: {groups: [core], only_on: [darwin]}
+
+  # extra: everything the full (non-minimal) toolset adds.
+  htop: {groups: [extra], skip_on: [windows]}
+  tmux: {groups: [extra], skip_on: [windows]}
+  ag:
+    groups: [extra]
+    names:
+      apt: silversearcher-ag
+      dnf: the_silver_searcher
+      pacman: the_silver_searcher
+      zypper: the_silver_searcher
+      apk: the_silver_searcher
+      brew: the_silver_searcher
+      scoop: ag
+    # Fedora 43+ and EL10+ dropped it.
+    max_version: {linux-fedora: 42, el: 9}
+    needs_bucket: {scoop: extras}
+  btop:
+    groups: [extra]
+    skip_on: [windows]
+    # Not in the debian 11 repos.
+    min_version: {linux-debian: 12}
+  atool:
+    groups: [extra]
+    skip_on: [windows]
+    # No EPEL 10 build.
+    max_version: {el: 9}
+    # Only in edge/testing on alpine.
+    args: {apk: "--repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/"}
+  zoxide:
+    groups: [extra]
+    backend: {darwin: brew, windows: scoop, default: mise}
+    needs_bucket: {scoop: extras}
+  lazydocker:
+    groups: [extra]
+    skip_on: [windows]
+    backend: {darwin: brew, default: mise}
+  # macOS only: on linux these come from the qt_deps group or are not wanted.
+  cmake: {groups: [extra], only_on: [darwin]}
+  ninja: {groups: [extra], only_on: [darwin]}
+  aria2: {groups: [extra], only_on: [darwin]}
+  bat: {groups: [extra], only_on: [darwin]}
+  # Windows counterparts of tools that are core on unix, plus its own extras.
+  fzf-scoop:
+    groups: [extra]
+    only_on: [windows]
+    names: {scoop: fzf}
+    needs_bucket: {scoop: extras}
+  atuin-scoop:
+    groups: [extra]
+    only_on: [windows]
+    names: {scoop: atuin}
+    needs_bucket: {scoop: extras}
+  psmux:
+    groups: [extra]
+    only_on: [windows]
+    needs_bucket: {scoop: extras}
+  sysinternals:
+    groups: [extra]
+    only_on: [windows]
+    needs_bucket: {scoop: extras}
+  node:
+    groups: [extra]
+    only_on: [windows]
+    backend: mise
+  posh-git:
+    groups: [extra]
+    only_on: [windows]
+    backend: psmodule
+
+  # Prereqs the system manager itself needs before the main install resolves.
+  which: {groups: [core], phase: prereq, only_on: [el, arch]}
+  # Provides chsh.
+  util-linux-user: {groups: [core], phase: prereq, only_on: [el]}
+  locales: {groups: [core], phase: prereq, only_on: [deb]}
+
+  # Bootstrap: installed before sudo and bash can be assumed to exist.
+  sudo: {groups: [core], phase: bootstrap_root, only_on: [linux]}
+  bash: {groups: [core], phase: bootstrap, only_on: [linux-alpine]}
+
+  # nvim: a package only where a real one exists. Other linux uses the appimage,
+  # which after_015 selects by glibc version.
+  fuse:
+    groups: [nvim_deps]
+    phase: nvim_deps
+    only_on: [deb, rpm, arch, linux-opensuse-leap]
+    names:
+      apt: "libfuse2 fuse3"
+      dnf: "fuse-libs fuse"
+      pacman: "fuse fuse2"
+      zypper: "libfuse2 fuse"
+  neovim:
+    groups: [nvim]
+    phase: nvim
+    only_on: [linux-alpine, darwin, windows]
+  bob:
+    groups: [bob]
+    skip_on: [windows]
+    backend: mise
+    # Its own phase, not the shared mise one: bob is installed by after_016,
+    # which runs after the mise phase in after_015.
+    phase: bob
+    # Not usable on debian 12 and older.
+    min_version: {linux-debian: 13}
+
+  # yazi plugins, installed with yazi's own package manager.
+  onedark:
+    groups: [core]
+    backend: ya
+    skip_on: [windows]
+    names: {ya: BennyOe/onedark}
+  catppuccin-macchiato:
+    groups: [core]
+    backend: ya
+    names: {ya: "yazi-rs/flavors:catppuccin-macchiato"}
+  compress:
+    groups: [core]
+    backend: ya
+    names: {ya: KKV9/compress}
+
+  # Windows builds Qt with a mise cmake; unix takes cmake from pkg_lists.qt_deps.
+  cmake-mise:
+    groups: [qt_deps]
+    only_on: [windows]
+    backend: mise
+    phase: qt_mise
+    names: {mise: cmake}
+
+# Extra repositories, declarative half only. RHEL's codeready repo name is
+# computed at runtime and stays in run_onchange_before_010.
+pkg_repos:
+  epel:
+    only_on: [el]
+    packages: [epel-release]
+  epel-next:
+    only_on: [el]
+    # EPEL Next only ever existed for EL9 and earlier.
+    max_version: {el: 9}
+    packages: [epel-next-release]
+  crb:
+    only_on: [linux-rocky]
+    enable: [crb]

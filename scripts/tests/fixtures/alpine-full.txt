@@ -1,12 +1,28 @@
 === bootstrap_root
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apk",
+      "names": [
+        "sudo"
+      ]
+    }
+  ]
 }
 === bootstrap
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apk",
+      "names": [
+        "bash"
+      ]
+    }
+  ]
 }
 === prereq
 {
@@ -21,12 +37,23 @@
       "args": "",
       "manager": "apk",
       "names": [
+        "btop",
         "fd",
         "git",
+        "htop",
         "jq",
         "ripgrep",
+        "the_silver_searcher",
         "tig",
+        "tmux",
         "zsh"
+      ]
+    },
+    {
+      "args": "--repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/",
+      "manager": "apk",
+      "names": [
+        "atool"
       ]
     }
   ]
@@ -39,17 +66,42 @@
 === nvim
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apk",
+      "names": [
+        "neovim"
+      ]
+    }
+  ]
 }
 === mise
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "lazydocker",
+        "zoxide"
+      ]
+    }
+  ]
 }
 === bob
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "bob"
+      ]
+    }
+  ]
 }
 === qt_mise
 {
@@ -59,7 +111,17 @@
 === ya
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "ya",
+      "names": [
+        "BennyOe/onedark",
+        "KKV9/compress",
+        "yazi-rs/flavors:catppuccin-macchiato"
+      ]
+    }
+  ]
 }
 === psmodule
 {

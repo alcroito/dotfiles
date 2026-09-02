@@ -1,7 +1,15 @@
 === bootstrap_root
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apt",
+      "names": [
+        "sudo"
+      ]
+    }
+  ]
 }
 === bootstrap
 {
@@ -11,7 +19,15 @@
 === prereq
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apt",
+      "names": [
+        "locales"
+      ]
+    }
+  ]
 }
 === system
 {
@@ -21,11 +37,15 @@
       "args": "",
       "manager": "apt",
       "names": [
+        "atool",
         "fd-find",
         "git",
+        "htop",
         "jq",
         "ripgrep",
+        "silversearcher-ag",
         "tig",
+        "tmux",
         "zsh"
       ]
     }
@@ -34,7 +54,16 @@
 === nvim_deps
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "apt",
+      "names": [
+        "fuse3",
+        "libfuse2"
+      ]
+    }
+  ]
 }
 === nvim
 {
@@ -44,7 +73,16 @@
 === mise
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "mise",
+      "names": [
+        "lazydocker",
+        "zoxide"
+      ]
+    }
+  ]
 }
 === bob
 {
@@ -59,7 +97,17 @@
 === ya
 {
   "buckets": [],
-  "commands": []
+  "commands": [
+    {
+      "args": "",
+      "manager": "ya",
+      "names": [
+        "BennyOe/onedark",
+        "KKV9/compress",
+        "yazi-rs/flavors:catppuccin-macchiato"
+      ]
+    }
+  ]
 }
 === psmodule
 {

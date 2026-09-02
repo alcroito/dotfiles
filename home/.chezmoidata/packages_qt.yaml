@@ -1,0 +1,25 @@
+# Qt build dependencies. Manager-keyed lists rather than pkgs entries:
+# libxcb-cursor-dev, xcb-util-cursor-devel and xcb-util-cursor share nothing but
+# a purpose, so a per-tool table would add churn and no clarity. The dnf group
+# installs ("Development Tools", c-development) stay in the scripts.
+pkg_lists:
+  qt_deps:
+    apt: [build-essential, cmake, ninja-build, python3, git, ccache,
+          libfontconfig1-dev, libfreetype-dev, libgtk-3-dev, libx11-dev,
+          libx11-xcb-dev, libxcb-cursor-dev, libxcb-glx0-dev, libxcb-icccm4-dev,
+          libxcb-image0-dev, libxcb-keysyms1-dev, libxcb-randr0-dev,
+          libxcb-render-util0-dev, libxcb-shape0-dev, libxcb-shm0-dev,
+          libxcb-sync-dev, libxcb-util-dev, libxcb-xfixes0-dev, libxcb-xkb-dev,
+          libxcb1-dev, libxext-dev, libxfixes-dev, libxi-dev, libxkbcommon-dev,
+          libxkbcommon-x11-dev, libxrender-dev]
+    dnf: [cmake, ninja-build, ccache, fontconfig-devel, freetype-devel,
+          gtk3-devel, libX11-devel, libX11-xcb, libxcb-devel, libXext-devel,
+          libXfixes-devel, libXi-devel, libXrender-devel, xcb-util-cursor-devel,
+          xcb-util-image-devel, xcb-util-renderutil-devel, xcb-util-wm-devel,
+          libxkbcommon-devel, libxkbcommon-x11-devel]
+    pacman: [cmake, ninja, python3, base-devel, git, ccache, fontconfig,
+             freetype2, gtk3, libx11, libxcb, xcb-util-cursor, xcb-util-wm,
+             xcb-util-image, xcb-util-keysyms, xcb-util-renderutil, xcb-util,
+             libxext, libxfixes, libxi, libxkbcommon, libxkbcommon-x11,
+             libxrender]
+    scoop: [ccache, ninja]
