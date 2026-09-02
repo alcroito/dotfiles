@@ -56,6 +56,13 @@ current host. `scripts/tests/test-package-resolver.sh` renders a fixed matrix of
 platforms against goldens in `scripts/tests/fixtures/`; run it with `--update`
 after an intentional manifest change and review the diff.
 
+Adding a new distro takes two edits to `package_managers.yaml`, not one: an
+entry in `pkg_system` mapping its osid to a manager, and, if it is a Linux
+distro, adding that osid to the `linux` list in `pkg_families`. Skipping the
+second edit fails silently: the `sudo` bootstrap entry is `only_on: [linux]`,
+so `before_007` reports "Installing sudo" and installs nothing, and the script
+still exits 0.
+
 ## Install scripts (`.chezmoiscripts/`)
 
 Split into `unix/` and `windows/` subdirs (the other platform's dir is ignored via `.chezmoiignore`). Naming is `run_onchange_{before,after}_NNN_description.{sh,ps1}.tmpl`; the `NNN` prefix orders execution. Package installation is driven by the manifest through the `pkgs/*` emitters (see "Package manifest" above); the scripts also handle neovim, Qt build deps, and Proton Pass setup. Because they are `run_onchange`, chezmoi re-executes a script only when its rendered output changes — keep that in mind when editing (changing a script causes it to re-run on next apply).

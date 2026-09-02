@@ -5,3 +5,7 @@
 install_minimal_packages = false
 install_ssh_authorized_keys = false
 is_headless = false
+install_nvim_deps = false
+install_nvim = false
+install_nvim_bob = false
+install_qt_deps = false
