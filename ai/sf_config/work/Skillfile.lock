@@ -1,4 +1,8 @@
 {
+  "github/skill/bootstrapping-a-vm-for-an-agent": {
+    "sha": "1208dc95e0d007b216137976183c95df0838fde3",
+    "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/bootstrapping-a-vm-for-an-agent?ref=1208dc95e0d007b216137976183c95df0838fde3"
+  },
   "github/skill/building-qt-from-source": {
     "sha": "84dea20f453518ce14354c9f3f4f6e612479d7a2",
     "raw_url": "https://api.github.com/repos/alcroito/clanker_config/contents/skills/building-qt-from-source?ref=84dea20f453518ce14354c9f3f4f6e612479d7a2"
