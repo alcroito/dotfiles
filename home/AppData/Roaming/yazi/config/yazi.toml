@@ -3,8 +3,8 @@ show_hidden = true
 
 [opener]
 edit = [
-	{ run = '$EDITOR "$@"', block = true, for = "unix" },
-	{ run = "nvim %*",  block = true, for = "windows" },
-	{ run = 'code %*',    orphan = true, desc = "code",           for = "windows" },
-	{ run = 'code -w %*', block = true,  desc = "code (block)",   for = "windows" },
+	{ run = "${EDITOR:-vi} %s", block = true, for = "unix" },
+	{ run = "nvim %s",    block = true,                        for = "windows" },
+	{ run = 'code %s',    orphan = true, desc = "code",         for = "windows" },
+	{ run = 'code -w %s', block = true,  desc = "code (block)", for = "windows" },
 ]
