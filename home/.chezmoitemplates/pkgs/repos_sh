@@ -1,0 +1,42 @@
+{{- /* Enable the extra repositories a distro needs before its packages resolve
+(EPEL, CRB). Data holds only the declarative half: repo-release packages to
+install and repo names to switch on. Anything needing runtime interpolation,
+such as RHEL's per-release codeready name, stays in the calling script.
+Input dict: ctx. */ -}}
+{{- $env := includeTemplate "pkgs/env" .ctx | fromJson -}}
+{{- $keys := list $env.osid -}}
+{{- range $family, $members := $.ctx.pkg_families -}}
+{{-   if has $env.osid $members -}}{{- $keys = append $keys $family -}}{{- end -}}
+{{- end -}}
+{{- $manager := get $.ctx.pkg_system $env.osid -}}
+{{- $m := get $.ctx.pkg_managers $manager -}}
+{{- $prefix := "" -}}
+{{- if get $m "sudo" -}}{{- $prefix = $env.sudo -}}{{- end -}}
+{{- /* Two passes, because a repo that has to be switched on (CRB) gates the
+packages of the repo installed next (EPEL). Map iteration is key-sorted, which
+would otherwise decide the order by accident. */ -}}
+{{- $wanted := dict -}}
+{{- range $repo, $e := $.ctx.pkg_repos -}}
+{{-   $take := false -}}
+{{-   range $k := (get $e "only_on" | default list) -}}
+{{-     if has $k $keys -}}{{- $take = true -}}{{- end -}}
+{{-   end -}}
+{{-   range $k, $v := (get $e "max_version" | default dict) -}}
+{{-     if and (has $k $keys) (gt ($env.version | int) ($v | int)) -}}{{- $take = false -}}{{- end -}}
+{{-   end -}}
+{{-   range $k, $v := (get $e "min_version" | default dict) -}}
+{{-     if and (has $k $keys) (lt ($env.version | int) ($v | int)) -}}{{- $take = false -}}{{- end -}}
+{{-   end -}}
+{{-   if $take -}}{{- $wanted = set $wanted $repo $e -}}{{- end -}}
+{{- end -}}
+{{- range $repo, $e := $wanted -}}
+{{-   range $name := (get $e "enable" | default list) }}
+{{ $prefix }}{{ get $m "enable_repo" }} {{ $name }}
+{{-   end -}}
+{{- end -}}
+{{- range $repo, $e := $wanted -}}
+{{-   $packages := get $e "packages" | default list -}}
+{{-   if $packages }}
+{{ $prefix }}{{ $m.install }} {{ join " " $packages }}
+{{-   end -}}
+{{- end }}

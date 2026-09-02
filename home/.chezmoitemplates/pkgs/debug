@@ -1,0 +1,16 @@
+{{- /* Human-readable dump of what the resolver selects for this host. Rendered
+by the chezmoi-show-packages mise task; Go template errors are terse, so being
+able to see the decision without applying is what makes the manifest
+maintainable. */ -}}
+{{- $env := includeTemplate "pkgs/env" . | fromJson -}}
+osid={{ $env.osid }} version={{ $env.version }} groups={{ $env.groups | join "," }}
+manager={{ get .pkg_system $env.osid | default "NONE" }}
+{{ range $phase := list "bootstrap_root" "bootstrap" "prereq" "system" "nvim_deps" "nvim" "mise" "bob" "qt_mise" "ya" "psmodule" -}}
+{{-   $sel := includeTemplate "pkgs/select" (dict
+        "data" $ "osid" $env.osid "version" $env.version
+        "groups" $env.groups "phase" $phase) | fromJson }}
+[{{ $phase }}]{{ if $sel.buckets }} buckets: {{ $sel.buckets | join " " }}{{ end }}
+{{- range $c := $sel.commands }}
+  {{ $c.manager }} {{ $c.args }} {{ $c.names | join " " }}
+{{- end }}
+{{ end -}}

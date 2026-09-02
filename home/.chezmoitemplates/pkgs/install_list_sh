@@ -1,0 +1,17 @@
+{{- /* Emit one shell install command for a manager-keyed list in pkg_lists
+(currently qt_deps). Unlike pkgs/select these lists have no cross-manager
+correspondence to model, so they are stored per manager verbatim.
+Input dict: ctx, list. Renders nothing when the list has no entry for this
+host's manager. */ -}}
+{{- $env := includeTemplate "pkgs/env" .ctx | fromJson -}}
+{{- $manager := get $.ctx.pkg_system $env.osid -}}
+{{- if not $manager -}}
+{{-   fail (printf "pkgs/install_list_sh: osid %q has no entry in pkg_system" $env.osid) -}}
+{{- end -}}
+{{- $m := get $.ctx.pkg_managers $manager -}}
+{{- $names := get (get $.ctx.pkg_lists .list) $manager | default list -}}
+{{- if $names -}}
+{{-   $prefix := "" -}}
+{{-   if get $m "sudo" -}}{{- $prefix = $env.sudo -}}{{- end }}
+{{ $prefix }}{{ $m.install }} {{ join " " $names }}
+{{- end }}

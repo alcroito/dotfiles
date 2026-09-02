@@ -1,0 +1,23 @@
+{{- /* Emit PowerShell install commands for one phase. Buckets come first: an
+entry with needs_bucket cannot install until its bucket is added. The scoop
+helpers come from the pwsh_scoop_install template, which the calling script
+must include before this one. */ -}}
+{{- $env := includeTemplate "pkgs/env" .ctx | fromJson -}}
+{{- $sel := includeTemplate "pkgs/select" (dict
+      "data" .ctx "osid" $env.osid "version" $env.version
+      "groups" $env.groups "phase" .phase) | fromJson -}}
+{{- range $b := $sel.buckets }}
+Add-ScoopBucket {{ $b }}
+{{- end }}
+{{- range $c := $sel.commands -}}
+{{-   $m := get $.ctx.pkg_managers $c.manager -}}
+{{-   $args := "" -}}
+{{-   if $c.args -}}{{- $args = printf " %s" $c.args -}}{{- end -}}
+{{-   if get $m "per_package" }}
+{{-     range $n := $c.names }}
+{{ $m.install }}{{ $args }} {{ $n }}
+{{-     end }}
+{{-   else }}
+{{ $m.install }}{{ $args }} {{ join " " $c.names }}
+{{-   end }}
+{{- end }}

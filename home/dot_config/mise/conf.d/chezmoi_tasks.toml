@@ -13,3 +13,7 @@ description = "Rotate the chezmoi age identity and passphrase, re-encrypting all
 # confirmation prompts work.
 raw = true
 run = '"$(chezmoi source-path)/../scripts/unix/rotate-chezmoi-age-key.sh"'
+
+[tasks.chezmoi-show-packages]
+description = "Print the package set the manifest resolves to for this host"
+run = "chezmoi execute-template '{{ includeTemplate \"pkgs/debug\" . }}'"
