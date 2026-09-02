@@ -67,6 +67,10 @@ fi
 
 {{ else -}}
 echo "Installing neovim"
+{{ if eq .osid "darwin" -}}
+# Homebrew 6.0 makes "ask mode" (y/n confirmation) the default; disable it for non-interactive installs.
+export HOMEBREW_NO_ASK=1
+{{ end -}}
 {{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "nvim") }}
 {{ end -}}
 
