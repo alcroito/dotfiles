@@ -7,7 +7,8 @@
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 {{ if ne .osid "windows" -}}
-{{/* ya pkg add fails when the package is already installed, which is survivable here since the script has no errexit. */}}
+{{/* The emitter call is this block's last statement, so its exit status becomes
+the script's status: a failing `ya pkg add` would abort the apply without ignore_errors. */}}
 {{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "ya" "ignore_errors" true) }}
 
 {{ if and (.install_nvim) (.install_nvim_bob) -}}
@@ -15,7 +16,11 @@ export PATH="$HOME/.local/share/mise/shims:$PATH"
 # the first conf.d/*.toml instead, which is a chezmoi-managed file.
 export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
 {{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "bob") }}
-bob use stable
+if command -v bob > /dev/null 2>&1; then
+  bob use stable
+else
+  echo "bob is not installed, skipping bob use stable" >&2
+fi
 {{ end -}}
 
 {{ end -}}

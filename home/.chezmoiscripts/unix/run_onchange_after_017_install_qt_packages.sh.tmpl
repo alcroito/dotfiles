@@ -14,7 +14,6 @@ sudo dnf group install -y "Development Tools"
 sudo dnf group install -y c-development development-tools
 {{ end -}}
 {{ includeTemplate "pkgs/install_list_sh" (dict "ctx" . "list" "qt_deps") }}
-echo "Finished installing Qt build dependencies"
 
 # end of install
 {{ end -}}

@@ -19,6 +19,12 @@ sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed for 
 echo 'LANG=en_US.UTF-8' > /etc/default/locale
 {{ end -}}
 
+{{ if has .osid (list "linux-ubuntu" "linux-debian") -}}
+{{/* Must run before any other apt command: a fresh image's package index is
+     empty, so an install run against it fails with "Unable to locate package". */}}
+sudo apt update
+{{ end -}}
+
 {{ if has .osid (list "linux-centos" "linux-rocky" "linux-rhel") -}}
 sudo dnf install -y 'dnf-command(config-manager)'
 {{ end -}}
@@ -38,7 +44,6 @@ sudo localectl set-locale LANG=en_US.UTF-8
 {{ end -}}
 
 {{ if has .osid (list "linux-ubuntu" "linux-debian") -}}
-sudo apt update
 sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
