@@ -83,3 +83,8 @@ Documents/PowerShell
 Documents/WindowsPowerShell
 {{- end }}
 {{- end }}
+
+{{/* Deliberately not in the repo: it holds well known VM passwords, and it is
+     read from $HOME by scripts/unix/bootstrap-remote-vm.sh. Ignored so that
+     `chezmoi add` refuses it and it cannot be committed by accident. */}}
+.config/dotfiles/coin_vm_passwords.txt
