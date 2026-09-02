@@ -101,8 +101,16 @@ SSH_OPTS=(
 cat > "$tmp_dir/askpass.exp" <<'EXPECT'
 #!/usr/bin/env expect -f
 set timeout -1
+# First usable line, not the whole file: reading a file that still has the
+# comments from the password list sends the comments as the password.
 set fh [open [lindex $argv 0] r]
-set pass [string trim [read $fh]]
+set pass ""
+while {[gets $fh line] >= 0} {
+  set line [string trim $line]
+  if {$line eq "" || [string index $line 0] eq "#"} { continue }
+  set pass $line
+  break
+}
 close $fh
 spawn -noecho {*}[lrange $argv 1 end]
 # Answered once and once only: re-sending the same password at a second prompt
