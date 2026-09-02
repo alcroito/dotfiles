@@ -6,6 +6,15 @@ echo "Installing or upgrading git"
 
 {{ template "pwsh_refresh_path" . }}
 
+{{ if .install_minimal_packages -}}
+{{ template "pwsh_scoop_install" . }}
+
+# choco is not installed on a minimal host, and scoop's git needs no elevation
+# at all, so this branch skips the gsudo dance entirely.
+Invoke-ScoopInstall git
+echo "Finished installing git"
+
+{{ else -}}
 $IsElevated = 'true' -eq (gsudo status IsElevated)
 
 if ($IsElevated -eq $false) {
@@ -22,6 +31,7 @@ if ($IsElevated -eq $false) {
 echo "Installing or upgrading git"
 choco upgrade git --confirm
 echo "Finished installing or upgrading git"
+{{ end -}}
 
 # end of windows
 {{- end -}}

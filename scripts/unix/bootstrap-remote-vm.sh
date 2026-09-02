@@ -21,6 +21,7 @@ set -euo pipefail
 PASSWORD_FILE="${BOOTSTRAP_PASSWORD_FILE:-$HOME/.config/dotfiles/coin_vm_passwords.txt}"
 AGE_KEY="${BOOTSTRAP_AGE_KEY:-$HOME/.config/chezmoi/key.txt}"
 INSTALL_URL="${BOOTSTRAP_INSTALL_URL:-https://raw.githubusercontent.com/alcroito/dotfiles/main/install.sh}"
+INSTALL_PS1_URL="${BOOTSTRAP_INSTALL_PS1_URL:-https://raw.githubusercontent.com/alcroito/dotfiles/main/install.ps1}"
 LOCATION_PROMPT="home or work or vm or agent"
 
 user="qt"
@@ -174,7 +175,7 @@ copy_to_remote() {
 ssh-keygen -R "$host" > /dev/null 2>&1 || true
 
 echo "==> connecting to $user@$host"
-if ssh -T "${SSH_OPTS[@]}" -o BatchMode=yes "$user@$host" true 2>/dev/null; then
+if ssh -T "${SSH_OPTS[@]}" -o BatchMode=yes "$user@$host" exit 2>/dev/null; then
   echo "    key authentication already works"
 else
   auth_mode="password"
@@ -217,13 +218,41 @@ fi
 
 [ -n "$os" ] || die "could not determine the remote OS; got: $os_out"
 echo "==> remote reports $os"
+################################################################################
+# Running powershell on a Windows target
+################################################################################
+
+# The remote shell is cmd.exe, so an inline -Command would have to survive both
+# cmd's quoting and expect's pty. -EncodedCommand takes UTF-16LE base64, which is
+# alphanumeric all the way down, and both powershell 5.1 and 7 accept it.
+ps_exe=""
+
+ps_detect() {
+  local out
+  out="$(remote 'where /q pwsh.exe && echo __PS__pwsh__ || echo __PS__powershell__' || true)"
+  ps_exe="$(printf '%s' "$out" | tr -d '\r' | sed -n 's/.*__PS__\([a-z]*\)__.*/\1/p' | tail -1)"
+  [ -n "$ps_exe" ] || ps_exe="powershell"
+  echo "    driving $ps_exe.exe"
+}
+
+ps_run() {
+  local script="$1" encoded
+  # Tls12 for powershell 5.1, whose default protocol selection predates it and
+  # breaks irm against github. Harmless on 7, which negotiates on its own.
+  script="[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$script"
+  encoded="$(printf '%s' "$script" | iconv -f UTF-8 -t UTF-16LE | base64 | tr -d '\n')"
+  remote "$ps_exe.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
+}
+
 case "$os" in
   # A macOS CI VM already has homebrew, a selected Xcode and passwordless sudo,
   # which is what made this platform look like work: install.sh skips its command
   # line tools branch when xcode-select resolves, and the brew bootstrap is a
   # no-op. A bare macOS install would still need both.
   Linux | Darwin) ;;
-  *) die "Windows targets are not supported yet (gsudo elevation cannot be answered over ssh)" ;;
+  Windows) ps_detect ;;
+  *) die "unhandled remote OS '$os'" ;;
 esac
 
 ################################################################################
@@ -232,6 +261,25 @@ esac
 
 # Every package script in the dotfiles calls bare sudo, so without this the
 # apply blocks forever on a prompt nothing is there to answer.
+if [ "$os" = "Windows" ]; then
+  # There is no sudo to make passwordless. What matters is that the session
+  # already holds an unfiltered admin token, because every elevation branch in
+  # the windows scripts is a no-op then, and scoop takes its -RunAsAdmin path.
+  # A UAC-filtered token cannot be elevated from here: gsudo would raise a
+  # prompt on a desktop nobody is looking at.
+  echo "==> checking that the session is elevated"
+  if ps_run 'if ((New-Object Security.Principal.WindowsPrincipal(
+        [Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator)) { exit 0 } else { exit 1 }' \
+    > /dev/null 2>&1; then
+    echo "    elevated"
+  else
+    die "the ssh session is not elevated, so the windows scripts cannot install anything.
+Log in as an account in the Administrators group on a host where UAC does not
+filter the token (LocalAccountTokenFilterPolicy=1, which CI images usually set)."
+  fi
+else
+
 echo "==> checking passwordless sudo"
 if remote 'sudo -n true' > /dev/null 2>&1; then
   echo "    already available"
@@ -266,14 +314,25 @@ else
 Grant $user NOPASSWD sudo on the VM, or remove its authorized_keys entry and re-run."
 fi
 
+fi
+
 ################################################################################
 # Phase 3: seed the age identity
 ################################################################################
 
 echo "==> seeding the age identity"
-remote 'mkdir -p ~/.config/chezmoi && chmod 700 ~/.config/chezmoi'
-copy_to_remote "$AGE_KEY" '.config/chezmoi/key.txt'
-remote 'chmod 600 ~/.config/chezmoi/key.txt'
+if [ "$os" = "Windows" ]; then
+  ps_run 'New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\chezmoi" | Out-Null' > /dev/null
+  copy_to_remote "$AGE_KEY" '.config/chezmoi/key.txt'
+  # No mode to set; ACLs are inherited from the profile, which is what the
+  # windows decrypt helper writes with too.
+  ps_run 'if (!(Test-Path "$env:USERPROFILE\.config\chezmoi\key.txt")) { exit 1 }' > /dev/null 2>&1 ||
+    die "the age identity did not arrive at %USERPROFILE%\.config\chezmoi\key.txt"
+else
+  remote 'mkdir -p ~/.config/chezmoi && chmod 700 ~/.config/chezmoi'
+  copy_to_remote "$AGE_KEY" '.config/chezmoi/key.txt'
+  remote 'chmod 600 ~/.config/chezmoi/key.txt'
+fi
 
 ################################################################################
 # Phase 4: apply the dotfiles
@@ -281,8 +340,13 @@ remote 'chmod 600 ~/.config/chezmoi/key.txt'
 
 echo "==> running the dotfiles installer with location=$location"
 installer_rc=0
-remote "sh -c \"\$(curl -fsSL $INSTALL_URL)\" -- --promptString '$LOCATION_PROMPT=$location'" ||
-  installer_rc=$?
+if [ "$os" = "Windows" ]; then
+  ps_run "& ([scriptblock]::Create((irm '$INSTALL_PS1_URL'))) --promptString '$LOCATION_PROMPT=$location'" ||
+    installer_rc=$?
+else
+  remote "sh -c \"\$(curl -fsSL $INSTALL_URL)\" -- --promptString '$LOCATION_PROMPT=$location'" ||
+    installer_rc=$?
+fi
 if [ "$installer_rc" -ne 0 ]; then
   echo "    installer exited $installer_rc; checking what landed anyway" 1>&2
 fi
@@ -309,7 +373,9 @@ check() {
 # for the same reason.
 bootstrap_mode="$auth_mode"
 auth_mode="key"
-if remote true > /dev/null 2>&1; then
+# `exit` rather than `true`, which cmd.exe does not have: the point is whether
+# the login works, not what the remote shell can run.
+if remote exit > /dev/null 2>&1; then
   echo "    ok   key-only ssh login"
 else
   echo "    FAIL key-only ssh login"
@@ -318,11 +384,25 @@ else
   auth_mode="$bootstrap_mode"
 fi
 
-check "authorized_keys written" 'test -s ~/.ssh/authorized_keys'
-check "age identity present" 'test -s ~/.config/chezmoi/key.txt'
-check "github token env applied" 'test -s ~/.config/dotfiles/github_env.sh'
-check "mise on a non-interactive ssh PATH" 'mise --version'
-check "yazi on that PATH too" 'command -v yazi'
+if [ "$os" = "Windows" ]; then
+  # An admin account's keys go to %ProgramData%\ssh\administrators_authorized_keys,
+  # a normal account's to the profile, and run_after_007 picks between them, so
+  # accept either. A fresh ssh session reads PATH from the registry, which is
+  # where the scoop shims and the mise PATH script put themselves.
+  ps_check() { check "$1" "$ps_exe.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand $(printf '%s' "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$2" | iconv -f UTF-8 -t UTF-16LE | base64 | tr -d '\n')"; }
+  ps_check "authorized_keys written" 'if (!((Test-Path "$env:ProgramData\ssh\administrators_authorized_keys") -or (Test-Path "$env:USERPROFILE\.ssh\authorized_keys"))) { exit 1 }'
+  ps_check "age identity present" 'if (!(Test-Path "$env:USERPROFILE\.config\chezmoi\key.txt")) { exit 1 }'
+  ps_check "github token env applied" 'if (!(Test-Path "$env:USERPROFILE\.config\dotfiles\github_env.sh")) { exit 1 }'
+  ps_check "mise on a non-interactive ssh PATH" 'if (!(Get-Command mise -ErrorAction SilentlyContinue)) { exit 1 }'
+  ps_check "yazi on that PATH too" 'if (!(Get-Command yazi -ErrorAction SilentlyContinue)) { exit 1 }'
+else
+  check "authorized_keys written" 'test -s ~/.ssh/authorized_keys'
+  check "age identity present" 'test -s ~/.config/chezmoi/key.txt'
+  check "github token env applied" 'test -s ~/.config/dotfiles/github_env.sh'
+  check "mise on a non-interactive ssh PATH" 'mise --version'
+  check "yazi on that PATH too" 'command -v yazi'
+fi
 
 if [ "$fail" -ne 0 ] || [ "$installer_rc" -ne 0 ]; then
   echo
