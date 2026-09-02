@@ -1,4 +1,4 @@
-{{ if .install_packages -}}
+{{ if and .install_packages (not .install_minimal_packages) -}}
 
 {{ if ne .osid "windows" -}}
 #!/usr/bin/env sh

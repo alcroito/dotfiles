@@ -2,7 +2,7 @@
 #!/usr/bin/env bash
 {{ end -}}
 
-{{ if and .install_secrets (eq .location "vm") -}}
+{{ if and .install_secrets .is_headless -}}
 {{- $key_items := list "work_ssh_2025_dec" "work_ssh_2026_main_pc_key" -}}
 
 AUTH_KEYS="$HOME/.ssh/authorized_keys"

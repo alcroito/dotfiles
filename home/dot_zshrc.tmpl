@@ -2,18 +2,22 @@
 {{-   template "zshrc_linux_paths" . -}}
 {{- end -}}
 
-{{- template "zshrc_unix" . -}}
+{{- if not .install_minimal_packages -}}
+{{-   template "zshrc_unix" . -}}
+{{- end -}}
 {{- template "zshrc_aliases" . -}}
 
-{{ if eq .location "vm" -}}
-# Ephemeral VM has no keyring; use pass-cli's filesystem key provider in interactive
-# shells too (matches chezmoi's [secret] command wrapper for VMs).
+{{ if .is_headless -}}
+# Headless hosts have no keyring; use pass-cli's filesystem key provider in interactive
+# shells too (matches chezmoi's [secret] command wrapper).
 export PROTON_PASS_KEY_PROVIDER=fs
 {{ end -}}
 
 {{ if .install_github_tokens -}}
 [ -r "$HOME/.config/dotfiles/github_env.sh" ] && . "$HOME/.config/dotfiles/github_env.sh"
 {{ end -}}
+
+{{- if not .install_minimal_packages -}}
 
 {{- if eq .osid "darwin" -}}
 {{- if eq .machine_id "macbook_home" -}}
@@ -68,16 +72,22 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_work_ubuntu_or_arch" . -}}
 {{- end -}}
 
+{{- end -}}
+
 {{- if eq .chezmoi.os "linux" -}}
 
-{{-   template "zshrc_atuin" . -}}
+{{-   if not .install_minimal_packages -}}
+{{-     template "zshrc_atuin" . -}}
+{{-   end -}}
 
 {{-   template "zshrc_mise" . -}}
 
-{{-   template "zshrc_zoxide" . -}}
+{{-   if not .install_minimal_packages -}}
+{{-     template "zshrc_zoxide" . -}}
+{{-   end -}}
 
 {{- end -}}
 
-{{- if eq .location "vm" -}}
+{{- if .is_headless -}}
 {{-   template "zshrc_vm_prompt" . -}}
 {{- end -}}

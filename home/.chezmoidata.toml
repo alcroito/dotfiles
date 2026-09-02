@@ -1,0 +1,6 @@
+# Defaults for hosts whose ~/.config/chezmoi/chezmoi.toml was rendered before
+# these keys existed; without them every template referencing one fails with
+# "map has no entry for key". The config's [data] section overrides this file, so
+# a fresh `chezmoi init` still decides the real values.
+install_minimal_packages = false
+is_headless = false

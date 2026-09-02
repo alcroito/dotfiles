@@ -43,3 +43,36 @@ key.txt.age
 .config/mise/github_tokens.toml
 .config/dotfiles/github_env.sh
 {{ end }}
+
+{{/* ~/.zshenv exists only so a non-interactive `ssh host cmd` still finds mise,
+     which is what the agent location is for. */}}
+{{- if ne .location "agent" }}
+.zshenv
+{{- end }}
+
+{{/* A minimal install has none of the tools these files configure. The ssh key
+     material is here too: it stays off the machine until
+     install_minimal_packages is flipped to false. config_managed has to go with
+     the private key, because its `Host *` block points IdentitiesOnly at a key
+     that would otherwise be missing, which breaks all outgoing ssh. */}}
+{{- if .install_minimal_packages }}
+.ssh/config_managed
+.ssh/work_ssh_2025_dec
+.ssh/work_ssh_2025_dec.pub
+{{- if ne .chezmoi.os "windows" }}
+.config/nvim
+.config/atuin
+.config/opencode
+.vimrc
+.tigrc
+.ripgreprc
+.spaceshiprc.zsh
+.cat_custom.omp.yaml
+Library/**
+{{- else }}
+AppData/Local/nvim
+AppData/Local/Packages
+Documents/PowerShell
+Documents/WindowsPowerShell
+{{- end }}
+{{- end }}

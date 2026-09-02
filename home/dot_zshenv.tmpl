@@ -1,0 +1,13 @@
+{{/* Deployed for the agent location only (see .chezmoiignore). A non-interactive
+     `ssh host cmd` reads ~/.zshenv and nothing else, so anything an agent needs
+     on PATH has to be here rather than in ~/.zshrc. */ -}}
+# mise itself, plus the shims for everything it installed.
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+{{ if eq .osid "darwin" -}}
+export PATH="{{ if eq .chezmoi.arch "arm64" }}/opt/homebrew/bin{{ else }}/usr/local/bin{{ end }}:$PATH"
+{{ end -}}
+
+{{ if .install_github_tokens -}}
+[ -r "$HOME/.config/dotfiles/github_env.sh" ] && . "$HOME/.config/dotfiles/github_env.sh"
+{{ end -}}

@@ -1,0 +1,34 @@
+{{ if and .install_packages (eq .chezmoi.os "linux") -}}
+#!/usr/bin/env sh
+
+# Every package script below calls sudo, but a minimal image (debian netinst,
+# alpine) may not ship it, and it can only be installed as root.
+if command -v sudo > /dev/null 2>&1; then
+  exit 0
+fi
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "ERROR: sudo is missing and this is not running as root, so it cannot be installed." >&2
+  echo "Install it as root, add this user to the sudo/wheel group, then re-run 'chezmoi apply'." >&2
+  exit 1
+fi
+
+echo "Installing sudo"
+{{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
+apt-get update
+apt-get install -y sudo
+{{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+dnf install -y sudo
+{{ else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
+pacman -Sy --disable-sandbox --noconfirm sudo
+{{ else if eq .osid "linux-alpine" -}}
+apk add sudo
+{{ else if eq .osid "linux-opensuse-leap" -}}
+zypper install -y sudo
+{{ else -}}
+echo "ERROR: no package manager branch for osid '{{ .osid }}'; install sudo manually." >&2
+exit 1
+{{ end -}}
+
+# end of install_packages
+{{ end -}}

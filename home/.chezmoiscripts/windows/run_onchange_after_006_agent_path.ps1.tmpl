@@ -1,0 +1,23 @@
+{{- if and .install_packages .install_minimal_packages -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# A non-interactive `ssh host cmd` gets no powershell profile, so `mise activate`
+# never runs and nothing mise installed is on PATH. Persist the shims directory
+# in the user PATH instead, which is what such a session inherits.
+$shims = Join-Path $env:LOCALAPPDATA 'mise\shims'
+$userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+
+if ($userPath -and $userPath.Split(';') -contains $shims) {
+  echo "$shims is already in the user PATH"
+} else {
+  echo "Adding $shims to the user PATH"
+  $newPath = if ([string]::IsNullOrEmpty($userPath)) { $shims } else { "$shims;$userPath" }
+  [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+}
+
+# end of windows
+{{- end -}}
+
+# end of install_minimal_packages
+{{- end -}}

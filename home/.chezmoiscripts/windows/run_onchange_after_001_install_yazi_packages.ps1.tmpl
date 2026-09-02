@@ -4,14 +4,19 @@
 
 {{ template "pwsh_refresh_path" . }}
 
+{{ if not .install_minimal_packages -}}
 {{ template "pwsh_7_path" . }}
+{{ end -}}
 
 # Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
 # the first conf.d/*.toml instead, which is a chezmoi-managed file.
 $env:MISE_GLOBAL_CONFIG_FILE = "$HOME\.config\mise\config.toml"
 
-echo "Installing yazi and node using mise"
+echo "Installing yazi using mise"
 mise use -g yazi
+
+{{ if not .install_minimal_packages -}}
+echo "Installing node using mise"
 mise use -g node
 
 echo "Installing yazi packages"
@@ -22,6 +27,7 @@ echo "Installing yazi packages"
 # Install compress plugin
 & "$pwsh_path" -c 'ya pkg add KKV9/compress'
 echo "Finished installing yazi packages"
+{{ end -}}
 
 # end of windows
 {{- end -}}

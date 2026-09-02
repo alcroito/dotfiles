@@ -30,26 +30,47 @@
 {{- $arch_alt = "arm" -}}
 {{- end -}}
 
-{{- $location := promptStringOnce . "location" "home or work or vm" "work" -}}
+{{- $location := promptStringOnce . "location" "home or work or vm or agent" "work" -}}
 
-{{/* On vm, force these on without prompting. */}}
+{{/* vm and agent have no keyring for pass-cli and are only reachable over ssh,
+     so neither prompts and both take the filesystem secret path. */}}
+{{- $is_headless := or (eq $location "vm") (eq $location "agent") -}}
+
+{{/* agent installs only what an llm driving the machine over ssh needs. Set
+     install_minimal_packages = false in ~/.config/chezmoi/chezmoi.toml and
+     re-apply to get the full toolset; a stored value wins over the location
+     default, so a later `chezmoi init` keeps it. */}}
+{{- $install_minimal_packages := eq $location "agent" -}}
+{{- if hasKey . "install_minimal_packages" -}}
+{{- $install_minimal_packages = .install_minimal_packages -}}
+{{- end -}}
+
+{{/* On vm and agent, force these on without prompting. The nvim flags stay true
+     for agent because install_minimal_packages is what suppresses nvim there;
+     that way flipping it needs no `chezmoi init` to re-render this config. */}}
 {{- $install_packages := true -}}
 {{- $install_nvim := true -}}
 {{- $install_nvim_deps := true -}}
 {{- $install_nvim_plugs := true -}}
 
-{{- if ne $location "vm" -}}
+{{- if not $is_headless -}}
 {{- $install_packages = promptBoolOnce . "install_packages" "Should packages be installed" false -}}
 {{- $install_nvim = promptBoolOnce . "install_nvim" "Should nvim be installed" false -}}
 {{- $install_nvim_deps = promptBoolOnce . "install_nvim_deps" "Should nvim dependencies be installed" false -}}
 {{- $install_nvim_plugs = promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
 {{- end -}}
 
-{{/* Secrets only prompted for home; disabled (no prompt) for work and vm. No bob anywhere. */}}
+{{/* Forced on for headless hosts: the pass-cli filesystem session and the
+     authorized_keys script are what make a vm or an agent reachable at all,
+     and both were dead while this was hardcoded off for vm. Prompted once
+     everywhere else, so a host that already has secrets keeps them across a
+     re-init instead of having its ssh key removed. No bob anywhere. */}}
 {{- $install_secrets := false -}}
 {{- $install_nvim_bob := false -}}
 
-{{- if eq $location "home" -}}
+{{- if $is_headless -}}
+{{- $install_secrets = true -}}
+{{- else -}}
 {{- $install_secrets = promptBoolOnce . "install_secrets" "Should secrets be installed" false -}}
 {{- end -}}
 
@@ -61,14 +82,14 @@
 
 {{/* GitHub API tokens for mise and chezmoi, unlocked by the age key. */}}
 {{- $install_github_tokens := true -}}
-{{- if ne $location "vm" -}}
+{{- if not $is_headless -}}
 {{- $install_github_tokens = promptBoolOnce . "install_github_tokens" "Should GitHub API tokens be installed" false -}}
 {{- end -}}
 
 {{- $machine_id := "" -}}
-{{- if eq $location "vm" -}}
+{{- if $is_headless -}}
 {{/* Keep the random suffix from the config, otherwise every re-init renames the
-     vm. The osid prefix is rebuilt so it follows a distro change. */}}
+     host. The osid prefix is rebuilt so it follows a distro change. */}}
 {{- $suffix := "" -}}
 {{- if hasKey . "machine_id" -}}
 {{- $suffix = .machine_id | splitList "-" | last -}}
@@ -125,6 +146,7 @@ encryption = "age"
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     install_packages = {{ $install_packages }}
+    install_minimal_packages = {{ $install_minimal_packages }}
     install_secrets = {{ $install_secrets }}
     install_nvim = {{ $install_nvim }}
     install_nvim_bob = {{ $install_nvim_bob }}
@@ -133,13 +155,14 @@ encryption = "age"
     install_qt_deps = {{ $install_qt_deps }}
     install_github_tokens = {{ $install_github_tokens }}
     age_recipient = {{ $age_recipient | quote }}
+    is_headless = {{ $is_headless }}
     location = {{ $location | quote }}
     machine_id = {{ $machine_id | quote }}
     arch_alt = {{ $arch_alt | quote }}
 
 [secret]
-{{- if and (ne .chezmoi.os "windows") (eq $location "vm") }}
-  # Headless VM: pass-cli has no keyring. This wrapper sets the filesystem key
+{{- if and (ne .chezmoi.os "windows") $is_headless }}
+  # Headless vm or agent: pass-cli has no keyring. This wrapper sets the filesystem key
   # provider and ensures a session before each lookup (see the script for why).
   command = "{{ .chezmoi.sourceDir }}/../scripts/unix/pass-cli-fs-login.sh"
 {{- else if eq .chezmoi.os "windows" }}

@@ -1,4 +1,4 @@
-{{ if and (.install_packages) (.install_nvim_plugs) -}}
+{{ if and (.install_packages) (.install_nvim_plugs) (not .install_minimal_packages) -}}
 
 {{ if ne .osid "windows" -}}
 #!/usr/bin/env zsh

@@ -8,7 +8,7 @@
 set -euo pipefail
 {{ end -}}
 
-{{ if ne .osid "windows" -}}
+{{ if and (ne .osid "windows") (not .install_minimal_packages) -}}
 # Install fzf
 echo "Installing fzf into ~/.fzf"
 if [ ! -d ~/.fzf ]; then
@@ -20,7 +20,7 @@ fi
 ~/.fzf/install --key-bindings --completion --no-update-rc <<< $'n\nn'
 {{ end -}}
 
-{{ if .install_nvim_deps -}}
+{{ if and .install_nvim_deps (not .install_minimal_packages) -}}
 
 {{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
 # Install neovim dependencies
@@ -60,7 +60,7 @@ glibc_older_than() {
 }
 {{ end -}}
 
-{{ if .install_nvim -}}
+{{ if and .install_nvim (not .install_minimal_packages) -}}
 
 {{ if and (eq .chezmoi.os "linux") (not (eq .osid "linux-alpine")) -}}
 # Install neovim
@@ -118,12 +118,14 @@ fi
 
 
 {{ if eq .chezmoi.os "linux" -}}
+{{ if not .install_minimal_packages -}}
 if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
   echo "Installing atuin"
   curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive
 else
   echo "atuin binary already present"
 fi
+{{- end }}
 
 if [ ! -f "$HOME/.local/bin/mise" ]; then
   echo "Installing mise"
@@ -151,11 +153,13 @@ else
   mise use -g yazi
 fi
 
+{{ if not .install_minimal_packages -}}
 echo "Installing lazydocker using mise"
 mise use -g lazydocker
 
 echo "Installing zoxide using mise"
 mise use -g zoxide
+{{- end }}
 
 {{ end -}}
 

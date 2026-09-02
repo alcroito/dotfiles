@@ -2,7 +2,8 @@
 #!/usr/bin/env bash
 {{ end -}}
 
-{{ if .install_secrets -}}
+{{/* Skipped for a minimal install, which does not deploy config_managed. */ -}}
+{{ if and .install_secrets (not .install_minimal_packages) -}}
 
 CONFIG_FILE="$HOME/.ssh/config"
 INCLUDE_LINE="Include ~/.ssh/config_managed"

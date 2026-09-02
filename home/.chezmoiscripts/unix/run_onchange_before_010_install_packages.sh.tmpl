@@ -47,17 +47,25 @@ sudo locale-gen en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+{{ if .install_minimal_packages -}}
+sudo apt install -y git zsh ripgrep fd-find jq
+{{ else -}}
 sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig jq atool tmux
 
 # btop not present in debian 11 repos
 {{ if not (and (eq .osid "linux-debian") (lt (int (.chezmoi.osRelease.versionID | default "99")) 12)) -}}
 sudo apt install -y btop
 {{ end -}}
+{{ end -}}
 
+mkdir -p ~/.local/bin
 ln -s $(which fdfind) ~/.local/bin/fd
 
 {{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing rhel-like dependencies"
+{{ if .install_minimal_packages -}}
+sudo dnf install -y git zsh ripgrep fd-find jq
+{{ else -}}
 sudo dnf install -y ripgrep htop fd-find git zsh tig btop jq atool tmux
 
 # Only install the silver searcher up to fedora 42 or centos / rocky / rhel 9.
@@ -71,21 +79,34 @@ sudo dnf install -y the_silver_searcher
 sudo dnf install -y the_silver_searcher
 {{ end -}}
 {{ end -}}
+{{ end -}}
 
 {{ else if eq .osid "linux-opensuse-leap" -}}
 echo "Installing suse dependencies"
+{{ if .install_minimal_packages -}}
+sudo zypper install -y git zsh ripgrep fd jq
+{{ else -}}
 sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
+{{ end -}}
 
 {{ else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 echo "Installing arch dependencies"
+{{ if .install_minimal_packages -}}
+sudo pacman -Sy --disable-sandbox --noconfirm git zsh ripgrep fd jq
+{{ else -}}
 sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
+{{- end }}
 
 {{ else if eq .osid "linux-alpine" -}}
 echo "Installing alpine dependencies"
+{{ if .install_minimal_packages -}}
+sudo apk add git zsh ripgrep fd jq
+{{ else -}}
 sudo apk add ripgrep htop the_silver_searcher fd git zsh tig btop jq tmux
 
 # Only available in edge/testing
 sudo apk add atool --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+{{ end -}}
 
 {{ else if eq .osid "darwin" -}}
 echo "Installing macOS dependencies"
@@ -97,7 +118,11 @@ else
 fi
 # Homebrew 6.0 makes "ask mode" (y/n confirmation) the default; disable it for non-interactive installs.
 export HOMEBREW_NO_ASK=1
+{{ if .install_minimal_packages -}}
+brew install git zsh ripgrep fd jq mise yazi
+{{ else -}}
 brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux lazydocker
+{{ end -}}
 # brew install xcodesorg/made/xcodes
 
 {{ else -}}
@@ -107,6 +132,7 @@ exit 1
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
+{{ if not .install_minimal_packages -}}
 # Install oh my zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing oh-my-zsh"
@@ -131,6 +157,10 @@ sed -i 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ end -}}
 
+{{ end -}}{{/* end of not install_minimal_packages */ -}}
+
+{{/* The chsh stays outside the minimal gate: ~/.zshenv only applies to a
+     non-interactive ssh command when zsh is the login shell. */ -}}
 {{ if eq .chezmoi.os "linux" -}}
 # Change the default shell Linux
 zsh_path=$(which zsh)

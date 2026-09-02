@@ -3,8 +3,8 @@
 {{ end -}}
 
 {{ if .install_secrets -}}
-{{ if eq .location "vm" -}}
-# Ephemeral VM: bootstrap a filesystem-backed, scoped, 1-day PAT session up front
+{{ if .is_headless -}}
+# Headless vm or agent: bootstrap a filesystem-backed, scoped, 1-day PAT session up front
 # (with a TTY for the interactive login). The wrapper is the single source of truth
 # and is also chezmoi's [secret].command, so it re-bootstraps on its own if this
 # script is skipped (run_onchange) after a reboot or token expiry.

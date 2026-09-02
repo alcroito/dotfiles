@@ -1,4 +1,5 @@
-{{- if .install_secrets -}}
+{{/* Skipped for a minimal install, which does not deploy config_managed. */ -}}
+{{- if and .install_secrets (not .install_minimal_packages) -}}
 
 {{- if eq .chezmoi.os "windows" }}
 
