@@ -14,21 +14,11 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 echo "Installing sudo"
-{{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
+{{ if has .osid (list "linux-ubuntu" "linux-debian") -}}
 apt-get update
-apt-get install -y sudo
-{{ else if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
-dnf install -y sudo
-{{ else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
-pacman -Sy --disable-sandbox --noconfirm sudo
-{{ else if eq .osid "linux-alpine" -}}
-apk add sudo
-{{ else if eq .osid "linux-opensuse-leap" -}}
-zypper install -y sudo
-{{ else -}}
-echo "ERROR: no package manager branch for osid '{{ .osid }}'; install sudo manually." >&2
-exit 1
 {{ end -}}
+{{/* This runs as root by definition: sudo is what is missing. */}}
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "bootstrap_root" "no_sudo" true) }}
 
 # end of install_packages
 {{ end -}}
