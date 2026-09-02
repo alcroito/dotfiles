@@ -19,4 +19,8 @@ condition in the manifest is a major-release comparison. */ -}}
 {{- if .install_qt_deps -}}{{- $groups = append $groups "qt_deps" -}}{{- end -}}
 {{- $sudo := "sudo " -}}
 {{- if eq .chezmoi.username "root" -}}{{- $sudo = "" -}}{{- end -}}
-{{- dict "osid" .osid "version" $version "groups" $groups "sudo" $sudo | toJson -}}
+{{- $manager := get .pkg_system .osid -}}
+{{- if not $manager -}}
+{{-   fail (printf "pkgs/env: osid %q has no entry in pkg_system; add its package manager in .chezmoidata/package_managers.yaml" .osid) -}}
+{{- end -}}
+{{- dict "osid" .osid "version" $version "groups" $groups "sudo" $sudo "manager" $manager | toJson -}}

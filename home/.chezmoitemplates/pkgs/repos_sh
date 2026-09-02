@@ -8,8 +8,7 @@ Input dict: ctx. */ -}}
 {{- range $family, $members := $.ctx.pkg_families -}}
 {{-   if has $env.osid $members -}}{{- $keys = append $keys $family -}}{{- end -}}
 {{- end -}}
-{{- $manager := get $.ctx.pkg_system $env.osid -}}
-{{- $m := get $.ctx.pkg_managers $manager -}}
+{{- $m := get $.ctx.pkg_managers $env.manager -}}
 {{- $prefix := "" -}}
 {{- if get $m "sudo" -}}{{- $prefix = $env.sudo -}}{{- end -}}
 {{- /* Two passes, because a repo that has to be switched on (CRB) gates the
