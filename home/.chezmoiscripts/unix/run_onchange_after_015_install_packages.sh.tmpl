@@ -21,32 +21,8 @@ fi
 {{ end -}}
 
 {{ if and .install_nvim_deps (not .install_minimal_packages) -}}
-
-{{ if or (eq .osid "linux-ubuntu") (eq .osid "linux-debian") -}}
-# Install neovim dependencies
 echo "Installing neovim dependencies"
-sudo apt install -y libfuse2 fuse3
-{{ end -}}
-
-{{ if or (eq .osid "linux-fedora") (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
-# Install neovim dependencies
-echo "Installing neovim dependencies"
-sudo dnf install -y fuse-libs fuse
-{{ end -}}
-
-{{ if eq .osid "linux-opensuse-leap" -}}
-# Install neovim dependencies
-echo "Installing neovim dependencies"
-sudo zypper install -y libfuse2 fuse
-{{ end -}}
-
-{{ if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
-# Install neovim dependencies
-echo "Installing neovim dependencies"
-sudo pacman -Sy --disable-sandbox --noconfirm fuse fuse2
-{{ end -}}
-
-# end of install_nvim_deps
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "nvim_deps") }}
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
@@ -89,17 +65,9 @@ else
   echo "neovim binary already present /usr/local/bin/nvim"
 fi
 
-{{ else if eq .osid "linux-alpine" -}}
-# Install neovim
+{{ else -}}
 echo "Installing neovim"
-sudo apk add neovim
-
-{{ else if eq .osid "darwin" -}}
-# Install neovim
-echo "Installing neovim"
-# Homebrew 6.0 makes "ask mode" (y/n confirmation) the default; disable it for non-interactive installs.
-export HOMEBREW_NO_ASK=1
-brew install neovim
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "nvim") }}
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
@@ -152,11 +120,7 @@ else
 fi
 
 {{ if not .install_minimal_packages -}}
-echo "Installing lazydocker using mise"
-mise use -g lazydocker
-
-echo "Installing zoxide using mise"
-mise use -g zoxide
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "mise") }}
 {{- end }}
 
 {{ end -}}

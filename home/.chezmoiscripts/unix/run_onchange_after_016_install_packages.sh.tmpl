@@ -7,22 +7,15 @@
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 {{ if ne .osid "windows" -}}
-# Install onedark theme for yazi
-ya pkg add BennyOe/onedark || true
-ya pkg add yazi-rs/flavors:catppuccin-macchiato || true
-
-# Install compress plugin
-ya pkg add KKV9/compress || true
+{{/* ya pkg add fails when the package is already installed, which is survivable here since the script has no errexit. */}}
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "ya") }}
 
 {{ if and (.install_nvim) (.install_nvim_bob) -}}
-{{ if not (and (eq .osid "linux-debian") (le (int .chezmoi.osRelease.versionID) 12)) -}}
-# install bob neovim manager
 # Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
 # the first conf.d/*.toml instead, which is a chezmoi-managed file.
 export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
-mise use -g bob
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "bob") }}
 bob use stable
-{{ end -}}
 {{ end -}}
 
 {{ end -}}
