@@ -9,22 +9,7 @@
 # dev tools
 echo "Installing non-admin dev tools"
 
-Invoke-ScoopInstall mise
-Invoke-ScoopInstall ripgrep
-Invoke-ScoopInstall fd
-Invoke-ScoopInstall jq
-
-{{ if not .install_minimal_packages -}}
-# Everything below needs the extras bucket or is interactive-only.
-Add-ScoopBucket extras
-
-Invoke-ScoopInstall sysinternals
-Invoke-ScoopInstall fzf
-Invoke-ScoopInstall zoxide
-Invoke-ScoopInstall ag
-Invoke-ScoopInstall atuin
-Invoke-ScoopInstall psmux
-{{ end -}}
+{{ includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "system") }}
 
 echo "Finished installing non-admin dev tools"
 

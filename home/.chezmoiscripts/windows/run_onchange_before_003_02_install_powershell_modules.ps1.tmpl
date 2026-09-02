@@ -8,7 +8,9 @@
 echo "Installing powershell modules posh-git"
 Set-ExecutionPolicy Bypass -Scope Process -Force;
 {{ template "pwsh_7_path" . }}
-& "$pwsh_path" -c 'Install-Module -Name posh-git -Confirm:$False -Force'
+{{- range $line := (includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "psmodule") | trim | splitList "\n") }}
+& "$pwsh_path" -c '{{ $line | trim }}'
+{{- end }}
 # & "$pwsh_path" -c 'Install-Module -Name PSFzf -Confirm:$False -Force'
 
 echo "Finished installing powershell modules"

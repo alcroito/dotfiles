@@ -4,30 +4,21 @@
 
 {{ template "pwsh_refresh_path" . }}
 
-{{ if not .install_minimal_packages -}}
 {{ template "pwsh_7_path" . }}
-{{ end -}}
 
 # Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
 # the first conf.d/*.toml instead, which is a chezmoi-managed file.
 $env:MISE_GLOBAL_CONFIG_FILE = "$HOME\.config\mise\config.toml"
 
 echo "Installing yazi using mise"
-mise use -g yazi
-
-{{ if not .install_minimal_packages -}}
-echo "Installing node using mise"
-mise use -g node
+{{ includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "mise") }}
 
 echo "Installing yazi packages"
 # yazi is installed by mise, so need to do it via pwsh 7 where the profile sets up mise.
-# Install catppuccin-macchiato theme for yazi
-& "$pwsh_path" -c 'ya pkg add yazi-rs/flavors:catppuccin-macchiato'
-
-# Install compress plugin
-& "$pwsh_path" -c 'ya pkg add KKV9/compress'
+{{- range $line := (includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "ya") | trim | splitList "\n") }}
+& "$pwsh_path" -c '{{ $line | trim }}'
+{{- end }}
 echo "Finished installing yazi packages"
-{{ end -}}
 
 # end of windows
 {{- end -}}

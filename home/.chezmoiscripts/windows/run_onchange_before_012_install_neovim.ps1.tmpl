@@ -10,7 +10,7 @@
 # scoop's neovim is per-user, so this needs no elevation, and it skips the
 # vcredist/KB dependency chain the chocolatey package pulled in.
 echo "Installing neovim via scoop"
-Invoke-ScoopInstall neovim
+{{ includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "nvim") }}
 echo "Finished installing neovim"
 {{- end -}}
 

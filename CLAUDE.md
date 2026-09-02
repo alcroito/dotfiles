@@ -58,7 +58,7 @@ after an intentional manifest change and review the diff.
 
 ## Install scripts (`.chezmoiscripts/`)
 
-Split into `unix/` and `windows/` subdirs (the other platform's dir is ignored via `.chezmoiignore`). Naming is `run_onchange_{before,after}_NNN_description.{sh,ps1}.tmpl`; the `NNN` prefix orders execution. They handle package installation (per-distro `apt`/`dnf`/`pacman`/`scoop`/`choco`/`winget` branches), neovim, Qt build deps, and Proton Pass setup. Because they are `run_onchange`, chezmoi re-executes a script only when its rendered output changes — keep that in mind when editing (changing a script causes it to re-run on next apply).
+Split into `unix/` and `windows/` subdirs (the other platform's dir is ignored via `.chezmoiignore`). Naming is `run_onchange_{before,after}_NNN_description.{sh,ps1}.tmpl`; the `NNN` prefix orders execution. Package installation is driven by the manifest through the `pkgs/*` emitters (see "Package manifest" above); the scripts also handle neovim, Qt build deps, and Proton Pass setup. Because they are `run_onchange`, chezmoi re-executes a script only when its rendered output changes — keep that in mind when editing (changing a script causes it to re-run on next apply).
 
 ## Secrets
 
