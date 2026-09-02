@@ -66,7 +66,7 @@ fi
 {{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "system") }}
 {{ end -}}
 
-{{ if has .osid (list "linux-ubuntu" "linux-debian" "linux-fedora" "linux-centos" "linux-rocky" "linux-rhel") -}}
+{{ if has .osid (list "linux-ubuntu" "linux-debian") -}}
 mkdir -p ~/.local/bin
 ln -sf $(which fdfind) ~/.local/bin/fd
 {{ end -}}
