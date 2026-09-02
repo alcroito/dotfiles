@@ -5,7 +5,7 @@
 {{- template "zshrc_unix" . -}}
 {{- template "zshrc_aliases" . -}}
 
-{{ if .is_headless -}}
+{{ if and .is_headless .install_secrets -}}
 # Headless hosts have no keyring; use pass-cli's filesystem key provider in interactive
 # shells too (matches chezmoi's [secret] command wrapper).
 export PROTON_PASS_KEY_PROVIDER=fs

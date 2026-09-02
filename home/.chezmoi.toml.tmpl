@@ -60,16 +60,27 @@
 {{- $install_nvim_plugs = promptBoolOnce . "install_nvim_plugs" "Should nvim plugins be installed" false -}}
 {{- end -}}
 
-{{/* Forced on for headless hosts: the pass-cli filesystem session and the
-     authorized_keys script are what make a vm or an agent reachable at all,
-     and both were dead while this was hardcoded off for vm. Prompted once
-     everywhere else, so a host that already has secrets keeps them across a
-     re-init instead of having its ssh key removed. No bob anywhere. */}}
+{{/* The ssh public keys that make a headless host reachable are age encrypted
+     in the source tree, so proton pass is not needed to get in. Deployed
+     wherever the age identity is present (rotation re-encrypts from the
+     applied target), but only appended to authorized_keys where this is on. */}}
+{{- $install_ssh_authorized_keys := $is_headless -}}
+{{- if hasKey . "install_ssh_authorized_keys" -}}
+{{- $install_ssh_authorized_keys = .install_ssh_authorized_keys -}}
+{{- end -}}
+
+{{/* Off for headless hosts, which no longer need pass-cli for anything: with
+     the keys above encrypted in the repo, their whole setup is unattended
+     apart from the age passphrase. Turning it on for one of them (for the
+     gerrit private key, say) means setting it in that host's config, which
+     wins over this default. Prompted once everywhere else. No bob anywhere. */}}
 {{- $install_secrets := false -}}
 {{- $install_nvim_bob := false -}}
 
 {{- if $is_headless -}}
-{{- $install_secrets = true -}}
+{{- if hasKey . "install_secrets" -}}
+{{- $install_secrets = .install_secrets -}}
+{{- end -}}
 {{- else -}}
 {{- $install_secrets = promptBoolOnce . "install_secrets" "Should secrets be installed" false -}}
 {{- end -}}
@@ -148,6 +159,7 @@ encryption = "age"
     install_packages = {{ $install_packages }}
     install_minimal_packages = {{ $install_minimal_packages }}
     install_secrets = {{ $install_secrets }}
+    install_ssh_authorized_keys = {{ $install_ssh_authorized_keys }}
     install_nvim = {{ $install_nvim }}
     install_nvim_bob = {{ $install_nvim_bob }}
     install_nvim_deps = {{ $install_nvim_deps }}

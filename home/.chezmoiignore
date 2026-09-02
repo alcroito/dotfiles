@@ -44,6 +44,15 @@ key.txt.age
 .config/dotfiles/github_env.sh
 {{ end }}
 
+{{/* Not gated on install_ssh_authorized_keys: rotate-chezmoi-age-key.sh
+     re-encrypts every encrypted_ file from its applied target, so this one has
+     to exist on the machine the rotation runs from, which is not a headless
+     one. It holds public keys, and the script that appends them to
+     authorized_keys is gated. */}}
+{{ if not (stat $age_key) }}
+.config/dotfiles/authorized_keys
+{{ end }}
+
 {{/* ~/.zshenv exists only so a non-interactive `ssh host cmd` still finds mise,
      which is what the agent location is for. */}}
 {{- if ne .location "agent" }}

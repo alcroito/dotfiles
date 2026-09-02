@@ -1,0 +1,45 @@
+{{- $keys_src := joinPath .chezmoi.sourceDir "dot_config" "dotfiles" "encrypted_private_authorized_keys.age" -}}
+{{ if and .install_ssh_authorized_keys (stat $keys_src) -}}
+{{ if ne .osid "windows" -}}
+#!/usr/bin/env bash
+{{ end -}}
+{{/* Hashing the ciphertext re-runs this when the key list changes, and needs no
+     age identity to render. An `after` script because it reads the applied
+     target, which `before` scripts run too early to see. */}}
+# key list: {{ include $keys_src | sha256sum }}
+
+KEYS_FILE="$HOME/.config/dotfiles/authorized_keys"
+AUTH_KEYS="$HOME/.ssh/authorized_keys"
+
+# Missing when the age identity is not there yet: .chezmoiignore skips the
+# encrypted target rather than failing the whole apply.
+if [ ! -r "$KEYS_FILE" ]; then
+  echo "no $KEYS_FILE, leaving authorized_keys alone"
+  exit 0
+fi
+
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+
+touch "$AUTH_KEYS"
+chmod 600 "$AUTH_KEYS"
+
+# A file whose last line has no newline would otherwise get the next key glued onto it.
+if [ -s "$AUTH_KEYS" ] && [ -n "$(tail -c 1 "$AUTH_KEYS")" ]; then
+  echo >> "$AUTH_KEYS"
+fi
+
+added=0
+while IFS= read -r key || [ -n "$key" ]; do
+  case "$key" in
+    '' | \#*) continue ;;
+  esac
+  grep -qxF "$key" "$AUTH_KEYS" && continue
+  echo "$key" >> "$AUTH_KEYS"
+  added=$((added + 1))
+done < "$KEYS_FILE"
+
+echo "authorized_keys: $added key(s) added"
+
+# end of install_ssh_authorized_keys
+{{ end -}}

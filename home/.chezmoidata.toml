@@ -3,4 +3,5 @@
 # "map has no entry for key". The config's [data] section overrides this file, so
 # a fresh `chezmoi init` still decides the real values.
 install_minimal_packages = false
+install_ssh_authorized_keys = false
 is_headless = false

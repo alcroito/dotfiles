@@ -1,37 +1,38 @@
-{{- if and .install_secrets .is_headless -}}
-{{- $key_items := list "work_ssh_2025_dec" "work_ssh_2026_main_pc_key" -}}
+{{- $keys_src := joinPath .chezmoi.sourceDir "dot_config" "dotfiles" "encrypted_private_authorized_keys.age" -}}
+{{- if and .install_ssh_authorized_keys (stat $keys_src) -}}
 
 {{- if eq .chezmoi.os "windows" }}
 
 {{ template "pwsh_refresh_path" . }}
 
-{{- if or (env "SSH_CONNECTION") (env "SSH_CLIENT") }}
+{{/* Hashing the ciphertext re-runs this when the key list changes, and needs no
+     age identity to render. */}}
+# key list: {{ include $keys_src | sha256sum }}
 
-Write-Warning "Skipping ssh authorized_keys setup - Windows Credential Manager is not accessible via SSH."
-Write-Warning "Re-run 'chezmoi apply' from an RDP or local console session to finish setup."
-
-{{- else }}
-
-# Windows counterpart of the unix run_onchange_before_014 script. The target file
+# Windows counterpart of the unix run_onchange_after_019 script. The target file
 # differs: the stock sshd_config ends with
 #     Match Group administrators
 #         AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
 # so for an account in the Administrators group a key in ~/.ssh/authorized_keys
 # is read by nothing and fails silently. See PowerShell/Win32-OpenSSH#2301.
 
-$pubKeyItems = @(
-{{- range $key_items }}
-  [pscustomobject]@{
-    Name = '{{ . }}'
-    PublicKey = '{{ (secretJSON "item" "view" "--output" "json" (printf "pass://PersonalSecrets/%s" .)).item.content.content.SshKey.public_key | trim }}'
-  }
-{{- end }}
-)
+# BOM-less: sshd fails to parse the first key of a file that starts with one.
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
 
-$pubKeyItems = @($pubKeyItems | Where-Object { -not [string]::IsNullOrWhiteSpace($_.PublicKey) })
+# Missing when the age identity is not there yet: .chezmoiignore skips the
+# encrypted target rather than failing the whole apply.
+$keysFile = Join-Path $env:USERPROFILE ".config\dotfiles\authorized_keys"
+if (!(Test-Path $keysFile)) {
+  Write-Warning "no $keysFile, leaving authorized_keys alone"
+  return
+}
 
-if ($pubKeyItems.Count -eq 0) {
-  Write-Warning "no ssh public keys available, leaving authorized_keys alone"
+$pubKeys = @([System.IO.File]::ReadAllLines($keysFile, $utf8NoBom) |
+  ForEach-Object { $_.Trim() } |
+  Where-Object { $_ -and -not $_.StartsWith('#') })
+
+if ($pubKeys.Count -eq 0) {
+  Write-Warning "no ssh public keys in $keysFile, leaving authorized_keys alone"
   return
 }
 
@@ -52,22 +53,14 @@ if ($useAdminFile) {
   $authKeys = Join-Path $env:USERPROFILE ".ssh\authorized_keys"
 }
 
-# BOM-less: sshd fails to parse the first key of a file that starts with one.
-$utf8NoBom = New-Object System.Text.UTF8Encoding $false
-
 $existingKeys = @()
 if (Test-Path $authKeys) {
   $existingKeys = @([System.IO.File]::ReadAllLines($authKeys, $utf8NoBom) | ForEach-Object { $_.Trim() })
 }
 
-foreach ($item in $pubKeyItems) {
-  if ($existingKeys -contains $item.PublicKey) {
-    echo "$($item.Name) public key already in $authKeys"
-  }
-}
-
-$missingItems = @($pubKeyItems | Where-Object { $existingKeys -notcontains $_.PublicKey })
-if ($missingItems.Count -eq 0) {
+$missingKeys = @($pubKeys | Where-Object { $existingKeys -notcontains $_ })
+if ($missingKeys.Count -eq 0) {
+  echo "authorized_keys: every key already in $authKeys"
   return
 }
 
@@ -97,10 +90,10 @@ if (Test-Path $authKeys) {
   }
 }
 
-foreach ($item in $missingItems) {
-  echo "Adding $($item.Name) public key to $authKeys"
-  [System.IO.File]::AppendAllText($authKeys, $item.PublicKey + "`n", $utf8NoBom)
+foreach ($key in $missingKeys) {
+  [System.IO.File]::AppendAllText($authKeys, $key + "`n", $utf8NoBom)
 }
+echo "authorized_keys: $($missingKeys.Count) key(s) added to $authKeys"
 
 # sshd refuses a key file that anyone else can write. SIDs rather than display
 # names so this also works on a non-English Windows:
@@ -115,10 +108,8 @@ if ($LASTEXITCODE -ne 0) {
   Write-Warning "icacls failed with $LASTEXITCODE on $authKeys, sshd may refuse the key file"
 }
 
-{{- end }}
-
 # end of windows
 {{- end -}}
 
-# end of install_secrets and vm
+# end of install_ssh_authorized_keys
 {{- end -}}
