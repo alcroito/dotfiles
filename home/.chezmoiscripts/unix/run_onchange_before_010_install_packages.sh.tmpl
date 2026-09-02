@@ -22,13 +22,24 @@ echo 'LANG=en_US.UTF-8' > /etc/default/locale
 {{ if or (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing rocky / rhel dependencies"
 sudo dnf install -y 'dnf-command(config-manager)'
+{{ if eq .osid "linux-rocky" -}}
 sudo dnf config-manager --set-enabled crb
+{{ else -}}
+{{/* Only the rebuilds call it crb. RHEL names it per release and arch, and a
+     subscribed image usually has it enabled already, so a failure here says
+     nothing worth stopping for. */}}
+sudo dnf config-manager --set-enabled \
+  "codeready-builder-for-rhel-$(rpm -E %rhel)-$(rpm -E %_arch)-rpms" || true
+{{ end -}}
 {{ end -}}
 
 {{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
 echo "Installing centos / rocky / rhel dependencies"
 sudo dnf install -y epel-release
+{{ if lt (int .chezmoi.osRelease.versionID) 10 -}}
+{{/* EPEL Next only ever existed for EL9 and earlier. */}}
 sudo dnf install -y epel-next-release
+{{ end -}}
 # util-linux-user provides chsh
 sudo dnf install -y util-linux-user which
 {{ end -}}
@@ -66,7 +77,22 @@ echo "Installing rhel-like dependencies"
 {{ if .install_minimal_packages -}}
 sudo dnf install -y git zsh ripgrep fd-find jq tig
 {{ else -}}
-sudo dnf install -y ripgrep htop fd-find git zsh tig btop jq atool tmux
+{{/* dnf4 wants --setopt=strict=0 and dnf5 --skip-unavailable, and each rejects
+     the other's spelling, so ask the binary rather than the release. Without it
+     a single name missing from a release aborts the transaction: atool is absent
+     on EL10 and used to take htop, btop and tmux down with it. */}}
+if dnf install --help 2>&1 | grep -q -- --skip-unavailable; then
+  dnf_skip=--skip-unavailable
+else
+  dnf_skip=--setopt=strict=0
+fi
+
+sudo dnf install -y $dnf_skip ripgrep htop fd-find git zsh tig btop jq tmux
+
+# atool has no EPEL 10 build, the same way the silver searcher below has none.
+{{ if or (eq .osid "linux-fedora") (lt (int .chezmoi.osRelease.versionID) 10) -}}
+sudo dnf install -y $dnf_skip atool
+{{ end -}}
 
 # Only install the silver searcher up to fedora 42 or centos / rocky / rhel 9.
 # Fedora 43+ and centos / rocky / rhel 10+ removed them
