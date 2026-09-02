@@ -61,10 +61,8 @@ key.txt.age
 .ssh/work_ssh_2025_dec.pub
 {{- if ne .chezmoi.os "windows" }}
 .config/nvim
-.config/atuin
 .config/opencode
 .vimrc
-.tigrc
 .ripgreprc
 .spaceshiprc.zsh
 .cat_custom.omp.yaml

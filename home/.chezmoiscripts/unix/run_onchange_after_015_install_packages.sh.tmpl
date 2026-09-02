@@ -8,7 +8,7 @@
 set -euo pipefail
 {{ end -}}
 
-{{ if and (ne .osid "windows") (not .install_minimal_packages) -}}
+{{ if ne .osid "windows" -}}
 # Install fzf
 echo "Installing fzf into ~/.fzf"
 if [ ! -d ~/.fzf ]; then
@@ -118,14 +118,12 @@ fi
 
 
 {{ if eq .chezmoi.os "linux" -}}
-{{ if not .install_minimal_packages -}}
 if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
   echo "Installing atuin"
   curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive
 else
   echo "atuin binary already present"
 fi
-{{- end }}
 
 if [ ! -f "$HOME/.local/bin/mise" ]; then
   echo "Installing mise"

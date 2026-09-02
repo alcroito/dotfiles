@@ -73,11 +73,14 @@ export PROTON_PASS_KEY_PROVIDER=fs
 
 {{- end -}}
 
+{{/* The macOS section above covers the non-minimal darwin case. */}}
+{{- if and .install_minimal_packages (eq .osid "darwin") -}}
+{{-   template "zshrc_atuin" . -}}
+{{- end -}}
+
 {{- if eq .chezmoi.os "linux" -}}
 
-{{-   if not .install_minimal_packages -}}
-{{-     template "zshrc_atuin" . -}}
-{{-   end -}}
+{{-   template "zshrc_atuin" . -}}
 
 {{-   template "zshrc_mise" . -}}
 
