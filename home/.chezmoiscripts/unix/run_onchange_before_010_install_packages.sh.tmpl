@@ -132,7 +132,6 @@ exit 1
 {{ end -}}
 
 {{ if ne .osid "windows" -}}
-{{ if not .install_minimal_packages -}}
 # Install oh my zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing oh-my-zsh"
@@ -156,8 +155,6 @@ sed -i 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ else if eq .osid "darwin" -}}
 sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
 {{ end -}}
-
-{{ end -}}{{/* end of not install_minimal_packages */ -}}
 
 {{/* The chsh stays outside the minimal gate: ~/.zshenv only applies to a
      non-interactive ssh command when zsh is the login shell. */ -}}

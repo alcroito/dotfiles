@@ -2,9 +2,7 @@
 {{-   template "zshrc_linux_paths" . -}}
 {{- end -}}
 
-{{- if not .install_minimal_packages -}}
-{{-   template "zshrc_unix" . -}}
-{{- end -}}
+{{- template "zshrc_unix" . -}}
 {{- template "zshrc_aliases" . -}}
 
 {{ if .is_headless -}}
@@ -16,8 +14,6 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{ if .install_github_tokens -}}
 [ -r "$HOME/.config/dotfiles/github_env.sh" ] && . "$HOME/.config/dotfiles/github_env.sh"
 {{ end -}}
-
-{{- if not .install_minimal_packages -}}
 
 {{- if eq .osid "darwin" -}}
 {{- if eq .machine_id "macbook_home" -}}
@@ -32,6 +28,7 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_plugins_arch" . -}}
 {{- end -}}
 
+{{- if not .install_minimal_packages -}}
 {{- if eq .osid "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
 {{-   template "zshrc_macos_common_arm" . -}}
@@ -39,9 +36,11 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_macos_common_intel" . -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
 
 {{- template "zshrc_oh_my_zsh" . -}}
 
+{{- if not .install_minimal_packages -}}
 {{- if eq .osid "darwin" -}}
 
 {{- template "zshrc_macos_common_pre" . -}}
