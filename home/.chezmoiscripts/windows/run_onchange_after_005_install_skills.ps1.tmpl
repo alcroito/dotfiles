@@ -17,6 +17,17 @@
 # relying on the profile having activated mise.
 $env:Path = "$env:LOCALAPPDATA\mise\shims;$env:Path"
 
+# skillfile fetches every entry through the GitHub contents API, which allows
+# only 60 anonymous requests per hour. Reuse the chezmoi token when it is there.
+# The file is POSIX shell, so parse it instead of sourcing it.
+$github_env = Join-Path $HOME ".config/dotfiles/github_env.sh"
+if (-not $env:GITHUB_TOKEN -and (Test-Path $github_env)) {
+  $token_line = Select-String -Path $github_env -Pattern '^\s*export\s+CHEZMOI_GITHUB_ACCESS_TOKEN=(.+)$' | Select-Object -First 1
+  if ($token_line) {
+    $env:GITHUB_TOKEN = $token_line.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'")
+  }
+}
+
 {{ range $manifests }}
 # Hashing the manifest and its lock makes this script re-run when either changes.
 # {{ . }}/Skillfile: {{ include (printf "%s/%s/Skillfile" $sf_root .) | sha256sum }}
