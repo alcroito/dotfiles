@@ -85,6 +85,11 @@ SSH_OPTS=(
   -o StrictHostKeyChecking=accept-new
   -o ConnectTimeout=10
   -o LogLevel=ERROR
+  # One attempt per connection. Without this ssh prompts three times, the
+  # wrapper below answers each with the same password, and a list of three
+  # passwords costs nine authentication failures - enough to trip a lockout
+  # policy on a Windows target.
+  -o NumberOfPasswordPrompts=1
 )
 
 ################################################################################
@@ -100,8 +105,21 @@ set fh [open [lindex $argv 0] r]
 set pass [string trim [read $fh]]
 close $fh
 spawn -noecho {*}[lrange $argv 1 end]
+# Answered once and once only: re-sending the same password at a second prompt
+# just spends another authentication failure. Exit 5 matches what sshpass reports
+# for a rejected password, which is what the caller looks for.
+set answered 0
 expect {
-  "*assword:*" { send -- "$pass\r"; exp_continue }
+  "*assword:*" {
+    if {$answered} {
+      close
+      wait
+      exit 5
+    }
+    set answered 1
+    send -- "$pass\r"
+    exp_continue
+  }
   "*(yes/no*)?*" { send -- "yes\r"; exp_continue }
   eof
 }
@@ -156,10 +174,20 @@ else
   for password in "${passwords[@]}"; do
     printf '%s\n' "$password" > "$pass_file"
     chmod 600 "$pass_file"
-    if remote true > /dev/null 2>&1; then
-      found="yes"
-      break
-    fi
+    rc=0
+    remote exit > /dev/null 2>&1 || rc=$?
+    # Judged on the transport rather than on the command: ssh exits 255 when the
+    # connection or authentication fails, and sshpass 5 when the password is
+    # rejected. Anything else means we are in, and the status came from the
+    # remote shell, which on a Windows target has no `true` to run and used to
+    # make a good password look like a bad one.
+    case "$rc" in
+      255 | 5) continue ;;
+      *)
+        found="yes"
+        break
+        ;;
+    esac
   done
   [ -n "$found" ] || die "none of the ${#passwords[@]} password(s) in $PASSWORD_FILE worked for $user@$host"
   echo "    logged in with a password from $PASSWORD_FILE"
@@ -171,6 +199,14 @@ fi
 # that cares.
 os_out="$(remote 'echo "__OS__$(uname -s 2>/dev/null || echo Windows)__"' || true)"
 os="$(printf '%s' "$os_out" | tr -d '\r' | sed -n 's/.*__OS__\([A-Za-z]*\)__.*/\1/p' | tail -1)"
+
+# cmd.exe and powershell leave a POSIX $( ) alone, so the marker comes back with
+# the substitution unexpanded. Seeing the marker but no name inside it is itself
+# the answer.
+if [ -z "$os" ] && printf '%s' "$os_out" | grep -q '__OS__'; then
+  os="Windows"
+fi
+
 [ -n "$os" ] || die "could not determine the remote OS; got: $os_out"
 echo "==> remote reports $os"
 case "$os" in
