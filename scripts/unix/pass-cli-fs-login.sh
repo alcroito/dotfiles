@@ -78,8 +78,34 @@ bootstrap() {
   PROTON_PASS_PERSONAL_ACCESS_TOKEN="$token" pass-cli login 1>&2
 }
 
-# `test` checks the session actually works against the server (catches expiry/revocation).
-pass-cli test >/dev/null 2>&1 || bootstrap
+# Reads the one vault the PAT is granted, which checks both that a session exists
+# locally and that it still works against the server (catches expiry/revocation).
+# It has to be a real subcommand: `pass-cli test` does not exist, and its
+# "unrecognized subcommand" exit status made this bootstrap on every single call.
+session_ok() {
+  pass-cli item list --vault-name "$PASS_VAULT" >/dev/null 2>&1
+}
+
+# chezmoi runs [secret].command once per secretJSON lookup, so a check that
+# cannot succeed asks for an interactive login on every one of them. Bootstrap at
+# most once per minute and fail loudly instead.
+marker="${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}/chezmoi-pass-cli-bootstrap-$(id -u)"
+
+bootstrapped_recently() {
+  local mtime
+  [ -f "$marker" ] || return 1
+  mtime="$(stat -c %Y "$marker" 2>/dev/null || stat -f %m "$marker" 2>/dev/null)"
+  [ -n "$mtime" ] && [ "$(( $(date +%s) - mtime ))" -lt 60 ]
+}
+
+if ! session_ok; then
+  if bootstrapped_recently; then
+    echo "proton pass: session still unusable right after a bootstrap; not logging in again" 1>&2
+    exit 1
+  fi
+  : > "$marker"
+  bootstrap
+fi
 
 if [ "$#" -gt 0 ]; then
   exec pass-cli "$@"
