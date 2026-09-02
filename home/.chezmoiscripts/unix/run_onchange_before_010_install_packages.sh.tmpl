@@ -35,7 +35,6 @@ sudo dnf config-manager --set-enabled \
 {{ if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 echo "Installing arch dependencies"
 sudo localectl set-locale LANG=en_US.UTF-8
-sudo pacman -Sy --disable-sandbox --noconfirm which
 {{ end -}}
 
 {{ if has .osid (list "linux-ubuntu" "linux-debian") -}}
