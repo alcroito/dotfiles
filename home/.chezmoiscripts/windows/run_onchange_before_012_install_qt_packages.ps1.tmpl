@@ -7,8 +7,7 @@
 {{ template "pwsh_scoop_install" . }}
 
 echo "Installing qt dependencies"
-Invoke-ScoopInstall ccache
-Invoke-ScoopInstall ninja
+{{ includeTemplate "pkgs/install_list_ps1" (dict "ctx" . "list" "qt_deps") }}
 echo "Finished installing qt dependencies"
 
 # end of windows

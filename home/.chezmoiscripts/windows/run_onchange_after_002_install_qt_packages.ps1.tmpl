@@ -9,7 +9,7 @@
 $env:MISE_GLOBAL_CONFIG_FILE = "$HOME\.config\mise\config.toml"
 
 echo "Installing qt dependencies via mise"
-mise use -g cmake
+{{ includeTemplate "pkgs/install_ps1" (dict "ctx" . "phase" "qt_mise") }}
 echo "Finished installing qt dependencies via mise"
 
 # end of windows

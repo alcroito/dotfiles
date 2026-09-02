@@ -1,0 +1,8 @@
+{{- /* PowerShell twin of pkgs/install_list_sh. scoop installs one app per
+invocation, so this emits one line per name. */ -}}
+{{- $env := includeTemplate "pkgs/env" .ctx | fromJson -}}
+{{- $manager := get $.ctx.pkg_system $env.osid -}}
+{{- $m := get $.ctx.pkg_managers $manager -}}
+{{- range $n := (get (get $.ctx.pkg_lists .list) $manager | default list) }}
+{{ $m.install }} {{ $n }}
+{{- end }}
