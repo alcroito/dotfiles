@@ -338,13 +338,39 @@ fi
 # Phase 4: apply the dotfiles
 ################################################################################
 
+# promptStringOnce keeps whatever answer a previous init stored, so -l on a host
+# that already has a config is a no-op without --prompt. Passing it always would
+# make every other prompt*Once ask too, which for a non-headless location means
+# blocking on input nobody can type, so it is only added when the location is
+# actually changing.
+stored_location=""
+if [ "$os" = "Windows" ]; then
+  # "" is powershell's escape for a quote inside a double-quoted string, which
+  # keeps this readable from bash's single quotes.
+  stored_location="$(ps_run '$cfg = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
+    if (Test-Path $cfg) {
+      foreach ($line in Get-Content $cfg) {
+        if ($line -match "location = ""(.*)""") { "__LOC__" + $Matches[1] + "__" }
+      }
+    }' 2>/dev/null || true)"
+else
+  stored_location="$(remote 'sed -n "s/^[[:space:]]*location = \"\(.*\)\"/__LOC__\1__/p" ~/.config/chezmoi/chezmoi.toml 2>/dev/null' 2>/dev/null || true)"
+fi
+stored_location="$(printf '%s' "$stored_location" | tr -d '\r' | sed -n 's/.*__LOC__\([a-z]*\)__.*/\1/p' | tail -1)"
+
+prompt_flag=""
+if [ -n "$stored_location" ] && [ "$stored_location" != "$location" ]; then
+  echo "    switching this host from location=$stored_location to location=$location"
+  prompt_flag="--prompt"
+fi
+
 echo "==> running the dotfiles installer with location=$location"
 installer_rc=0
 if [ "$os" = "Windows" ]; then
-  ps_run "& ([scriptblock]::Create((irm '$INSTALL_PS1_URL'))) --promptString '$LOCATION_PROMPT=$location'" ||
+  ps_run "& ([scriptblock]::Create((irm '$INSTALL_PS1_URL'))) $prompt_flag --promptString '$LOCATION_PROMPT=$location'" ||
     installer_rc=$?
 else
-  remote "sh -c \"\$(curl -fsSL $INSTALL_URL)\" -- --promptString '$LOCATION_PROMPT=$location'" ||
+  remote "sh -c \"\$(curl -fsSL $INSTALL_URL)\" -- $prompt_flag --promptString '$LOCATION_PROMPT=$location'" ||
     installer_rc=$?
 fi
 if [ "$installer_rc" -ne 0 ]; then

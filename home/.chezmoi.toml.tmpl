@@ -36,12 +36,21 @@
      so neither prompts and both take the filesystem secret path. */}}
 {{- $is_headless := or (eq $location "vm") (eq $location "agent") -}}
 
+{{/* What this host was before, so a deliberate location switch (chezmoi init
+     --prompt --promptString ...) can reset the defaults that location implies,
+     instead of a stored value from the old one silently winning. */}}
+{{- $stored_location := "" -}}
+{{- if hasKey . "location" -}}
+{{- $stored_location = .location -}}
+{{- end -}}
+{{- $same_location := eq $location $stored_location -}}
+
 {{/* agent installs only what an llm driving the machine over ssh needs. Set
      install_minimal_packages = false in ~/.config/chezmoi/chezmoi.toml and
      re-apply to get the full toolset; a stored value wins over the location
      default, so a later `chezmoi init` keeps it. */}}
 {{- $install_minimal_packages := eq $location "agent" -}}
-{{- if hasKey . "install_minimal_packages" -}}
+{{- if and $same_location (hasKey . "install_minimal_packages") -}}
 {{- $install_minimal_packages = .install_minimal_packages -}}
 {{- end -}}
 
@@ -65,7 +74,7 @@
      wherever the age identity is present (rotation re-encrypts from the
      applied target), but only appended to authorized_keys where this is on. */}}
 {{- $install_ssh_authorized_keys := $is_headless -}}
-{{- if hasKey . "install_ssh_authorized_keys" -}}
+{{- if and $same_location (hasKey . "install_ssh_authorized_keys") -}}
 {{- $install_ssh_authorized_keys = .install_ssh_authorized_keys -}}
 {{- end -}}
 
@@ -78,7 +87,7 @@
 {{- $install_nvim_bob := false -}}
 
 {{- if $is_headless -}}
-{{- if hasKey . "install_secrets" -}}
+{{- if and $same_location (hasKey . "install_secrets") -}}
 {{- $install_secrets = .install_secrets -}}
 {{- end -}}
 {{- else -}}
