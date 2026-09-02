@@ -1,11 +1,15 @@
 {{- /* Emit shell install commands for one phase.
 Input dict: ctx (the chezmoi context), phase, and optionally no_sudo (true for
-scripts that already run as root, such as the sudo bootstrap) and extra_args (a
+scripts that already run as root, such as the sudo bootstrap), extra_args (a
 literal string appended to every command, used to pass the shell variable
-holding dnf's skip flag, which is probed at runtime). */ -}}
+holding dnf's skip flag, which is probed at runtime), and ignore_errors (true
+appends "|| true" to every command, for managers like ya that exit non-zero
+when a package is already installed). */ -}}
 {{- $env := includeTemplate "pkgs/env" .ctx | fromJson -}}
 {{- $sudo := $env.sudo -}}
 {{- if get $ "no_sudo" -}}{{- $sudo = "" -}}{{- end -}}
+{{- $suffix := "" -}}
+{{- if get $ "ignore_errors" -}}{{- $suffix = " || true" -}}{{- end -}}
 {{- $sel := includeTemplate "pkgs/select" (dict
       "data" .ctx "osid" $env.osid "version" $env.version
       "groups" $env.groups "phase" .phase) | fromJson -}}
@@ -18,9 +22,9 @@ holding dnf's skip flag, which is probed at runtime). */ -}}
 {{-   if $c.args -}}{{- $args = printf "%s %s" $args $c.args -}}{{- end -}}
 {{-   if get $m "per_package" }}
 {{-     range $n := $c.names }}
-{{ $prefix }}{{ $m.install }}{{ $args }} {{ $n }}
+{{ $prefix }}{{ $m.install }}{{ $args }} {{ $n }}{{ $suffix }}
 {{-     end }}
 {{-   else }}
-{{ $prefix }}{{ $m.install }}{{ $args }} {{ join " " $c.names }}
+{{ $prefix }}{{ $m.install }}{{ $args }} {{ join " " $c.names }}{{ $suffix }}
 {{-   end }}
 {{- end }}

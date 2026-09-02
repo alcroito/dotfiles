@@ -8,7 +8,7 @@ export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 {{ if ne .osid "windows" -}}
 {{/* ya pkg add fails when the package is already installed, which is survivable here since the script has no errexit. */}}
-{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "ya") }}
+{{ includeTemplate "pkgs/install_sh" (dict "ctx" . "phase" "ya" "ignore_errors" true) }}
 
 {{ if and (.install_nvim) (.install_nvim_bob) -}}
 # Without this, if config.toml does not exist yet, `mise use -g` writes the [tools] section into
