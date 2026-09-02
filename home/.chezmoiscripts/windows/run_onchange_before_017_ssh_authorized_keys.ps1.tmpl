@@ -1,4 +1,5 @@
 {{- if and .install_secrets (eq .location "vm") -}}
+{{- $key_items := list "work_ssh_2025_dec" "work_ssh_2026_main_pc_key" -}}
 
 {{- if eq .chezmoi.os "windows" }}
 
@@ -18,10 +19,19 @@ Write-Warning "Re-run 'chezmoi apply' from an RDP or local console session to fi
 # so for an account in the Administrators group a key in ~/.ssh/authorized_keys
 # is read by nothing and fails silently. See PowerShell/Win32-OpenSSH#2301.
 
-$pubKey = '{{ (secretJSON "item" "view" "--output" "json" "pass://PersonalSecrets/work_ssh_2025_dec").item.content.content.SshKey.public_key | trim }}'
+$pubKeyItems = @(
+{{- range $key_items }}
+  [pscustomobject]@{
+    Name = '{{ . }}'
+    PublicKey = '{{ (secretJSON "item" "view" "--output" "json" (printf "pass://PersonalSecrets/%s" .)).item.content.content.SshKey.public_key | trim }}'
+  }
+{{- end }}
+)
 
-if ([string]::IsNullOrWhiteSpace($pubKey)) {
-  Write-Warning "no work ssh public key available, leaving authorized_keys alone"
+$pubKeyItems = @($pubKeyItems | Where-Object { -not [string]::IsNullOrWhiteSpace($_.PublicKey) })
+
+if ($pubKeyItems.Count -eq 0) {
+  Write-Warning "no ssh public keys available, leaving authorized_keys alone"
   return
 }
 
@@ -45,14 +55,24 @@ if ($useAdminFile) {
 # BOM-less: sshd fails to parse the first key of a file that starts with one.
 $utf8NoBom = New-Object System.Text.UTF8Encoding $false
 
-if ((Test-Path $authKeys) -and
-    (([System.IO.File]::ReadAllLines($authKeys, $utf8NoBom) | ForEach-Object { $_.Trim() }) -contains $pubKey)) {
-  echo "work ssh public key already in $authKeys"
+$existingKeys = @()
+if (Test-Path $authKeys) {
+  $existingKeys = @([System.IO.File]::ReadAllLines($authKeys, $utf8NoBom) | ForEach-Object { $_.Trim() })
+}
+
+foreach ($item in $pubKeyItems) {
+  if ($existingKeys -contains $item.PublicKey) {
+    echo "$($item.Name) public key already in $authKeys"
+  }
+}
+
+$missingItems = @($pubKeyItems | Where-Object { $existingKeys -notcontains $_.PublicKey })
+if ($missingItems.Count -eq 0) {
   return
 }
 
 # %PROGRAMDATA%\ssh is writable by administrators only, so elevate before the
-# write rather than for the check above.
+# write rather than for the checks above.
 if ($useAdminFile) {
   $IsElevated = 'true' -eq (gsudo status IsElevated)
   if ($IsElevated -eq $false) {
@@ -70,14 +90,17 @@ if (!(Test-Path $authKeysDir)) {
   New-Item -ItemType Directory -Force -Path $authKeysDir | Out-Null
 }
 
-echo "Adding work ssh public key to $authKeys"
 if (Test-Path $authKeys) {
   $existing = [System.IO.File]::ReadAllText($authKeys, $utf8NoBom)
   if ($existing.Length -gt 0 -and -not $existing.EndsWith("`n")) {
     [System.IO.File]::AppendAllText($authKeys, "`n", $utf8NoBom)
   }
 }
-[System.IO.File]::AppendAllText($authKeys, $pubKey + "`n", $utf8NoBom)
+
+foreach ($item in $missingItems) {
+  echo "Adding $($item.Name) public key to $authKeys"
+  [System.IO.File]::AppendAllText($authKeys, $item.PublicKey + "`n", $utf8NoBom)
+}
 
 # sshd refuses a key file that anyone else can write. SIDs rather than display
 # names so this also works on a non-English Windows:
