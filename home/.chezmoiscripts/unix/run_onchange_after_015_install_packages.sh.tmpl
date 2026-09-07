@@ -127,7 +127,19 @@ fi
 
 if [ ! -f "$HOME/.local/bin/mise" ]; then
   echo "Installing mise"
-  curl https://mise.run | sh
+  # Downloaded to a variable first: piping curl into sh reports only sh's exit
+  # status, and sh succeeds on the empty input a failed download produces. Every
+  # tool below installs through mise, so swallowing this scatters "command not
+  # found: mise" across four scripts instead of failing where the fault is.
+  if ! mise_installer=$(curl -fsSL --retry 3 --retry-connrefused https://mise.run); then
+    echo "ERROR: could not download the mise installer from https://mise.run" >&2
+    exit 1
+  fi
+  sh -c "$mise_installer"
+  if [ ! -f "$HOME/.local/bin/mise" ]; then
+    echo "ERROR: the mise installer left no $HOME/.local/bin/mise" >&2
+    exit 1
+  fi
 else
   echo "mise binary already present"
 fi
