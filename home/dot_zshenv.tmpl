@@ -1,6 +1,6 @@
-{{/* Deployed for the agent location only (see .chezmoiignore). A non-interactive
-     `ssh host cmd` reads ~/.zshenv and nothing else, so anything an agent needs
-     on PATH has to be here rather than in ~/.zshrc. */ -}}
+{{/* Deployed for the headless locations only (see .chezmoiignore). A
+     non-interactive `ssh host cmd` reads ~/.zshenv and nothing else, so anything
+     such a session needs on PATH has to be here rather than in ~/.zshrc. */ -}}
 # mise itself, plus the shims for everything it installed.
 export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 

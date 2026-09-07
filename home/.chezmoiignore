@@ -61,8 +61,9 @@ key.txt.age
 {{ end }}
 
 {{/* ~/.zshenv exists only so a non-interactive `ssh host cmd` still finds mise,
-     which is what the agent location is for. */}}
-{{- if ne .location "agent" }}
+     which is how both headless locations are driven. The windows counterpart is
+     .chezmoiscripts/windows/run_onchange_after_006_headless_path.ps1.tmpl. */}}
+{{- if not .is_headless }}
 .zshenv
 {{- end }}
 
