@@ -120,7 +120,18 @@ fi
 {{ if eq .chezmoi.os "linux" -}}
 if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
   echo "Installing atuin"
-  curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive
+  # Downloaded to a variable for the same reason as mise below: a pipe reports
+  # only sh's exit status, and sh succeeds on the empty input a failed download
+  # produces.
+  if ! atuin_installer=$(curl --proto '=https' --tlsv1.2 -LsSf --retry 3 --retry-connrefused https://setup.atuin.sh); then
+    echo "ERROR: could not download the atuin installer from https://setup.atuin.sh" >&2
+    exit 1
+  fi
+  sh -c "$atuin_installer" "" --non-interactive
+  if [ ! -f "$HOME/.atuin/bin/atuin" ]; then
+    echo "ERROR: the atuin installer left no $HOME/.atuin/bin/atuin" >&2
+    exit 1
+  fi
 else
   echo "atuin binary already present"
 fi
