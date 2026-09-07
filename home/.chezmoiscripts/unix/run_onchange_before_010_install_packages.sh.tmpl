@@ -15,8 +15,10 @@ set -euo pipefail
 
 {{ if eq .osid "linux-debian" -}}
 echo "Installing debian dependencies"
-sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed for debian
-echo 'LANG=en_US.UTF-8' > /etc/default/locale
+sudo sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed for debian
+# tee rather than a redirect: sudo applies to the command, not to the shell that
+# opens the target file.
+echo 'LANG=en_US.UTF-8' | sudo tee /etc/default/locale > /dev/null
 {{ end -}}
 
 {{ if or (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
