@@ -21,22 +21,19 @@ sudo sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen # needed
 echo 'LANG=en_US.UTF-8' | sudo tee /etc/default/locale > /dev/null
 {{ end -}}
 
-{{ if or (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
-echo "Installing rocky / rhel dependencies"
+{{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
+echo "Installing centos / rocky / rhel dependencies"
 sudo dnf install -y 'dnf-command(config-manager)'
-{{ if eq .osid "linux-rocky" -}}
-sudo dnf config-manager --set-enabled crb
-{{ else -}}
+{{ if eq .osid "linux-rhel" -}}
 {{/* Only the rebuilds call it crb. RHEL names it per release and arch, and a
      subscribed image usually has it enabled already, so a failure here says
      nothing worth stopping for. */}}
 sudo dnf config-manager --set-enabled \
   "codeready-builder-for-rhel-$(rpm -E %rhel)-$(rpm -E %_arch)-rpms" || true
+{{ else -}}
+{{/* Centos stream and rocky both name it crb, and epel packages expect it. */}}
+sudo dnf config-manager --set-enabled crb
 {{ end -}}
-{{ end -}}
-
-{{ if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
-echo "Installing centos / rocky / rhel dependencies"
 sudo dnf install -y epel-release
 {{ if lt (int .chezmoi.osRelease.versionID) 10 -}}
 {{/* EPEL Next only ever existed for EL9 and earlier. */}}
