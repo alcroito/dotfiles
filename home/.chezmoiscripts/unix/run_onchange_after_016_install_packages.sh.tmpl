@@ -7,12 +7,24 @@
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 {{ if ne .osid "windows" -}}
+# `ya pkg add` exits 1 when the package is already in package.toml, and
+# `ya pkg upgrade` is a silent no-op when it is not, so neither works on its own
+# for a script that re-runs. Branch on what `ya pkg list` reports instead.
+# Failures stay non-fatal so a network problem does not abort the whole apply.
+yazi_pkg() {
+  if ya pkg list 2>/dev/null | awk '{print $1}' | grep -qxF "$1"; then
+    ya pkg upgrade "$1" || echo "WARNING: could not upgrade the yazi package $1" >&2
+  else
+    ya pkg add "$1" || echo "WARNING: could not add the yazi package $1" >&2
+  fi
+}
+
 # Install onedark theme for yazi
-ya pkg add BennyOe/onedark || true
-ya pkg add yazi-rs/flavors:catppuccin-macchiato || true
+yazi_pkg BennyOe/onedark
+yazi_pkg yazi-rs/flavors:catppuccin-macchiato
 
 # Install compress plugin
-ya pkg add KKV9/compress || true
+yazi_pkg KKV9/compress
 
 {{ if and (.install_nvim) (.install_nvim_bob) -}}
 {{ if not (and (eq .osid "linux-debian") (le (int .chezmoi.osRelease.versionID) 12)) -}}
