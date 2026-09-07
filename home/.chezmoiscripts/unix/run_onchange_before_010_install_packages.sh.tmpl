@@ -158,10 +158,34 @@ exit 1
 
 {{ if ne .osid "windows" -}}
 # Install oh my zsh
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
+# Guarded on oh-my-zsh.sh rather than on the directory: the zsh-autosuggestions
+# clone below creates ~/.oh-my-zsh/custom/plugins, so a directory test turns a
+# failed install into a permanently "finished" one that no later apply repairs.
+if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
   echo "Installing oh-my-zsh"
+  # The upstream installer exits rather than write into an existing ~/.oh-my-zsh,
+  # and a half-finished tree is exactly what reaches here. Moved aside rather
+  # than deleted so anything hand-added under custom/ stays recoverable.
+  if [ -d "$HOME/.oh-my-zsh" ]; then
+    omz_broken="$HOME/.oh-my-zsh.broken.$(date +%s)"
+    echo "Moving the incomplete $HOME/.oh-my-zsh aside to $omz_broken"
+    mv "$HOME/.oh-my-zsh" "$omz_broken"
+  fi
   ZSH=
-  sh -c "$(curl -fsSL https://install.ohmyz.sh/)" "" --unattended
+  # Downloaded to a variable first: piping curl into sh hides the download's
+  # exit status behind sh's, and sh happily succeeds on empty input.
+  if ! omz_installer=$(curl -fsSL --retry 3 --retry-connrefused https://install.ohmyz.sh/); then
+    echo "ERROR: could not download the oh-my-zsh installer" >&2
+    exit 1
+  fi
+  # --keep-zshrc because ~/.zshrc is chezmoi-managed. Without it the installer
+  # replaces the applied file, and the next apply stops to ask about a target
+  # that changed behind chezmoi's back, which an unattended run cannot answer.
+  sh -c "$omz_installer" "" --unattended --keep-zshrc
+  if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+    echo "ERROR: the oh-my-zsh installer left no $HOME/.oh-my-zsh/oh-my-zsh.sh" >&2
+    exit 1
+  fi
 else
   echo "oh-my-zsh already installed"
 fi
