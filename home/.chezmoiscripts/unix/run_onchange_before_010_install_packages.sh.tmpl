@@ -209,7 +209,17 @@ sed -i.bak 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"bira\"/g' ~/.zshrc
      non-interactive ssh command when zsh is the login shell. */ -}}
 {{ if eq .chezmoi.os "linux" -}}
 # Change the default shell Linux
-zsh_path=$(which zsh)
+zsh_path=$(command -v zsh)
+# Where /usr/sbin symlinks to /usr/bin (fedora), a PATH lookup can answer
+# /usr/sbin/zsh. That is the same binary, but the string is not in /etc/shells,
+# so chsh warns and a PAM stack that enforces membership rejects the login.
+if [ -n "$zsh_path" ] && [ -r /etc/shells ] && ! grep -qxF "$zsh_path" /etc/shells; then
+  listed_zsh=$(grep -xE '.*/zsh' /etc/shells | head -n 1)
+  if [ -n "$listed_zsh" ] && [ -x "$listed_zsh" ]; then
+    echo "$zsh_path is not listed in /etc/shells, using $listed_zsh instead"
+    zsh_path=$listed_zsh
+  fi
+fi
 current_user=$(id -un)
 current_shell=$(getent passwd "$current_user" | cut -d: -f7)
 if [ -n "$zsh_path" ] && [ "$current_shell" != "$zsh_path" ]; then
