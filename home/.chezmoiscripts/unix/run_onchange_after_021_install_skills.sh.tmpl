@@ -14,6 +14,15 @@
 
 export PATH="$HOME/.local/share/mise/shims:$PATH:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin"
 
+{{ if eq .chezmoi.os "linux" -}}
+{{ template "sh_glibc_helpers" . }}
+# Matches the guard in 018, which skips the install on these systems entirely.
+if ! skillfile_runnable; then
+  echo "skipping skills: skillfile needs glibc 2.39+ and this system has ${glibc_version:-no glibc}"
+  exit 0
+fi
+{{ end -}}
+
 # skillfile fetches every entry through the GitHub contents API, which allows
 # only 60 anonymous requests per hour, so it wants a token. Its own comes first:
 # the chezmoi one is scoped to this account's repos and answers 403 for qt/qtqa,
