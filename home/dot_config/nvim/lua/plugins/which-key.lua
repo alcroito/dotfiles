@@ -2,6 +2,9 @@ return {
   -- vim keybindings popup guide
   "folke/which-key.nvim",
   event = "VeryLazy",
+  filter = function(mapping)
+    return mapping.desc ~= "diffview_ignore"
+  end,
   opts = {
     win = {
       width = 70,
