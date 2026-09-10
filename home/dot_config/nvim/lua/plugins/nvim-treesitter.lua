@@ -10,7 +10,7 @@ return {
     lazy = false,
     keys = {
       {
-        "]c",
+        "<leader>]c",
         mode = { "n" },
         function()
           require("treesitter-context").go_to_context(vim.v.count1)
