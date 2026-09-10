@@ -1,0 +1,103 @@
+{{- if .is_headless -}}
+
+{{- if eq .chezmoi.os "windows" }}
+
+# Coin windows images pair the en-US language with the UK keyboard layout and
+# put a Finnish layout behind it, so keys typed over rdp come out wrong. This
+# writes the registry Windows reads at sign-in (the language list, its keyboard
+# layouts, the input-method override, Preload and Substitutes), then pushes the
+# change into any running session. Set-WinUserLanguageList hangs in a
+# non-interactive ssh session (session 0), so it is called directly only when
+# this runs interactively; otherwise psexec runs it inside the logged-on
+# session. psexec ships with the sysinternals package, which vm installs but
+# agent does not; with neither path the registry still applies at next sign-in.
+$usLayout = '00000409'
+$usTip = "0409:$usLayout"
+$intl = 'HKCU:\Control Panel\International\User Profile'
+$preload = 'HKCU:\Keyboard Layout\Preload'
+$substitutes = 'HKCU:\Keyboard Layout\Substitutes'
+$changed = $false
+
+$languages = @((Get-ItemProperty $intl -ErrorAction SilentlyContinue).Languages)
+$wanted = @('en-US') + @($languages | Where-Object { $_ -ne 'en-US' })
+if (($languages -join ',') -ne ($wanted -join ',')) {
+  echo "Putting en-US first in the input languages: $($wanted -join ', ')"
+  Set-ItemProperty $intl -Name Languages -Value ([string[]]$wanted) -Type MultiString
+  $changed = $true
+}
+
+# The values named LANGID:KLID under the language key are its keyboard layouts.
+$enUS = "$intl\en-US"
+if (-not (Test-Path $enUS)) { New-Item $enUS -Force | Out-Null }
+$tips = @((Get-Item $enUS).GetValueNames() | Where-Object { $_ -match '^[0-9a-f]{4}:[0-9a-f]{8}$' })
+if (($tips -join ',') -ne $usTip) {
+  echo "Making $usTip the only en-US keyboard layout (was: $($tips -join ', '))"
+  foreach ($tip in $tips) { Remove-ItemProperty $enUS -Name $tip }
+  Set-ItemProperty $enUS -Name $usTip -Value 1 -Type DWord
+  $changed = $true
+}
+
+if ((Get-ItemProperty $intl -ErrorAction SilentlyContinue).InputMethodOverride -ne $usTip) {
+  echo "Setting $usTip as the default input method"
+  Set-ItemProperty $intl -Name InputMethodOverride -Value $usTip -Type String
+  $changed = $true
+}
+
+# Preload lists the layouts loaded at sign-in by slot number; slot 1 is active.
+if (-not (Test-Path $preload)) { New-Item $preload -Force | Out-Null }
+$slots = Get-Item $preload
+$layouts = @($slots.GetValueNames() | Sort-Object { [int]$_ } | ForEach-Object { $slots.GetValue($_) })
+$wanted = @($usLayout) + @($layouts | Where-Object { $_ -ne $usLayout })
+if (($layouts -join ',') -ne ($wanted -join ',')) {
+  echo "Preloading the US keyboard layout first: $($wanted -join ', ')"
+  foreach ($name in $slots.GetValueNames()) { Remove-ItemProperty $preload -Name $name }
+  for ($i = 0; $i -lt $wanted.Count; $i++) {
+    Set-ItemProperty $preload -Name "$($i + 1)" -Value $wanted[$i] -Type String
+  }
+  $changed = $true
+}
+
+# A substitute here is what turned the preloaded US layout into the UK one.
+if ((Test-Path $substitutes) -and (Get-Item $substitutes).GetValue($usLayout)) {
+  echo "Removing the substitute that replaced the US keyboard layout"
+  Remove-ItemProperty $substitutes -Name $usLayout
+  $changed = $true
+}
+
+if ($changed) {
+  echo "US keyboard layout configured in the registry"
+} else {
+  echo "US keyboard layout already set in the registry"
+}
+
+# Push it into a running session so the tray updates without a sign-in.
+# Set-WinUserLanguageList re-reads the registry written above.
+if ((Get-Process -Id $PID).SessionId -ne 0) {
+  echo "Interactive session; applying the layout directly"
+  Set-WinUserLanguageList (Get-WinUserLanguageList) -Force
+} else {
+  $env:Path = [Environment]::GetEnvironmentVariable('Path', 'User'), [Environment]::GetEnvironmentVariable('Path', 'Machine') -join ';'
+  $psexec = (Get-Command psexec64.exe, psexec.exe -ErrorAction SilentlyContinue | Select-Object -First 1).Source
+  if (-not $psexec) {
+    $shim = Join-Path $env:USERPROFILE 'scoop\shims\psexec64.exe'
+    if (Test-Path $shim) { $psexec = $shim }
+  }
+  # A logged-on session, connected or not, has an explorer.exe outside session 0.
+  $session = Get-Process explorer -ErrorAction SilentlyContinue | Where-Object { $_.SessionId -ne 0 } | Select-Object -First 1 -ExpandProperty SessionId
+  if ($psexec -and $null -ne $session) {
+    $pwsh = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    echo "Non-interactive; applying the layout in session $session via psexec"
+    & $psexec -accepteula -nobanner -i $session $pwsh -NoProfile -NonInteractive -Command 'Set-WinUserLanguageList (Get-WinUserLanguageList) -Force' 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) { echo "psexec exit $LASTEXITCODE; the layout still applies at the next sign-in" }
+  } elseif (-not $psexec) {
+    echo "psexec not found; the layout applies at the next sign-in"
+  } else {
+    echo "No logged-on session to refresh; the layout applies at the next sign-in"
+  }
+}
+
+# end of windows
+{{- end -}}
+
+# end of is_headless
+{{- end -}}
