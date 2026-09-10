@@ -79,7 +79,7 @@ Plug 'scrooloose/nerdcommenter'
 "Plug 'nathanaelkane/vim-indent-guides'
 
 " colorscheme
-Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
+"Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
 
 " colorscheme
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
@@ -94,17 +94,21 @@ Plug 'lambdalisue/vim-suda'
 "Plug 'dietsche/vim-lastplace'
 
 " Ack / ag integration
-Plug 'mileszs/ack.vim'
+"Plug 'mileszs/ack.vim'
 
 " ripgrep integration
 Plug 'jremmen/vim-ripgrep'
 
 " Fuzzy file finder
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+if !has('nvim')
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+endif
 
 " File explorer
-Plug 'scrooloose/nerdtree'
+if !has('nvim')
+    Plug 'scrooloose/nerdtree'
+endif
 
 " Smart status bar
 if !has('nvim')
@@ -135,7 +139,7 @@ Plug 'LucHermitte/lh-vim-lib'
 Plug 'LucHermitte/alternate-lite'
 
 " Motion highlighting
-Plug 'easymotion/vim-easymotion'
+"Plug 'easymotion/vim-easymotion'
 
 " Alternative trying out
 " Plug 'rlane/pounce.nvim'
@@ -168,13 +172,13 @@ Plug 'artoj/qmake-syntax-vim'
 Plug 'peterhoeg/vim-qml'
 
 " gyp highlighting
-Plug 'kelan/gyp.vim'
+"Plug 'kelan/gyp.vim'
 
 " gn highlighting
-Plug 'c0nk/vim-gn'
+"Plug 'c0nk/vim-gn'
 
 " qbs highlighting
-Plug 'https://JohnKaul@bitbucket.org/JohnKaul/qbs.vim.git'
+"Plug 'https://JohnKaul@bitbucket.org/JohnKaul/qbs.vim.git'
 
 " cpp highlighting
 Plug 'octol/vim-cpp-enhanced-highlight'
