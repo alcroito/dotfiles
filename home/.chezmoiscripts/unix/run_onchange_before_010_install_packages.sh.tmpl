@@ -60,7 +60,7 @@ export LANG=en_US.UTF-8
 {{ if .install_minimal_packages -}}
 sudo apt install -y git zsh ripgrep fd-find jq tig
 {{ else -}}
-sudo apt install -y ripgrep htop silversearcher-ag fd-find git zsh tig jq atool tmux
+sudo apt install -y ripgrep htop fd-find git zsh tig jq atool tmux
 
 # btop not present in debian 11 repos
 {{ if not (and (eq .osid "linux-debian") (lt (int (.chezmoi.osRelease.versionID | default "99")) 12)) -}}
@@ -88,21 +88,9 @@ fi
 
 sudo dnf install -y $dnf_skip ripgrep htop fd-find git zsh tig btop jq tmux
 
-# atool has no EPEL 10 build, the same way the silver searcher below has none.
+# atool has no EPEL 10 build.
 {{ if or (eq .osid "linux-fedora") (lt (int .chezmoi.osRelease.versionID) 10) -}}
 sudo dnf install -y $dnf_skip atool
-{{ end -}}
-
-# Only install the silver searcher up to fedora 42 or centos / rocky / rhel 9.
-# Fedora 43+ and centos / rocky / rhel 10+ removed them
-{{ if eq .osid "linux-fedora" -}}
-{{ if lt (int .chezmoi.osRelease.versionID) 43 -}}
-sudo dnf install -y the_silver_searcher
-{{ end -}}
-{{ else if or (eq .osid "linux-centos") (eq .osid "linux-rocky") (eq .osid "linux-rhel") -}}
-{{ if lt (int .chezmoi.osRelease.versionID) 10 -}}
-sudo dnf install -y the_silver_searcher
-{{ end -}}
 {{ end -}}
 {{ end -}}
 
@@ -111,7 +99,7 @@ echo "Installing suse dependencies"
 {{ if .install_minimal_packages -}}
 sudo zypper install -y git zsh ripgrep fd jq tig
 {{ else -}}
-sudo zypper install -y ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
+sudo zypper install -y ripgrep htop fd git zsh tig btop jq atool tmux
 {{ end -}}
 
 {{ else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
@@ -119,7 +107,7 @@ echo "Installing arch dependencies"
 {{ if .install_minimal_packages -}}
 sudo pacman -Sy --disable-sandbox --noconfirm git zsh ripgrep fd jq tig
 {{ else -}}
-sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop the_silver_searcher fd git zsh tig btop jq atool tmux
+sudo pacman -Sy --disable-sandbox --noconfirm ripgrep htop fd git zsh tig btop jq atool tmux
 {{- end }}
 
 {{ else if eq .osid "linux-alpine" -}}
@@ -127,7 +115,7 @@ echo "Installing alpine dependencies"
 {{ if .install_minimal_packages -}}
 sudo apk add git zsh ripgrep fd jq tig
 {{ else -}}
-sudo apk add ripgrep htop the_silver_searcher fd git zsh tig btop jq tmux
+sudo apk add ripgrep htop fd git zsh tig btop jq tmux
 
 # Only available in edge/testing
 sudo apk add atool --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
@@ -146,7 +134,7 @@ export HOMEBREW_NO_ASK=1
 {{ if .install_minimal_packages -}}
 brew install git zsh ripgrep fd jq tig atuin fzf mise yazi
 {{ else -}}
-brew install ripgrep htop the_silver_searcher fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux lazydocker
+brew install ripgrep htop fd cmake git ninja zsh zoxide tig btop mise fzf yazi fzf aria2 atuin bat jq atool tmux lazydocker
 {{ end -}}
 # brew install xcodesorg/made/xcodes
 
