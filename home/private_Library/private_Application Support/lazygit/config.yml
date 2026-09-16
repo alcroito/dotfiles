@@ -1,13 +1,12 @@
 git:
- # If true, periodically fetch from remote
+  # If true, periodically fetch from remote
   autoFetch: false
-
   # If true, periodically refresh files and submodules
   autoRefresh: false
-
-  pagers:
-    - pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
-    - externalDiffCommand: difft --color=always
+  diffRenderers:
+    - command: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+    - command: difft --color=always
+      type: extDiff
 gui:
   scrollHeight: 20
   showFileTree: false
@@ -31,9 +30,7 @@ gui:
       - '#cad3f5'
     searchingActiveBorderColor:
       - '#eed49f'
-
   authorColors:
     '*': '#b7bdf8'
-
 os:
   editPreset: nvim-remote
