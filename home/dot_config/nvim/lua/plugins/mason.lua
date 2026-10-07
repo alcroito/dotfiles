@@ -20,10 +20,26 @@ local plugin = {
     --})
 
     vim.lsp.config("neocmake", {
-      cmd = { "neocmakelsp", "--stdio" },
+      cmd = { "neocmakelsp", "stdio" },
       filetypes = { "cmake" },
-      root_dir = function(fname)
-        return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+      root_dir = function(bufnr, on_dir)
+        local fname = vim.api.nvim_buf_get_name(bufnr)
+        if not fname or fname == "" then
+          return
+        end
+        local git_dirs = vim.fs.find(".git", { path = fname, upward = true })
+        if not git_dirs then
+          return
+        end
+        local git_dir = git_dirs[1]
+        if not git_dir then
+          return
+        end
+        local root_dir = vim.fs.dirname(git_dir)
+        if not root_dir or root_dir == "" then
+          return
+        end
+        on_dir(root_dir)
       end,
       single_file_support = true, -- suggested
       init_options = {
