@@ -1,5 +1,8 @@
 return {
   "folke/snacks.nvim",
+  -- The dashboard has to be set up before UIEnter.
+  priority = 1000,
+  lazy = false,
   opts = {
     toggle = {},
     picker = {

@@ -40,12 +40,18 @@ return {
         return " "
       end,
       color = function()
+        if not package.loaded["sidekick"] then
+          return
+        end
         local status = require("sidekick.status").get()
         if status then
           return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
         end
       end,
       cond = function()
+        if not package.loaded["sidekick"] then
+          return false
+        end
         local status = require("sidekick.status")
         return status.get() ~= nil
       end,
@@ -57,6 +63,9 @@ return {
         return " " .. (#status > 1 and #status or "")
       end,
       cond = function()
+        if not package.loaded["sidekick"] then
+          return false
+        end
         return #require("sidekick.status").cli() > 0
       end,
       color = function()

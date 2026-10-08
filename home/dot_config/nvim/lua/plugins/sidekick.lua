@@ -1,5 +1,7 @@
 return {
   "folke/sidekick.nvim",
+  -- NES needs the copilot LSP client, which copilot.lua only starts on InsertEnter.
+  event = "InsertEnter",
   opts = {
     -- add any options here
     cli = {

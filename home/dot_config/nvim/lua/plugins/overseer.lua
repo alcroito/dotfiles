@@ -1,5 +1,6 @@
 return {
   "stevearc/overseer.nvim",
+  cmd = { "OverseerOpen", "OverseerClose", "OverseerToggle", "OverseerRun", "OverseerShell", "OverseerTaskAction" },
   ---@module 'overseer'
   ---@type overseer.SetupOpts
   opts = {
