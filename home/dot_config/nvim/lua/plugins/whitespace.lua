@@ -4,7 +4,7 @@ return {
   opts = {
     palette = {
       other = {
-        tws = 'PaleVioletRed',
+        tws = "PaleVioletRed",
       },
     },
   },
