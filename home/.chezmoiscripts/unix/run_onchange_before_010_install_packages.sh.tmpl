@@ -185,6 +185,14 @@ if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
 else
   echo "zsh-autosuggestions already installed"
 fi
+
+# Install zsh-cycle-jobs
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-cycle-jobs" ]; then
+  echo "Installing zsh-cycle-jobs"
+  git clone https://github.com/alcroito/zsh-cycle-jobs ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-cycle-jobs
+else
+  echo "zsh-cycle-jobs already installed"
+fi
 touch ~/.zshrc
 
 {{ if eq .chezmoi.os "linux" -}}

@@ -26,9 +26,10 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_plugins_ubuntu" . -}}
 {{- else if or (eq .osid "linux-arch") (eq .osid "linux-endeavouros") -}}
 {{-   template "zshrc_plugins_arch" . -}}
-{{- end -}}
+{{- end }}
+[[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-cycle-jobs ]] && plugins+=(zsh-cycle-jobs)
 
-{{- if not .install_minimal_packages -}}
+{{ if not .install_minimal_packages -}}
 {{- if eq .osid "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
 {{-   template "zshrc_macos_common_arm" . -}}
