@@ -193,6 +193,14 @@ if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-cycle-jobs" ]; then
 else
   echo "zsh-cycle-jobs already installed"
 fi
+
+# Install fzf-recent-dirs
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/fzf-recent-dirs" ]; then
+  echo "Installing fzf-recent-dirs"
+  git clone https://github.com/alberti42/fzf-recent-dirs ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fzf-recent-dirs
+else
+  echo "fzf-recent-dirs already installed"
+fi
 touch ~/.zshrc
 
 {{ if eq .chezmoi.os "linux" -}}

@@ -28,6 +28,7 @@ export PROTON_PASS_KEY_PROVIDER=fs
 {{-   template "zshrc_plugins_arch" . -}}
 {{- end }}
 [[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-cycle-jobs ]] && plugins+=(zsh-cycle-jobs)
+[[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-recent-dirs ]] && plugins+=(fzf-recent-dirs)
 
 {{ if not .install_minimal_packages -}}
 {{- if eq .osid "darwin" -}}
